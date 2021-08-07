@@ -42,6 +42,7 @@
 
 #include <random>
 
+#include "../../tabular.hpp"
 #include "base_cmaes.h"
 
 class BiPopCmaes: public MultivariateOptimizer {
@@ -54,14 +55,15 @@ protected:
 	double _tol, _sigmaref, _sigmadec, _sigmal, _sigma, _fx, _fxold, _fxbest;
 	multivariate _f;
 	BaseCmaes *_base;
+	Tabular _table;
 	std::vector<double> _lower, _upper, _x, _xguess, _x0, _xbest;
 
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
 	BiPopCmaes(BaseCmaes *base, int mfev, double tol, double sigma0 = 2.,
-			double sigmadecay = 1.6, int maxlpruns = 9999, bool adaptbudget =
-					true, bool print = false);
+			bool print = false, double sigmadecay = 1.6, int maxlpruns = 9999,
+			bool adaptbudget = true);
 
 	void init(multivariate f, const int n, double *guess, double *lower,
 			double *upper);

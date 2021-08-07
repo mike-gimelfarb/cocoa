@@ -41,7 +41,6 @@
  */
 
 #include <cmath>
-#include <iostream>
 
 #include "ipop_cmaes.h"
 #include "../../random.hpp"
@@ -106,11 +105,11 @@ void IPopCmaes::init(multivariate f, const int n, double *guess, double *lower,
 	_fxold = NAN;
 
 	// print output
+	_table = Tabular();
 	if (_print) {
-		std::cout << "Run\t" << "Budget\t" << "MaxBudget\t" << "Pop\t"
-				<< "Sigma\t" << "F\tBestF" << std::endl;
-		std::cout << _it << "\t" << _fev << "\t" << _maxfev << "\t" << _lambda
-				<< "\t" << _sigma << "\t" << _fx << "\t" << _fbest << std::endl;
+		_table.setWidth( { 5, 10, 10, 5, 25, 25 });
+		_table.printRow("run", "budget", "max_budget", "pop", "sigma", "f*");
+		_table.printRow(_it, _fev, _maxfev, _lambda, _sigma, _fx, _fbest);
 	}
 }
 
@@ -162,8 +161,7 @@ void IPopCmaes::iterate() {
 
 	// print output
 	if (_print) {
-		std::cout << _it << "\t" << _fev << "\t" << _maxfev << "\t" << _lambda
-				<< "\t" << _sigma << "\t" << _fx << "\t" << _fbest << std::endl;
+		_table.printRow(_it, _fev, _maxfev, _lambda, _sigma, _fx, _fbest);
 	}
 }
 

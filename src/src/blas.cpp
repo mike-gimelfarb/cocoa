@@ -20,9 +20,9 @@
  SOFTWARE.
  */
 
-#include "blas.h"
-
 #include <algorithm>
+
+#include "blas.h"
 
 void dxpym(int n, double *dx, int idx, double *dy, int idy) {
 	if (n <= 0) {

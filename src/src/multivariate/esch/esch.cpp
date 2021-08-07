@@ -26,7 +26,6 @@
 #define _USE_MATH_DEFINES
 #include <algorithm>
 #include <math.h>
-#include <iostream>
 
 #include "esch.h"
 #include "../../random.hpp"

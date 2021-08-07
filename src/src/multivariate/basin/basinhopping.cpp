@@ -36,10 +36,9 @@
  */
 
 #include <cmath>
-#include <iostream>
 
-#include "basinhopping.h"
 #include "../../random.hpp"
+#include "basinhopping.h"
 
 using Random = effolkronium::random_static;
 
@@ -146,13 +145,12 @@ void BasinHopping::init(multivariate f, const int n, double *guess,
 	_bestenergy = _energy;
 
 	// print
+	_table = Tabular();
 	if (_print) {
-		std::cout << "it" << "\t" << "f" << "\t" << "conv" << "\t" << "step"
-				<< "\t" << "accept" << "\t" << "f*" << "\t" << "fev"
-				<< std::endl;
-		std::cout << "-1" << "\t" << _energy << "\t" << sol._converged << "\t"
-				<< _stepstrat->_stepsize << "\t" << true << "\t" << _bestenergy
-				<< "\t" << _fev << std::endl;
+		_table.setWidth( { 5, 25, 5, 25, 6, 25, 10 });
+		_table.printRow("it", "f", "conv", "step", "accept", "f*", "fev");
+		_table.printRow("-1", _energy, sol._converged, _stepstrat->_stepsize,
+				true, _bestenergy, _fev);
 	}
 }
 
@@ -185,9 +183,8 @@ void BasinHopping::iterate() {
 
 	// print
 	if (_print) {
-		std::cout << _it << "\t" << new_energy << "\t" << sol._converged << "\t"
-				<< _stepstrat->_stepsize << "\t" << accept << "\t"
-				<< _bestenergy << "\t" << _fev << std::endl;
+		_table.printRow(_it, new_energy, sol._converged, _stepstrat->_stepsize,
+				accept, _bestenergy, _fev);
 	}
 	_it++;
 }

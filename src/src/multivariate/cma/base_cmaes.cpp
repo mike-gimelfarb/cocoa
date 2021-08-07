@@ -20,7 +20,6 @@
  SOFTWARE.
  */
 
-
 #include <algorithm>
 #include <cmath>
 #include <numeric>

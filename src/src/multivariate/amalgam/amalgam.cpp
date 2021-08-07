@@ -32,15 +32,14 @@
  Conference: Late Breaking Papers. ACM, 2009.
  */
 
-#include <iostream>
-
-#include "amalgam.h"
 #include "../../blas.h"
 #include "../../random.hpp"
 
+#include "amalgam.h"
+
 using Random = effolkronium::random_static;
 
-AmalgamIdea::AmalgamIdea(int mfev, double tol, double stol, int np, // @suppress("Class members should be properly initialized")
+Amalgam::Amalgam(int mfev, double tol, double stol, int np, // @suppress("Class members should be properly initialized")
 		bool iamalgam, bool noparam, bool print) {
 	_tol = tol;
 	_stol = stol;
@@ -51,8 +50,8 @@ AmalgamIdea::AmalgamIdea(int mfev, double tol, double stol, int np, // @suppress
 	_print = print;
 }
 
-void AmalgamIdea::init(multivariate f, const int n, double *guess,
-		double *lower, double *upper) {
+void Amalgam::init(multivariate f, const int n, double *guess, double *lower,
+		double *upper) {
 
 	// basic constants
 	_mincmult = 1e-10;
@@ -64,6 +63,7 @@ void AmalgamIdea::init(multivariate f, const int n, double *guess,
 	_n = n;
 	_lower = std::vector<double>(lower, lower + _n);
 	_upper = std::vector<double>(upper, upper + _n);
+	_table = Tabular();
 
 	// parameter-free version
 	if (_noparam) {
@@ -88,9 +88,8 @@ void AmalgamIdea::init(multivariate f, const int n, double *guess,
 
 		// print headers
 		if (_print) {
-			std::cout
-					<< "s\t runs\t pop size\t best f on run\t best f so far\t total evals"
-					<< std::endl;
+			_table.setWidth( { 5, 5, 10, 25, 25, 10 });
+			_table.printRow("iter", "runs", "pop", "f*", "best f*", "fev");
 		}
 		return;
 	}
@@ -175,7 +174,7 @@ void AmalgamIdea::init(multivariate f, const int n, double *guess,
 	}
 }
 
-void AmalgamIdea::iterate() {
+void Amalgam::iterate() {
 
 	// parameter-free version
 	if (_noparam) {
@@ -195,8 +194,7 @@ void AmalgamIdea::iterate() {
 
 		// print
 		if (_print) {
-			std::cout << _s << "\t" << _runs << "\t" << _np << "\t" << _fbestrun
-					<< "\t" << _fbest << "\t" << _fev << std::endl;
+			_table.printRow(_s, _runs, _np, _fbestrun, _fbest, _fev);
 		}
 
 		// increment counters
@@ -235,7 +233,7 @@ void AmalgamIdea::iterate() {
 	_t++;
 }
 
-multivariate_solution AmalgamIdea::optimize(multivariate f, const int n,
+multivariate_solution Amalgam::optimize(multivariate f, const int n,
 		double *guess, double *lower, double *upper) {
 	init(f, n, guess, lower, upper);
 	while (true) {
@@ -252,17 +250,16 @@ multivariate_solution AmalgamIdea::optimize(multivariate f, const int n,
 	}
 }
 
-void AmalgamIdea::runParallel() {
+void Amalgam::runParallel() {
 
 	// record best values on this run
 	_fbestrunold = _fbestrun;
 	_fbestrun = std::numeric_limits<double>::infinity();
 
-	std::cout << _runs << std::endl;
 	for (int r = 1; r <= _runs; r++) {
 
 		// initialize the optimizer
-		AmalgamIdea algr { _budget, _tol, _stol, _np, _iamalgam, false, false };
+		Amalgam algr { _budget, _tol, _stol, _np, _iamalgam, false, false };
 
 		// perform the optimization
 		const multivariate_solution &sol = algr.optimize(_f, _n, nullptr,
@@ -287,7 +284,7 @@ void AmalgamIdea::runParallel() {
 	}
 }
 
-bool AmalgamIdea::converged() {
+bool Amalgam::converged() {
 
 	// check number of evaluations
 	if (_fev >= _mfev) {
@@ -327,7 +324,7 @@ bool AmalgamIdea::converged() {
 	return false;
 }
 
-double AmalgamIdea::computeSDR() {
+double Amalgam::computeSDR() {
 
 	// compute the average of all points better than previous best
 	std::fill(_xavg.begin(), _xavg.end(), 0.);
@@ -355,7 +352,7 @@ double AmalgamIdea::computeSDR() {
 	return sdr;
 }
 
-void AmalgamIdea::updateDistribution() {
+void Amalgam::updateDistribution() {
 
 	// find the best solutions
 	std::sort(_sols.begin(), _sols.end(), amalgam_solution::compare_fitness);
@@ -415,7 +412,7 @@ void AmalgamIdea::updateDistribution() {
 	}
 }
 
-int AmalgamIdea::samplePopulation() {
+int Amalgam::samplePopulation() {
 
 	// sample from the estimated normal distribution
 	for (auto &sol : _sols) {
@@ -452,7 +449,7 @@ int AmalgamIdea::samplePopulation() {
 	return ibest;
 }
 
-int AmalgamIdea::dchdcm() {
+int Amalgam::dchdcm() {
 
 	// internal variables
 	int pu, pl, ii, j, k, km1, kp1, l, maxl;

@@ -38,10 +38,9 @@
  */
 
 #include <stdexcept>
-#include <iostream>
 
-#include "sade.h"
 #include "../../random.hpp"
+#include "../sade/sade.h"
 
 using Random = effolkronium::random_static;
 

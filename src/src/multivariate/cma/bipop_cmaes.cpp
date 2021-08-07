@@ -38,15 +38,14 @@
  */
 
 #include <cmath>
-#include <iostream>
 
-#include "bipop_cmaes.h"
 #include "../../random.hpp"
+#include "bipop_cmaes.h"
 
 using Random = effolkronium::random_static;
 
 BiPopCmaes::BiPopCmaes(BaseCmaes *base, int mfev, double tol, double sigma0, // @suppress("Class members should be properly initialized")
-		double sigmadecay, int maxlpruns, bool adaptbudget, bool print) {
+		bool print, double sigmadecay, int maxlpruns, bool adaptbudget) {
 	_tol = tol;
 	_sigmaref = sigma0;
 	_sigmadec = sigmadecay;
@@ -101,14 +100,13 @@ void BiPopCmaes::init(multivariate f, const int n, double *guess, double *lower,
 	_fxold = NAN;
 
 	// print output
+	_table = Tabular();
 	if (_print) {
-		std::cout << "Run\t" << "Mode\t" << "Run1\t" << "Run2\t" << "Budget1\t"
-				<< "Budget2\t" << "MaxBudget\t" << "Pop\t" << "Sigma\t" << "F\t"
-				<< "BestF" << std::endl;
-		std::cout << _it << "\t" << 0 << "\t" << _il << "\t" << _is << "\t"
-				<< _budgetl << "\t" << _budgets << "\t" << _evref << "\t"
-				<< _lambda << "\t" << _sigma << "\t" << _fx << "\t" << _fxbest
-				<< std::endl;
+		_table.setWidth( { 5, 5, 5, 5, 10, 10, 10, 5, 25, 25, 25 });
+		_table.printRow("run", "mode", "run1", "run2", "budget1", "budget2",
+				"budget", "pop", "sigma", "f*", "best f*");
+		_table.printRow(_it, 0, _il, _is, _budgetl, _budgets, _evref, _lambda,
+				_sigma, _fx, _fxbest);
 	}
 }
 
@@ -172,10 +170,8 @@ void BiPopCmaes::iterate() {
 
 	// print output
 	if (_print) {
-		std::cout << _it << "\t" << 0 << "\t" << _il << "\t" << _is << "\t"
-				<< _budgetl << "\t" << _budgets << "\t" << _evref << "\t"
-				<< _lambda << "\t" << _sigma << "\t" << _fx << "\t" << _fxbest
-				<< std::endl;
+		_table.printRow(_it, 0, _il, _is, _budgetl, _budgets, _evref, _lambda,
+				_sigma, _fx, _fxbest);
 	}
 	_it++;
 }

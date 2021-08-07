@@ -41,6 +41,7 @@
 #include <memory>
 
 #include "../multivariate.h"
+#include "../../tabular.hpp"
 
 struct StepsizeStrategy {
 
@@ -102,6 +103,7 @@ protected:
 	MultivariateOptimizer *_minimizer;
 	StepsizeStrategy *_stepstrat;
 	MetropolisHastings _acceptance;
+	Tabular _table;
 	std::vector<double> _guess, _lower, _upper, _x, _bestx;
 
 public:

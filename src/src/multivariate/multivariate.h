@@ -24,10 +24,11 @@
 #define MULTIVARIATE_MULTIVARIATE_H_
 
 #include <vector>
+#include <functional>
 
 #include "../string_utils.h"
 
-using multivariate = double (*)(const double*);
+typedef std::function<double(const double*)> multivariate;
 
 struct multivariate_solution {
 

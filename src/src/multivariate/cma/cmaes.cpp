@@ -30,6 +30,8 @@
  preprint arXiv:1604.00772 (2016).
  */
 
+#include <iostream>
+
 #include "cmaes.h"
 #include "../../blas.h"
 #include "../../math_utils.h"
@@ -42,7 +44,7 @@ void Cmaes::init(multivariate f, const int n, double *guess, double *lower,
 	BaseCmaes::init(f, n, guess, lower, upper);
 
 	// we perform an eigenvalue decomposition every O(d) iterations
-	_eigenfreq = (1. / (_c1 + _cmu)) / (10. * _n);
+	_eigenfreq = 0.5 * _lambda / (_c1 + _cmu) / _n;
 	_eigenlastev = 0;
 
 	// Initialize dynamic (internal) strategy parameters and constants
@@ -225,7 +227,7 @@ void Cmaes::eigenDecomposition() {
 
 	// skip the eigenvalue-decomposition O(D^3) until condition is reached
 	// this is done once every O(D) iterations making the algorithm O(D^2)
-	if (_fev - _eigenlastev <= _lambda * _eigenfreq) {
+	if (_fev - _eigenlastev <= _eigenfreq) {
 		return;
 	}
 

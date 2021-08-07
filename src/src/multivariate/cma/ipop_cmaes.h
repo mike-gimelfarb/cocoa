@@ -45,6 +45,7 @@
 
 #include <random>
 
+#include "../../tabular.hpp"
 #include "base_cmaes.h"
 
 class IPopCmaes: public MultivariateOptimizer {
@@ -56,6 +57,7 @@ protected:
 			_fxold;
 	multivariate _f;
 	BaseCmaes *_base;
+	Tabular _table;
 	std::vector<double> _lower, _upper, _xbest, _x, _xstart, _xguess;
 
 public:

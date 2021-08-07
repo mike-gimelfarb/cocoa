@@ -39,6 +39,7 @@
 #include <random>
 
 #include "../multivariate.h"
+#include "../../tabular.hpp"
 
 struct amalgam_solution {
 
@@ -51,7 +52,7 @@ struct amalgam_solution {
 	}
 };
 
-class AmalgamIdea: public MultivariateOptimizer {
+class Amalgam: public MultivariateOptimizer {
 
 private:
 	void runParallel();
@@ -74,6 +75,7 @@ protected:
 			_etashift, _etadec, _etainc, _cmult, _thetasdr, _fbest, _fbestrun,
 			_fbestrunold;
 	multivariate _f;
+	Tabular _table;
 	std::vector<double> _lower, _upper, _mu, _muold, _mushift, _mushiftold,
 			_best, _tmp, _xavg;
 	std::vector<std::vector<double>> _cov, _chol;
@@ -82,8 +84,8 @@ protected:
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	AmalgamIdea(int mfev, double tol, double stol, int np = 0, bool iamalgam =
-			false, bool noparam = true, bool print = true);
+	Amalgam(int mfev, double tol, double stol, int np = 0,
+			bool iamalgam = false, bool noparam = true, bool print = true);
 
 	void init(multivariate f, const int n, double *guess, double *lower,
 			double *upper);
