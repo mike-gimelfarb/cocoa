@@ -22,53 +22,47 @@
  ================================================================
  REFERENCES:
 
- [1] Zhan, Zhi-Hui, Jun Zhang, Yun Li, and Henry Shu-Hung Chung. "Adaptive
- particle swarm optimization." IEEE Transactions on Systems, Man, and Cybernetics,
- Part B (Cybernetics) 39, no. 6 (2009): 1362-1381.
+ [1] Li, Changhe, Shengxiang Yang, and Trung Thanh Nguyen. "A self-learning particle
+ swarm optimizer for global optimization problems." IEEE Transactions on Systems,
+ Man, and Cybernetics, Part B (Cybernetics) 42.3 (2011): 627-646.
  */
 
-#ifndef MULTIVARIATE_PSO_PSO_H_
-#define MULTIVARIATE_PSO_PSO_H_
+#ifndef MULTIVARIATE_PSO_SLPSO_H_
+#define MULTIVARIATE_PSO_SLPSO_H_
 
 #include <memory>
 #include <random>
 
 #include "../multivariate.h"
 
-class PsoSearch: public MultivariateOptimizer {
+class SLPSOSearch: public MultivariateOptimizer {
 
-	struct pso_particle {
+	struct slpso_particle {
 
-		std::vector<double> _x, _v, _xb;
-		double _f, _fb;
+		std::vector<double> _x, _v, _pb;
+		double _fx, _fpb, _fp;
+		std::vector<double> _p, _s;
+		std::vector<int> _g, _G;
+		int _m;
+		bool _CF, _PF;
+		double _Pl, _Uf;
 	};
 
 protected:
-
-	const std::vector<std::vector<int>> _rulebase = { //
-			{ 1, 1, 1, 1 }, // state is S1, no overlaps
-					{ 2, 2, 2, 2 }, // state is S2, no overlaps
-					{ 3, 3, 3, 3 }, // state is S3, no overlaps
-					{ 4, 4, 4, 4 }, // state is S4, no overlaps
-					{ 1, 2, 2, 1 }, // state transition S1 => S2
-					{ 2, 2, 3, 3 }, // state transition S2 => S3
-					{ 1, 1, 4, 4 }, // state transition S4 => S1
-			};
-
-	int _n, _it, _fev, _maxit, _state;
-	double _smin, _smax, _w, _wmin, _wmax, _c1, _c2, _vdamp, _fbest;
+	int _n, _np, _nstrat, _fev, _mfev, _mfes;
+	double _omega, _omegamin, _omegamax, _eta, _gamma, _vmax, _tol, _alpha,
+			_fabest, _Ufmax;
 	multivariate_problem _f;
-	std::vector<double> _p, _ws, _wmu, _lower, _upper, _xbest;
-	std::vector<pso_particle> _swarm;
-
-	bool _correct;
-	int _np, _mfev;
-	double _tol, _stol;
+	std::vector<int> _perm;
+	std::vector<double> _lower, _upper, _abest, _r, _vdavg;
+	std::vector<slpso_particle> _swarm;
 
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	PsoSearch(int mfev, double tol, double stol, int np, bool correct = true);
+	SLPSOSearch(int mfev, double stol, int np, double omegamin = 0.4,
+			double omegamax = 0.9, double eta = 1.496, double gamma = 0.01,
+			double vmax = 0.2, double Ufmax = 10.);
 
 	void init(const multivariate_problem &f, const double *guess);
 
@@ -78,24 +72,25 @@ public:
 			const double *guess);
 
 private:
+	int roulette(slpso_particle &k);
 
-	// swarm updates
-	void updateSwarm();
+	// particle updating routines
+	void initializeParticle(int index);
 
-	void updateParticle(pso_particle &particle);
+	slpso_particle& update(int i, int p, slpso_particle &k);
 
-	void updateElitist();
+	double handleBounds(double x, double v, int d);
 
-	// parameter updates
-	void updateParameters();
+	void updateAbest(slpso_particle &k);
 
-	void updatec1c2(double f, int state);
+	// parameter updating routines
+	void updatePar();
 
-	double getf();
+	void updateParParticle(int index);
 
-	int nextState(double f);
+	void updateLearningOpt(slpso_particle &k);
 
-	double mu(double f, int i);
+	void updateSelectionRatios(slpso_particle &k);
 };
 
-#endif /* MULTIVARIATE_PSO_PSO_H_ */
+#endif /* MULTIVARIATE_PSO_SLPSO_H_ */

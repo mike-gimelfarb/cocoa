@@ -32,16 +32,14 @@
 
 using Random = effolkronium::random_static;
 
-DifferentialSearch::DifferentialSearch(int mfev, double tol, double stol,
-		int np) {
+DSSearch::DSSearch(int mfev, double tol, double stol, int np) {
 	_tol = tol;
 	_stol = stol;
 	_np = np;
 	_mfev = mfev;
 }
 
-void DifferentialSearch::init(const multivariate_problem &f,
-		const double *guess) {
+void DSSearch::init(const multivariate_problem &f, const double *guess) {
 	if (f._hasc || f._hasbbc) {
 		std::cerr << "Warning [DS]: problem constraints will be ignored."
 				<< std::endl;
@@ -70,7 +68,7 @@ void DifferentialSearch::init(const multivariate_problem &f,
 	genPop();
 }
 
-void DifferentialSearch::iterate() {
+void DSSearch::iterate() {
 
 	// SETTING OF ALGORITHMIC CONTROL PARAMETERS
 	// Trial-pattern generation strategy for morphogenesis;
@@ -111,14 +109,14 @@ void DifferentialSearch::iterate() {
 		p._fso = _f._f(&(p._so)[0]);
 		if (p._fso < p._f) {
 			p._f = p._fso;
-			std::copy((p._so).begin(), (p._so).end(), (p._x).begin());
+			std::copy(p._so.begin(), p._so.end(), p._x.begin());
 		}
 	}
 	_fev += _np;
 }
 
-multivariate_solution DifferentialSearch::optimize(
-		const multivariate_problem &f, const double *guess) {
+multivariate_solution DSSearch::optimize(const multivariate_problem &f,
+		const double *guess) {
 
 	// initialization of swarm
 	init(f, guess);
@@ -169,7 +167,7 @@ multivariate_solution DifferentialSearch::optimize(
 	return {_swarm[imin]._x, _fev, converged};
 }
 
-void DifferentialSearch::genDir(int method) {
+void DSSearch::genDir(int method) {
 	switch (method) {
 	case 1: {
 
@@ -241,7 +239,7 @@ void DifferentialSearch::genDir(int method) {
 	}
 }
 
-void DifferentialSearch::genPop() {
+void DSSearch::genPop() {
 	for (auto &pt : _swarm) {
 		for (int j = 0; j < _n; j++) {
 			pt._x[j] = Random::get(_lower[j], _upper[j]);
@@ -250,7 +248,7 @@ void DifferentialSearch::genPop() {
 	}
 }
 
-void DifferentialSearch::genMap(double p1, double p2) {
+void DSSearch::genMap(double p1, double p2) {
 
 	// strategy-selection of active/passive individuals
 	if (Random::get(0, 1) == 0) {
@@ -280,7 +278,7 @@ void DifferentialSearch::genMap(double p1, double p2) {
 		// Random-mutation #2 strategy
 		const int mapmax = static_cast<int>(std::ceil(p2 * _n));
 		for (auto &p : _swarm) {
-			std::fill((p._map).begin(), (p._map).end(), 0);
+			std::fill(p._map.begin(), p._map.end(), 0);
 			for (int k = 0; k < mapmax; k++) {
 				const int j = Random::get(0, _n - 1);
 				p._map[j] = 1;
@@ -289,7 +287,7 @@ void DifferentialSearch::genMap(double p1, double p2) {
 	}
 }
 
-void DifferentialSearch::update() {
+void DSSearch::update() {
 	for (auto &p : _swarm) {
 		for (int j = 0; j < _n; j++) {
 

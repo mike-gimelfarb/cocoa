@@ -22,48 +22,53 @@
  ================================================================
  REFERENCES:
 
- [1] Van den Bergh, Frans, and Andries Petrus Engelbrecht. "A cooperative approach
- to particle swarm optimization." IEEE transactions on evolutionary computation
- 8.3 (2004): 225-239.
-
- [2] Li, Xiaodong, and Xin Yao. "Cooperatively coevolving particle swarms for
- large scale optimization." IEEE Transactions on Evolutionary Computation 16.2
- (2012): 210-224.
-
- [3] Li, Xiaodong, and Xin Yao. "Tackling high dimensional nonseparable optimization
- problems by cooperatively coevolving particle swarms." 2009 IEEE congress on
- evolutionary computation. IEEE, 2009.
+ [1] Zhan, Zhi-Hui, Jun Zhang, Yun Li, and Henry Shu-Hung Chung. "Adaptive
+ particle swarm optimization." IEEE Transactions on Systems, Man, and Cybernetics,
+ Part B (Cybernetics) 39, no. 6 (2009): 1362-1381.
  */
 
-#ifndef MULTIVARIATE_PSO_CCPSO_H_
-#define MULTIVARIATE_PSO_CCPSO_H_
+#ifndef MULTIVARIATE_PSO_APSO_H_
+#define MULTIVARIATE_PSO_APSO_H_
 
 #include <memory>
 #include <random>
-#include <vector>
 
 #include "../multivariate.h"
 
-class CCPSOSearch: public MultivariateOptimizer {
+class APSOSearch: public MultivariateOptimizer {
+
+	struct apso_particle {
+
+		std::vector<double> _x, _v, _xb;
+		double _f, _fb;
+	};
 
 protected:
-	bool _correct, _improved, _adaptp;
-	int _n, _fev, _gen, _np, _npps, _mfev, _nswarm, _cpswarm, _is, _localfreq;
-	double _stol, _fyhat, _phat0, _phat;
+
+	const std::vector<std::vector<int>> _rulebase = { //
+			{ 1, 1, 1, 1 }, // state is S1, no overlaps
+					{ 2, 2, 2, 2 }, // state is S2, no overlaps
+					{ 3, 3, 3, 3 }, // state is S3, no overlaps
+					{ 4, 4, 4, 4 }, // state is S4, no overlaps
+					{ 1, 2, 2, 1 }, // state transition S1 => S2
+					{ 2, 2, 3, 3 }, // state transition S2 => S3
+					{ 1, 1, 4, 4 }, // state transition S4 => S1
+			};
+
+	int _n, _it, _fev, _maxit, _state;
+	double _smin, _smax, _w, _c1, _c2, _vdamp, _fbest;
 	multivariate_problem _f;
-	MultivariateOptimizer *_local;
-	std::vector<int> _pps, _idx3, _range;
-	std::vector<double> _lower, _upper, _temp, _yhat, _z, _temp3, _wlb, _wub,
-			_wguess;
-	std::vector<std::vector<int>> _k, _ibest, _strat;
-	std::vector<std::vector<double>> _X, _Y, _fX, _fY;
+	std::vector<double> _p, _ws, _wmu, _lower, _upper, _xbest;
+	std::vector<apso_particle> _swarm;
+
+	bool _correct;
+	int _np, _mfev;
+	double _tol, _stol;
 
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	CCPSOSearch(int mfev, double sigmatol, int np, int *pps, int npps,
-			bool correct = true, double pcauchy = -1.,
-			MultivariateOptimizer *local = nullptr, int localfreq = 10);
+	APSOSearch(int mfev, double tol, double stol, int np, bool correct = true);
 
 	void init(const multivariate_problem &f, const double *guess);
 
@@ -73,19 +78,24 @@ public:
 			const double *guess);
 
 private:
-	void randomizeComponents();
 
+	// swarm updates
 	void updateSwarm();
 
-	void updatePosition();
+	void updateParticle(apso_particle &particle);
 
-	double evaluate(int i, double *z);
+	void updateElitist();
 
-	double sampleCauchy();
+	// parameter updates
+	void updateParameters();
 
-	int sampleSubsetIndex();
+	void updatec1c2(double f, int state);
 
-	void localSearch();
+	double getf();
+
+	int nextState(double f);
+
+	double mu(double f, int i);
 };
 
-#endif /* MULTIVARIATE_PSO_CCPSO_H_ */
+#endif /* MULTIVARIATE_PSO_APSO_H_ */

@@ -33,11 +33,11 @@
 
 #include "../../random.hpp"
 
-#include "pso.h"
+#include "apso.h"
 
 using Random = effolkronium::random_static;
 
-PsoSearch::PsoSearch(int mfev, double tol, double stol, int np, bool correct) {
+APSOSearch::APSOSearch(int mfev, double tol, double stol, int np, bool correct) {
 	_tol = tol;
 	_stol = stol;
 	_np = np;
@@ -45,7 +45,7 @@ PsoSearch::PsoSearch(int mfev, double tol, double stol, int np, bool correct) {
 	_correct = correct;
 }
 
-void PsoSearch::init(const multivariate_problem &f, const double *guess) {
+void APSOSearch::init(const multivariate_problem &f, const double *guess) {
 
 	// set problem
 	if (f._hasc || f._hasbbc) {
@@ -59,8 +59,6 @@ void PsoSearch::init(const multivariate_problem &f, const double *guess) {
 
 	// initialize parameters
 	_w = 0.9;
-	_wmin = 0.4;
-	_wmax = 0.9;
 	_smin = 0.1;
 	_smax = 1.0;
 	_vdamp = 0.2;
@@ -88,7 +86,7 @@ void PsoSearch::init(const multivariate_problem &f, const double *guess) {
 		}
 		const double fx = _f._f(&x[0]);
 		_fev++;
-		const pso_particle part { x, v, xb, fx, fx };
+		const apso_particle part { x, v, xb, fx, fx };
 		_swarm.push_back(std::move(part));
 
 		// update best and worst positions
@@ -104,13 +102,13 @@ void PsoSearch::init(const multivariate_problem &f, const double *guess) {
 	_wmu = std::vector<double>(4);
 }
 
-void PsoSearch::iterate() {
+void APSOSearch::iterate() {
 	updateParameters();
 	updateSwarm();
 	_it++;
 }
 
-multivariate_solution PsoSearch::optimize(const multivariate_problem &f,
+multivariate_solution APSOSearch::optimize(const multivariate_problem &f,
 		const double *guess) {
 	init(f, guess);
 	bool converged = false;
@@ -146,13 +144,13 @@ multivariate_solution PsoSearch::optimize(const multivariate_problem &f,
  *
  * =============================================================
  */
-void PsoSearch::updateSwarm() {
+void APSOSearch::updateSwarm() {
 	for (auto &p : _swarm) {
 		updateParticle(p);
 	}
 }
 
-void PsoSearch::updateParticle(pso_particle &particle) {
+void APSOSearch::updateParticle(apso_particle &particle) {
 
 	// update the velocity and position of this particle (1)-(2)
 	auto &px = particle._x;
@@ -193,7 +191,7 @@ void PsoSearch::updateParticle(pso_particle &particle) {
 	}
 }
 
-void PsoSearch::updateElitist() {
+void APSOSearch::updateElitist() {
 
 	// perturb P[d]
 	std::copy(_xbest.begin(), _xbest.end(), _p.begin());
@@ -234,18 +232,17 @@ void PsoSearch::updateElitist() {
  *
  * =============================================================
  */
-void PsoSearch::updateParameters() {
+void APSOSearch::updateParameters() {
 	const double f = getf();
 	const int newstate = nextState(f);
 	updatec1c2(f, newstate);
 	_state = newstate;
 }
 
-void PsoSearch::updatec1c2(double f, int state) {
+void APSOSearch::updatec1c2(double f, int state) {
 
 	// update w in (10)
 	_w = 1. / (1. + 1.5 * std::exp(-2.6 * f));
-	_w = std::max(_wmin, std::min(_w, _wmax));
 
 	// update C1 and C2 in (11)-(12)
 	const double delta1 = Random::get(0.05, 0.1);
@@ -294,7 +291,7 @@ void PsoSearch::updatec1c2(double f, int state) {
 	}
 }
 
-double PsoSearch::getf() {
+double APSOSearch::getf() {
 
 	// calculate the distances between the particles (7)
 	double dmin = std::numeric_limits<double>::infinity();
@@ -341,7 +338,7 @@ double PsoSearch::getf() {
  *
  * =============================================================
  */
-int PsoSearch::nextState(double f) {
+int APSOSearch::nextState(double f) {
 
 	// compute the decision regions for the next state
 	const double m1 = mu(f, 1);
@@ -381,7 +378,7 @@ int PsoSearch::nextState(double f) {
 	return _rulebase[r][_state];
 }
 
-double PsoSearch::mu(double f, int i) {
+double APSOSearch::mu(double f, int i) {
 
 	// update the fuzzy set membership function
 	switch (i) {

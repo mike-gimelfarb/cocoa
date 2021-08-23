@@ -48,7 +48,7 @@
 
 using Random = effolkronium::random_static;
 
-CcPsoSearch::CcPsoSearch(int mfev, double sigmatol, int np, int *pps, int npps,
+CCPSOSearch::CCPSOSearch(int mfev, double sigmatol, int np, int *pps, int npps,
 		bool correct, double pcauchy, MultivariateOptimizer *local,
 		int localfreq) {
 	_stol = sigmatol;
@@ -63,7 +63,7 @@ CcPsoSearch::CcPsoSearch(int mfev, double sigmatol, int np, int *pps, int npps,
 	_localfreq = localfreq;
 }
 
-void CcPsoSearch::init(const multivariate_problem &f, const double *guess) {
+void CCPSOSearch::init(const multivariate_problem &f, const double *guess) {
 
 	// initialize domain
 	if (f._hasc || f._hasbbc) {
@@ -109,7 +109,7 @@ void CcPsoSearch::init(const multivariate_problem &f, const double *guess) {
 	}
 }
 
-void CcPsoSearch::iterate() {
+void CCPSOSearch::iterate() {
 	randomizeComponents();
 	updateSwarm();
 	updatePosition();
@@ -120,7 +120,7 @@ void CcPsoSearch::iterate() {
 	std::cout << _fyhat << std::endl;
 }
 
-multivariate_solution CcPsoSearch::optimize(const multivariate_problem &f,
+multivariate_solution CCPSOSearch::optimize(const multivariate_problem &f,
 		const double *guess) {
 
 	// initialization
@@ -159,7 +159,7 @@ multivariate_solution CcPsoSearch::optimize(const multivariate_problem &f,
 	return {_yhat, _fev, converged};
 }
 
-void CcPsoSearch::randomizeComponents() {
+void CCPSOSearch::randomizeComponents() {
 
 	// sample an s at random, the number of components per swarm
 	const int is0 = _is;
@@ -203,7 +203,7 @@ void CcPsoSearch::randomizeComponents() {
 	}
 }
 
-void CcPsoSearch::updateSwarm() {
+void CCPSOSearch::updateSwarm() {
 
 	// re-evaluate particles
 	for (int j = 0; j < _nswarm; j++) {
@@ -297,7 +297,7 @@ void CcPsoSearch::updateSwarm() {
 	}
 }
 
-void CcPsoSearch::updatePosition() {
+void CCPSOSearch::updatePosition() {
 	for (int j = 0; j < _nswarm; j++) {
 		for (int i = 0; i < _np; i++) {
 			if (Random::get(0., 1.) < _phat) {
@@ -333,7 +333,7 @@ void CcPsoSearch::updatePosition() {
 	}
 }
 
-void CcPsoSearch::localSearch() {
+void CCPSOSearch::localSearch() {
 
 	// compute new bounding box
 	const double inf = std::numeric_limits<double>::infinity();
@@ -400,7 +400,7 @@ void CcPsoSearch::localSearch() {
 	}
 }
 
-double CcPsoSearch::evaluate(int j, double *z) {
+double CCPSOSearch::evaluate(int j, double *z) {
 
 	// change the context yhat component j by z
 	int k = 0;
@@ -421,11 +421,11 @@ double CcPsoSearch::evaluate(int j, double *z) {
 	return fit;
 }
 
-double CcPsoSearch::sampleCauchy() {
+double CCPSOSearch::sampleCauchy() {
 	return std::tan(M_PI * (Random::get(0., 1.) - 0.5));
 }
 
-int CcPsoSearch::sampleSubsetIndex() {
+int CCPSOSearch::sampleSubsetIndex() {
 	if (_improved) {
 		return _is;
 	} else {

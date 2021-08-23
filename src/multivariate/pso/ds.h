@@ -30,7 +30,7 @@
 
 #include "../multivariate.h"
 
-class DifferentialSearch: public MultivariateOptimizer {
+class DSSearch: public MultivariateOptimizer {
 
 	struct ds_particle {
 
@@ -56,7 +56,7 @@ protected:
 	std::vector<ds_particle> _swarm;
 
 public:
-	DifferentialSearch(int mfev, double tol, double stol, int np);
+	DSSearch(int mfev, double tol, double stol, int np);
 
 	void init(const multivariate_problem &f, const double *guess);
 
