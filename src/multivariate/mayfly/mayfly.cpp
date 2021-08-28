@@ -38,8 +38,8 @@ using Random = effolkronium::random_static;
 
 MayflySearch::MayflySearch(int np, int mfev, double a1, double a2, double a3,
 		double beta, double dance, double ddamp, double fl, double fldamp,
-		double gmin, double gmax, double vdamp, double pmutdim, double pmutnp,
-		double l, bool pgb) {
+		double gmin, double gmax, double vdamp, double sigma, double pmutdim,
+		double pmutnp, double l, bool pgb) {
 	_np = np;
 	_mfev = mfev;
 	_a1 = a1;
@@ -53,6 +53,7 @@ MayflySearch::MayflySearch(int np, int mfev, double a1, double a2, double a3,
 	_gmin = gmin;
 	_gmax = gmax;
 	_vdamp = vdamp;
+	_sigma = sigma;
 	_mu = pmutdim;
 	_pmut = pmutnp;
 	_l = l;
@@ -63,7 +64,7 @@ void MayflySearch::init(const multivariate_problem &f, const double *guess) {
 
 	// initialize problem
 	if (f._hasc || f._hasbbc) {
-		std::cerr << "Warning [JAYA]: problem constraints will be ignored."
+		std::cerr << "Warning [Mayfly]: problem constraints will be ignored."
 				<< std::endl;
 	}
 	_f = f;
@@ -155,7 +156,7 @@ void MayflySearch::init(const multivariate_problem &f, const double *guess) {
 
 	// initialize parameters
 	_it = 0;
-	_itmax = static_cast<int>(std::ceil((_mfev - _fev) / (3 * _np + _nmut)));
+	_itmax = static_cast<int>(std::ceil((_mfev - _fev) / (3. * _np + _nmut)));
 	_g = _gmax;
 	_dance = _dance0;
 	_fl = _fl0;
@@ -292,14 +293,15 @@ multivariate_solution MayflySearch::optimize(const multivariate_problem &f,
 void MayflySearch::updateMaleVelocity(mayfly &fly) {
 
 	// compute r_p and r_g
-	double rp = 0., rg = 0.;
+	double rp = 0.;
+	double rg = 0.;
 	for (int i = 0; i < _n; i++) {
 		rp += (fly._bx[i] - fly._x[i]) * (fly._bx[i] - fly._x[i]);
 		rg += (_best[i] - fly._x[i]) * (_best[i] - fly._x[i]);
 	}
 
 	// calculate velocity
-	if (fly._f > fly._bf) {
+	if (fly._f > _fbest) {
 		for (int i = 0; i < _n; i++) {
 			fly._v[i] = _g * fly._v[i]
 					+ _a1 * std::exp(-_beta * rp) * (fly._bx[i] - fly._x[i])
@@ -309,8 +311,8 @@ void MayflySearch::updateMaleVelocity(mayfly &fly) {
 		}
 	} else {
 		for (int i = 0; i < _n; i++) {
+			fly._v[i] = _g * fly._v[i] + _dance * Random::get(-1., 1.);
 			const double vmax = _vdamp * (_upper[i] - _lower[i]);
-			fly._v[i] = _g * fly._v[i] + _dance * vmax * Random::get(-1., 1.);
 			fly._v[i] = std::max(-vmax, std::min(fly._v[i], vmax));
 		}
 	}
@@ -334,9 +336,8 @@ void MayflySearch::updateFemaleVelocity(mayfly &female, mayfly &male) {
 		}
 	} else {
 		for (int i = 0; i < _n; i++) {
+			female._v[i] = _g * female._v[i] + _fl * Random::get(-1., 1.);
 			const double vmax = _vdamp * (_upper[i] - _lower[i]);
-			female._v[i] = _g * female._v[i]
-					+ _fl * vmax * Random::get(-1., 1.);
 			female._v[i] = std::max(-vmax, std::min(female._v[i], vmax));
 		}
 	}
@@ -390,7 +391,7 @@ bool MayflySearch::mutation(mayfly &par, mayfly &off) {
 	for (int i = 0; i < _n; i++) {
 		const int k = _indices[i];
 		if (i < nmut) {
-			const double sigma = _vdamp * (_upper[k] - _lower[k]);
+			const double sigma = _sigma * (_upper[k] - _lower[k]);
 			off._x[k] = par._x[k] + sigma * Random::get(_Z);
 			off._x[k] = std::max(_lower[k], std::min(off._x[k], _upper[k]));
 		} else {

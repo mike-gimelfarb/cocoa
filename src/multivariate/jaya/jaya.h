@@ -26,9 +26,17 @@
  constrained and unconstrained optimization problems." International Journal
  of Industrial Engineering Computations 7.1 (2016): 19-34.
 
- [2] Yu, Jiang-Tao, et al. "Jaya algorithm with self-adaptive multi-population
+ [2] Rao, R. Venkata, and Ankit Saroj. "A self-adaptive multi-population based
+ Jaya algorithm for engineering optimization." Swarm and Evolutionary computation
+ 37 (2017): 1-26.
+
+ [3] Yu, Jiang-Tao, et al. "Jaya algorithm with self-adaptive multi-population
  and Lévy flights for solving economic load dispatch problems." IEEE Access 7
  (2019): 21372-21384.
+
+ [4] Ravipudi, Jaya Lakshmi, and Mary Neebha. "Synthesis of linear antenna arrays
+ using jaya, self-adaptive jaya and chaotic jaya algorithms." AEU-International
+ Journal of Electronics and Communications 92 (2018): 54-63.
  */
 
 #ifndef MULTIVARIATE_JAYA_H_
@@ -41,35 +49,28 @@
 
 class JayaSearch: public MultivariateOptimizer {
 
-private:
-	int _n, _it, _fev, _k;
-	double _pbest, _best, _sigmau;
-	multivariate_problem _f;
-	point _bestX;
-	std::vector<int> _len;
-	std::vector<double> _lower, _upper, _tmp, _r1, _r2;
-	std::vector<point> _pool;
-
-	void divideSubpopulation();
-
-	void adaptK();
-
-	void evolve(int i, point &best, point &worst);
-
-	void randomizeR();
-
-	double sampleLevy();
+public:
+	enum jaya_mutation_method {
+		original, levy, tent_map, logistic
+	};
 
 protected:
 	bool _adapt_k;
-	int _np, _npmin, _mfev, _k0;
-	double _scale, _beta;
+	int _n, _fev, _k, _np, _npmin, _mfev, _k0, _nks, _kcheb;
+	double _pbest, _best,_fgbest, _sigmau, _scale, _beta, _temper, _stol,
+			_xchaos;
+	jaya_mutation_method _mutation;
+	multivariate_problem _f;
+	std::vector<int> _len;
+	std::vector<double> _lower, _upper, _tmp, _bestx, _perfindex, _pstrat;
+	std::vector<point> _pool;
 
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	JayaSearch(int mfev, int np, int npmin, int k0 = 2, double scale = 0.01,
-			double beta = 1.5, bool adapt = true);
+	JayaSearch(int mfev, double tol, int np, int npmin, bool adapt = true,
+			int k0 = 2, jaya_mutation_method mutation = logistic,
+			double scale = 0.01, double beta = 1.5, int kcheb=2, double temper = 10.);
 
 	void init(const multivariate_problem &f, const double *guess);
 
@@ -77,6 +78,19 @@ public:
 
 	multivariate_solution optimize(const multivariate_problem &f,
 			const double *guess);
+
+private:
+	void divideSubpopulation();
+
+	void adaptK();
+
+	void evolve(int i, point &best, point &worst);
+
+	double sampleLevy();
+
+	double sampleTentMap();
+
+	double sampleLogistic();
 };
 
 #endif /* MULTIVARIATE_JAYA_H_ */

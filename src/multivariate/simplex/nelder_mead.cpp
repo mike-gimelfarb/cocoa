@@ -11,18 +11,22 @@
  ================================================================
  REFERENCES:
 
- Nelder, John A.; R. Mead (1965). "A simplex method for function minimization".
+ [1] Nelder, John A.; R. Mead (1965). "A simplex method for function minimization".
  Computer Journal. 7 (4): 308–313. doi:10.1093/comjnl/7.4.308
 
- O'Neill, R. (1971). Algorithm AS 47: Function Minimization Using a Simplex Procedure.
+ [2] O'Neill, R. (1971). Algorithm AS 47: Function Minimization Using a Simplex Procedure.
  Journal of the Royal Statistical Society. Series C (Applied Statistics), 20(3), 338-345.
  doi:10.2307/2346772
 
- Gao, Fuchang & Han, Lixing. (2012). Implementing the Nelder-Mead simplex algorithm
+ [3] Gao, Fuchang & Han, Lixing. (2012). Implementing the Nelder-Mead simplex algorithm
  with adaptive parameters. Computational Optimization and Applications. 51. 259-277.
  10.1007/s10589-010-9329-3.
+
+ [4] Mehta, V. K. "Improved Nelder–Mead algorithm in high dimensions with adaptive parameters
+ based on Chebyshev spacing points." Engineering Optimization 52.10 (2020): 1814-1828.
  */
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
 #include <iostream>
@@ -34,43 +38,34 @@
 
 using Random = effolkronium::random_static;
 
-NelderMead::NelderMead(int mfev, double tol, double rad0, int checkev,
-		simplex_initializer minit, bool adapt) {
+NelderMead::NelderMead(int mfev, double tol, double rad0,
+		simplex_initializer minit, parameter_initializer pinit, int checkev,
+		double eps) {
+	_mfev = mfev;
 	_tol = tol;
 	_rad = rad0;
-	_checkev = checkev;
-	_mfev = mfev;
-	_adapt = adapt;
 	_minit = minit;
+	_pinit = pinit;
+	_checkev = checkev;
+	_eps = eps;
 }
 
 void NelderMead::init(const multivariate_problem &f, const double *guess) {
 
 	// problem initialization
 	if (f._hasc || f._hasbbc) {
-		std::cerr << "Warning [NelderMead]: problem constraints will be ignored."
+		std::cerr
+				<< "Warning [NelderMead]: problem constraints will be ignored."
 				<< std::endl;
 	}
 	_f = f;
 	_n = f._n;
-	_start = std::vector<double>(_n);
+	_start = std::vector<double>(guess, guess + _n);
 	_lower = std::vector<double>(f._lower, f._lower + _n);
 	_upper = std::vector<double>(f._upper, f._upper + _n);
-	std::copy(guess, guess + _n, _start.begin());
-	_eps = 1e-3;
 
 	// parameters
-	if (_adapt) {
-		_ccoef = 0.75 - 0.5 / _n;
-		_ecoef = 1. + 2. / _n;
-		_rcoef = 1.;
-		_scoef = 1. - 1. / _n;
-	} else {
-		_ccoef = 0.5;
-		_ecoef = 2.0;
-		_rcoef = 1.0;
-		_scoef = 0.5;
-	}
+	initParameters();
 
 	// storage
 	_p.clear();
@@ -300,7 +295,7 @@ int NelderMead::nelmin() {
 
 void NelderMead::initSimplex() {
 	switch (_minit) {
-	case original: {
+	case coordinate_axis: {
 		std::copy(_start.begin(), _start.begin() + _n, _p[_n].begin());
 		for (int j = 1; j <= _n; j++) {
 			const double x = _start[j - 1];
@@ -351,6 +346,40 @@ void NelderMead::initSimplex() {
 				_p[i - 1][j - 1] = Random::get(_lower[j - 1], _upper[j - 1]);
 			}
 		}
+	}
+	}
+}
+
+void NelderMead::initParameters() {
+	switch (_pinit) {
+	case original: {
+		_ccoef = 0.5;
+		_ecoef = 2.0;
+		_rcoef = 1.0;
+		_scoef = 0.5;
+		break;
+	}
+	case gao2010: {
+		_ccoef = 0.75 - 0.5 / _n;
+		_ecoef = 1. + 2. / _n;
+		_rcoef = 1.;
+		_scoef = 1. - 1. / _n;
+		break;
+	}
+	case mehta2019_crude: {
+		_ccoef = 1. + std::cos((_n + 3. + (_n % 2)) * M_PI / (2. * _n));
+		_ecoef = 1. + std::cos((_n - 3. - (_n % 2)) * M_PI / (2. * _n));
+		_rcoef = 1. + std::cos((_n - 1. - (_n % 2)) * M_PI / (2. * _n));
+		_scoef = 1. + std::cos((_n + 1. + (_n % 2)) * M_PI / (2. * _n));
+		break;
+	}
+	case mehta2019_refined: {
+		const int nc = 2 * (9 + (_n - 1) / 5);
+		_ccoef = 1. + std::cos((nc + 5.) * M_PI / (2. * nc));
+		_ecoef = 1. + std::cos((nc - 3.) * M_PI / (2. * nc));
+		_rcoef = 1. + std::cos((nc - 1.) * M_PI / (2. * nc));
+		_scoef = 1. + std::cos((nc + 3.) * M_PI / (2. * nc));
+		break;
 	}
 	}
 }

@@ -21,6 +21,8 @@
  */
 
 #include <algorithm>
+#include <cmath>
+#include <numeric>
 
 #include "blas.h"
 
@@ -149,3 +151,35 @@ void dscal1(int n, double da, double *dx, int idx, double *dy, int idy) {
 	}
 }
 
+double dnrm2(int n, double *x) {
+	double absxi;
+	int i, ix;
+	double norm, scale, ssq;
+	if (n < 1) {
+		norm = 0.;
+	} else if (n == 1) {
+		norm = std::fabs(x[0]);
+	} else {
+		scale = 0.;
+		ssq = 1.;
+		ix = 0;
+		for (i = 0; i < n; i++) {
+			if (x[ix] != 0.) {
+				absxi = std::fabs(x[ix]);
+				if (scale < absxi) {
+					ssq = 1. + ssq * (scale / absxi) * (scale / absxi);
+					scale = absxi;
+				} else {
+					ssq = ssq + (absxi / scale) * (absxi / scale);
+				}
+			}
+			ix++;
+		}
+		norm = scale * std::sqrt(ssq);
+	}
+	return norm;
+}
+
+double ddot(int n, double *dx, int idx, double *dy, int idy) {
+	return std::inner_product(dx + idx - 1, dx + idx - 1 + n, dy + idy - 1, 0.);
+}

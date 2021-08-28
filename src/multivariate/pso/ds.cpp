@@ -40,6 +40,8 @@ DSSearch::DSSearch(int mfev, double tol, double stol, int np) {
 }
 
 void DSSearch::init(const multivariate_problem &f, const double *guess) {
+
+	// define problem
 	if (f._hasc || f._hasbbc) {
 		std::cerr << "Warning [DS]: problem constraints will be ignored."
 				<< std::endl;
@@ -48,6 +50,8 @@ void DSSearch::init(const multivariate_problem &f, const double *guess) {
 	_n = f._n;
 	_lower = std::vector<double>(f._lower, f._lower + _n);
 	_upper = std::vector<double>(f._upper, f._upper + _n);
+
+	// define parameters
 	_fev = 0;
 	_jind = std::vector<int>(_np);
 	_methods = std::vector<int>(4);

@@ -22,47 +22,47 @@
  ================================================================
  REFERENCES:
 
- [1] Qin, A. Kai, Vicky Ling Huang, and Ponnuthurai N. Suganthan.
- "Differential evolution algorithm with strategy adaptation for global
- numerical optimization." IEEE transactions on Evolutionary Computation 13.2
- (2009): 398-417.
+ [1] Zhang, Jingqiao, and Arthur C. Sanderson. "JADE: Self-adaptive differential
+ evolution with fast and reliable convergence performance." 2007 IEEE congress
+ on evolutionary computation. IEEE, 2007.
 
- [2] Huang, Vicky Ling, A. Kai Qin, and Ponnuthurai N. Suganthan.
- "Self-adaptive differential evolution algorithm for constrained
- real-parameter optimization." Evolutionary Computation, 2006. CEC 2006. IEEE
- Congress on. IEEE, 2006. Yang, Zhenyu, Ke Tang, and Xin Yao.
+ [2] Zhang, Jingqiao, and Arthur C. Sanderson. "JADE: adaptive differential
+ evolution with optional external archive." IEEE Transactions on evolutionary
+ computation 13.5 (2009): 945-958.
 
- [3] "Self-adaptive differential evolution with neighborhood search."
- Evolutionary Computation, 2008. CEC 2008.(IEEE World Congress on
- Computational Intelligence). IEEE Congress on. IEEE, 2008.
+ [3] Li, Jie, et al. "Power mean based crossover rate adaptive differential
+ evolution." International Conference on Artificial Intelligence and Computational
+ Intelligence. Springer, Berlin, Heidelberg, 2011.
+
+ [4] Gong, Wenyin, Zhihua Cai, and Yang Wang. "Repairing the crossover rate
+ in adaptive differential evolution." Applied Soft Computing 15 (2014): 149-168.
  */
 
-#ifndef MULTIVARIATE_SADE_H_
-#define MULTIVARIATE_SADE_H_
+#ifndef MULTIVARIATE_DE_JADE_H_
+#define MULTIVARIATE_DE_JADE_H_
 
 #include <memory>
 #include <random>
 
 #include "../multivariate.h"
 
-class SadeSearch: public MultivariateOptimizer {
+class JadeSearch: public MultivariateOptimizer {
 
 protected:
-	int _n, _fev, _gen, _ihist, _fns0, _fnf0, _fns1, _fnf1;
-	double _crm, _fp;
+	bool _archive, _repaircr;
+	int _n, _np, _fev, _mfev;
+	double _mucr, _muf, _pelite, _c, _tol, _sigma;
 	multivariate_problem _f;
-	std::vector<int> _ns, _nf, _ibw;
-	std::vector<double> _p, _cr, _crrec, _dfit, _xtrii, _lower, _upper;
-	std::vector<point> _pool;
-
-	int _np, _lp, _cp, _k, _mfev;
-	double _tol, _stol, _scr, _sf, _mu;
+	std::vector<double> _lower, _upper, _work, _scr, _sf;
+	std::vector<std::vector<double>> _arch;
+	std::vector<point> _swarm;
 
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	SadeSearch(int mfev, double tol, double stol, int np, int lp = 25, int cp =
-			5);
+	JadeSearch(int mfev, int np, double tol, bool archive = true,
+			bool repaircr = true, double pelite = 0.05, double cdamp = 0.1,
+			double sigma = 0.07);
 
 	void init(const multivariate_problem &f, const double *guess);
 
@@ -72,11 +72,14 @@ public:
 			const double *guess);
 
 private:
-	void trial(int i, int ki, double f, double cr, int ib);
+	double mutate(double *x, double *best, double *xr1, double *xr2,
+			double *out, int n, double F, double CR);
 
-	void rank();
+	double meanPow(double *values, int n, int p);
 
-	int roulette();
+	double std(double *values, int n);
+
+	double sampleCauchy();
 };
 
-#endif /* MULTIVARIATE_SADE_H_ */
+#endif /* MULTIVARIATE_DE_JADE_H_ */

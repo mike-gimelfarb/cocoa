@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020
+ Copyright (c) 2020 Mike Gimelfarb
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the > "Software"), to
@@ -18,24 +18,52 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+ ================================================================
+ REFERENCES:
+
+ [1] Kaelo, P., and M. M. Ali. "Some variants of the controlled random search
+ algorithm for global optimization." Journal of optimization theory and
+ applications 130.2 (2006): 253-264.
  */
 
-#ifndef BLAS_H_
-#define BLAS_H_
+#ifndef MULTIVARIATE_CRS_CRS2_H_
+#define MULTIVARIATE_CRS_CRS2_H_
 
-void dxpym(int n, double *dx, int idx, double *dy, int idy);
+#include <random>
 
-void daxpym(int n, double da, double *dx, int idx, double *dy, int idy);
+#include "../multivariate.h"
 
-void daxpy1(int n, double da, double *dx, int idx, double *dy, int idy,
-		double *dz, int idz);
+class Crs2Search: public MultivariateOptimizer {
 
-void dscalm(int n, double da, double *dx, int idx);
+protected:
+	int _n, _np, _fev, _mfev;
+	double _tol;
+	multivariate_problem _f;
+	std::vector<int> _indices;
+	std::vector<double> _lower, _upper, _work;
+	std::vector<point> _points;
 
-void dscal1(int n, double da, double *dx, int idx, double *dy, int idy);
+public:
+	Crs2Search(int mfev, int np, double tol);
 
-double dnrm2(int n, double *x);
+	void init(const multivariate_problem &f, const double *guess);
 
-double ddot(int n, double *dx, int idx, double *dy, int idy);
+	void iterate();
 
-#endif /* BLAS_H_ */
+	multivariate_solution optimize(const multivariate_problem &f,
+			const double *guess);
+
+protected:
+	int crs2iterate();
+
+	void rank();
+
+	bool stop();
+
+	bool inBounds(double *p);
+
+	int replace(int iold, double *x, double fx);
+};
+
+#endif /* MULTIVARIATE_CRS_CRS2_H_ */

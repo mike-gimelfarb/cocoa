@@ -22,50 +22,49 @@
  ================================================================
  REFERENCES:
 
- [1] Zervoudakis, Konstantinos, and Stelios Tsafarakis. "A mayfly optimization algorithm."
- Computers & Industrial Engineering 145 (2020): 106559.
+ [1] Yang, Zhenyu, Ke Tang, and Xin Yao. "Self-adaptive differential evolution
+ with neighborhood search." 2008 IEEE congress on evolutionary computation
+ (IEEE World Congress on Computational Intelligence). IEEE, 2008.
+
+ [2] Gong, Wenyin, Zhihua Cai, and Yang Wang. "Repairing the crossover rate in
+ adaptive differential evolution." Applied Soft Computing 15 (2014): 149-168.
  */
 
-#ifndef MULTIVARIATE_MAYFLY_H_
-#define MULTIVARIATE_MAYFLY_H_
+#ifndef MULTIVARIATE_DE_SANSDE_H_
+#define MULTIVARIATE_DE_SANSDE_H_
 
 #include <memory>
 #include <random>
 
 #include "../multivariate.h"
 
-class MayflySearch: public MultivariateOptimizer {
+class SaNSDESearch: public MultivariateOptimizer {
 
-	struct mayfly {
+	struct sansde_point {
 
-		std::vector<double> _x, _v, _bx;
-		double _f, _bf;
+		std::vector<double> _x;
+		double _f, _cr;
 
-		static bool compare_fitness(const std::shared_ptr<mayfly> &x,
-				const std::shared_ptr<mayfly> &y) {
-			return x->_f < y->_f;
+		static bool compare_fitness(const sansde_point &x,
+				const sansde_point &y) {
+			return x._f < y._f;
 		}
 	};
 
 protected:
-	bool _pgb;
-	int _n, _np, _fev, _mfev, _nmut, _it, _itmax;
-	double _a1, _a2, _a3, _beta, _dance0, _ddamp, _dance, _fl0, _fldamp, _fl,
-			_gmin, _gmax, _g, _fbest, _vdamp, _sigma, _mu, _pmut, _l;
+	bool _repaircr;
+	int _n, _np, _it, _fev, _mfev, _ncrref, _npup, _ncrup;
+	double _tol, _p, _fp, _crrec, _crdeltaf, _crm;
 	multivariate_problem _f;
-	std::vector<int> _indices;
-	std::vector<double> _lower, _upper, _best;
-	std::vector<std::shared_ptr<mayfly>> _males, _females, _offspring, _mutated,
-			_temp;
+	std::vector<int> _pns, _pnf;
+	std::vector<double> _lower, _upper, _work, _fpns, _fpnf;
+	std::vector<sansde_point> _swarm;
 
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	MayflySearch(int np, int mfev, double a1 = 1., double a2 = 1.5, double a3 =
-			1.5, double beta = 2., double dance = 5., double ddamp = 0.8,
-			double fl = 1., double fldamp = 0.99, double gmin = 0.8,
-			double gmax = 0.8, double vdamp = 0.1, double sigma=0.1, double pmutdim = 0.01,
-			double pmutnp = 0.05, double l = 0.95, bool pgb = false);
+	SaNSDESearch(int mfev, int np, double tol, bool repaircr = true, int crref =
+			5, int pupdate = 50, int crupdate = 25);
 
 	void init(const multivariate_problem &f, const double *guess);
 
@@ -75,15 +74,10 @@ public:
 			const double *guess);
 
 private:
-	void updateMaleVelocity(mayfly &fly);
+	double mutate(double *x, double *best, double *xr1, double *xr2,
+			double *xr3, double *out, int n, double F, double CR, int strat);
 
-	void updateFemaleVelocity(mayfly &female, mayfly &male);
-
-	void updatePosition(mayfly &fly);
-
-	void crossover(mayfly &par1, mayfly &par2, mayfly &off1, mayfly &off2);
-
-	bool mutation(mayfly &par, mayfly &off);
+	double sampleCauchy();
 };
 
-#endif /* MULTIVARIATE_EVOL_MAYFLY_H_ */
+#endif /* MULTIVARIATE_DE_SANSDE_H_ */

@@ -55,6 +55,10 @@ SLPSOSearch::SLPSOSearch(int mfev, double stol, int np, double omegamin,
 void SLPSOSearch::init(const multivariate_problem &f, const double *guess) {
 
 	// define problem
+	if (f._hasc || f._hasbbc) {
+		std::cerr << "Warning [SLPSO]: problem constraints will be ignored."
+				<< std::endl;
+	}
 	_f = f;
 	_n = f._n;
 	_lower = std::vector<double>(_f._lower, _f._lower + _n);

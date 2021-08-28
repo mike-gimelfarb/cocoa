@@ -186,7 +186,7 @@ protected:
 	std::vector<harmony> _hm;
 
 public:
-	HarmonySearch(int mfev, int hms, int hpi = 5, HMCR harmony = PSFHS_HMCR(),
+	HarmonySearch(int mfev, int hms, int hpi = 1, HMCR harmony = PSFHS_HMCR(),
 			PAR pitch = PSFHS_PAR(), PAStrategy pstrat = IHS_PA());
 
 	void init(const multivariate_problem &f, const double *guess);
