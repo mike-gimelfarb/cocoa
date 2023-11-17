@@ -30,6 +30,7 @@
 #include <cmath>
 #include <numeric>
 
+#include "../../blas.h"
 #include "../../random.hpp"
 
 #include "sep_cmaes.h"
@@ -101,8 +102,7 @@ void SepCmaes::updateDistribution() {
 	}
 
 	// compute hsig
-	const double pslen = std::sqrt(
-			std::inner_product(_ps.begin(), _ps.end(), _ps.begin(), 0.));
+	const double pslen = dnrm2(_n, &_ps[0]);
 	const double denom = 1. - std::pow(1. - _cs, 2. * _fev / _lambda);
 	const int hsig =
 			pslen / std::sqrt(denom) / _chi < 1.4 + 2. / (_n + 1.) ? 1 : 0;

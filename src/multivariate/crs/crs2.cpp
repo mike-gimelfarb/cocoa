@@ -96,6 +96,12 @@ multivariate_solution Crs2Search::optimize(const multivariate_problem &f,
 	return {_points[0]._x, _fev, converged};
 }
 
+/* =============================================================
+ *
+ * 				UPDATING POINT SET SUBROUTINES
+ *
+ * =============================================================
+ */
 int Crs2Search::crs2iterate() {
 
 	// select point generation procedure
@@ -143,21 +149,6 @@ int Crs2Search::crs2iterate() {
 	}
 }
 
-bool Crs2Search::stop() {
-	double fl = _points[0]._f;
-	double fh = _points[_np - 1]._f;
-	return std::fabs(fl - fh) < _tol;
-}
-
-bool Crs2Search::inBounds(double *p) {
-	for (int d = 0; d < _n; d++) {
-		if (p[d] < _lower[d] || p[d] > _upper[d]) {
-			return false;
-		}
-	}
-	return true;
-}
-
 int Crs2Search::replace(int iold, double *x, double fx) {
 	auto &old = _points[iold];
 	std::copy(x, x + _n, old._x.begin());
@@ -172,4 +163,25 @@ int Crs2Search::replace(int iold, double *x, double fx) {
 				_points.begin() + inew + 1);
 	}
 	return inew;
+}
+
+/* =============================================================
+ *
+ * 			CONVERGENCE AND BOUNDS CHECKING SUBROUTINES
+ *
+ * =============================================================
+ */
+bool Crs2Search::stop() {
+	double fl = _points[0]._f;
+	double fh = _points[_np - 1]._f;
+	return std::fabs(fl - fh) < _tol;
+}
+
+bool Crs2Search::inBounds(double *p) {
+	for (int d = 0; d < _n; d++) {
+		if (p[d] < _lower[d] || p[d] > _upper[d]) {
+			return false;
+		}
+	}
+	return true;
 }

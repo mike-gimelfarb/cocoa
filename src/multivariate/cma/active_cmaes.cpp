@@ -35,6 +35,8 @@
 #include <numeric>
 #include <iostream>
 
+#include "../../blas.h"
+
 #include "active_cmaes.h"
 
 void ActiveCmaes::init(const multivariate_problem &f, const double *guess) {
@@ -93,8 +95,7 @@ void ActiveCmaes::updateDistribution() {
 	}
 
 	// compute hsig
-	const double pslen = std::sqrt(
-			std::inner_product(_ps.begin(), _ps.end(), _ps.begin(), 0.));
+	const double pslen = dnrm2(_n, &_ps[0]);
 	const double denom = 1. - std::pow(1. - _cs, 2. * _fev / _lambda);
 	int hsig;
 	if (pslen / std::sqrt(denom) / _chi < 1.4 + 2. / (_n + 1.)) {

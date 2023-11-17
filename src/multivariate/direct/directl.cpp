@@ -62,8 +62,8 @@ void Directl::init(const multivariate_problem &f, const double *guess) {
 	_fglobal = -1e100;
 	_fglper = 0.;
 	_jones = _method;
-	_maxdiv = 12000;
-	_maxdeep = 2400;
+	_maxdiv = 24000;
+	_maxdeep = 4800;
 	_lmaxdim = 64;
 	_maxf = _mfev - 21;
 

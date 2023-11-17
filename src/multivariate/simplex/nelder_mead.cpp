@@ -232,6 +232,12 @@ multivariate_solution NelderMead::optimize(const multivariate_problem &f,
 	return {_xmin, _icount, ifault == 0};
 }
 
+/* =============================================================
+ *
+ * 				SIMPLEX RESTART SUBROUTINES
+ *
+ * =============================================================
+ */
 int NelderMead::nelmin() {
 
 	// Initial or restarted loop.
@@ -293,6 +299,12 @@ int NelderMead::nelmin() {
 	}
 }
 
+/* =============================================================
+ *
+ * 				 INITIALIZATION SUBROUTINES
+ *
+ * =============================================================
+ */
 void NelderMead::initSimplex() {
 	switch (_minit) {
 	case coordinate_axis: {

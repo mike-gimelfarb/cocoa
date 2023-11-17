@@ -34,6 +34,7 @@
 #include <stdexcept>
 #include <numeric>
 
+#include "../../blas.h"
 #include "../../random.hpp"
 
 #include "ampttm.h"
@@ -212,10 +213,8 @@ multivariate_solution AMPTTM::solveProjectionProblem(const double *guess) {
 	for (int i = 0; i < _n; i++) {
 		_temp[i] = Random::get(-1., 1.);
 	}
-	const double snorm = std::sqrt(
-			std::inner_product(guess, guess + _n, guess, 0.));
-	const double rnorm = std::sqrt(
-			std::inner_product(_temp.begin(), _temp.end(), _temp.begin(), 0.));
+	const double snorm = dnrm2(_n, guess);
+	const double rnorm = dnrm2(_n, &_temp[0]);
 	double beta = _eps2 * snorm / rnorm;
 	if (beta < 1e-8) {
 		beta = _eps2;

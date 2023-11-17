@@ -201,9 +201,7 @@ void Hees::samplePopulation() {
 		for (int j = 0; j < _n; j++) {
 			_b[i][j] = Random::get(_Z);
 		}
-		_norms[i] = std::sqrt(
-				std::inner_product(_b[i].begin(), _b[i].end(), _b[i].begin(),
-						0.));
+		_norms[i] = dnrm2(_n, &(_b[i])[0]);
 	}
 
 	// Gram-Schmidt procedure to orthonormalize samples
@@ -216,9 +214,7 @@ void Hees::samplePopulation() {
 						vij.begin(), 0.);
 				daxpym(_n, -dt, &vkj[0], 1, &vij[0], 1);
 			}
-			const double nij = std::sqrt(
-					std::inner_product(vij.begin(), vij.end(), vij.begin(),
-							0.));
+			const double nij = dnrm2(_n, &vij[0]);
 			dscalm(_n, 1. / nij, &vij[0], 1);
 		}
 	}
@@ -358,8 +354,7 @@ void Hees::stepSizeUpdate() {
 
 	// update step size sigma
 	_gs = std::pow(1. - _cs, 2.) * _gs + _cs * (2. - _cs);
-	const double psn = std::sqrt(
-			std::inner_product(_ps.begin(), _ps.end(), _ps.begin(), 0.));
+	const double psn = dnrm2(_n, &_ps[0]);
 	const double s = psn / _chi - std::sqrt(_gs);
 	_sigma *= std::exp(std::min(1., _cs / _ds * s));
 }

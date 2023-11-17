@@ -38,6 +38,7 @@
 #include <numeric>
 #include <iostream>
 
+#include "../../blas.h"
 #include "../../random.hpp"
 
 #include "cso.h"
@@ -172,9 +173,7 @@ multivariate_solution CSOSearch::optimize(const multivariate_problem &f,
 		double mean = 0.;
 		double m2 = 0.;
 		for (const auto &pt : _swarm) {
-			const double x = std::sqrt(
-					std::inner_product(pt._x.begin(), pt._x.end(),
-							pt._x.begin(), 0.));
+			const double x = dnrm2(_n, &pt._x[0]);
 			count++;
 			const double delta = x - mean;
 			mean += delta / count;

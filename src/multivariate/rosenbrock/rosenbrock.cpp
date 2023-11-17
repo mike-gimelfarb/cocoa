@@ -119,9 +119,7 @@ void Rosenbrock::iterate() {
 
 		// EVENTUALLY DO ONE MORE LINE SEARCH...
 		daxpy1(_n, -1., &_x[0][0], 1, &_x[_n][0], 1, &_temp[0], 1);
-		const double zn = std::sqrt(
-				std::inner_product(_temp.begin(), _temp.begin() + _n,
-						_temp.begin(), 0.));
+		const double zn = dnrm2(_n, &_temp[0]);
 		if (zn > 0.) {
 			dscal1(_n, 1. / zn, &_temp[0], 1, &_v[_n + 1][0], 1);
 			_i = _n + 1;

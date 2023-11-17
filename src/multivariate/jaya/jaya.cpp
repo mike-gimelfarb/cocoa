@@ -47,6 +47,7 @@
 #include <numeric>
 #include <stdexcept>
 
+#include "../../blas.h"
 #include "../../random.hpp"
 
 #include "jaya.h"
@@ -189,9 +190,7 @@ multivariate_solution JayaSearch::optimize(const multivariate_problem &f,
 		double mean = 0.;
 		double m2 = 0.;
 		for (const auto &pt : _pool) {
-			const double x = std::sqrt(
-					std::inner_product(pt._x.begin(), pt._x.end(),
-							pt._x.begin(), 0.));
+			const double x = dnrm2(_n, &(pt._x)[0]);
 			count++;
 			const double delta = x - mean;
 			mean += delta / count;
@@ -208,6 +207,12 @@ multivariate_solution JayaSearch::optimize(const multivariate_problem &f,
 	return {_bestx, _fev, converged};
 }
 
+/* =============================================================
+ *
+ * 				PARAMETER ADAPTATION SUBROUTINES
+ *
+ * =============================================================
+ */
 void JayaSearch::divideSubpopulation() {
 
 	// allocate N_subpop = NP // K elements at random to each sub-population
@@ -237,6 +242,12 @@ void JayaSearch::adaptK() {
 	_k = _nks;
 }
 
+/* =============================================================
+ *
+ * 					SWARM UPDATE SUBROUTINES
+ *
+ * =============================================================
+ */
 void JayaSearch::evolve(int i, point &best, point &worst) {
 
 	// evolve the position
@@ -317,6 +328,12 @@ void JayaSearch::evolve(int i, point &best, point &worst) {
 	}
 }
 
+/* =============================================================
+ *
+ * 					SAMPLING SUBROUTINES
+ *
+ * =============================================================
+ */
 double JayaSearch::sampleLevy() {
 
 	// Mantegna's algorithm

@@ -74,10 +74,9 @@ void IsoMADSMesh::update(MADS *parent) {
 		for (int i = 0; i < n; i++) {
 			_u[i] = Random::get(_Z);
 		}
-		const double unorm2 = std::sqrt(
-				std::inner_product(_u.begin(), _u.end(), _u.begin(), 0.));
+		const double unorm2 = dnrm2(n, &_u[0]);
 		dscalm(n, 1. / unorm2, &_u[0], 1);
-		if (unorm2 > 1e-8) {
+		if (unorm2 != 0) {
 			break;
 		}
 	}
@@ -91,7 +90,7 @@ void IsoMADSMesh::update(MADS *parent) {
 			} else {
 				h = -2. * _u[l] * _u[j];
 			}
-			const double arg = _deltap[j] * h / _deltam[j];
+			const double arg = _deltap[j] / _deltam[j] * h;
 			_D[l][j] = static_cast<long long int>(std::round(arg));
 			_D[l + n][j] = -_D[l][j];
 		}
@@ -151,6 +150,6 @@ void IsoMADSMesh::computeTrial(MADS *parent, int idx, double *x0, double *out) {
 }
 
 bool IsoMADSMesh::converged(MADS *parent) {
-	const double deltammin = *std::min_element(_deltam.begin(), _deltam.end());
-	return (deltammin < parent->_tol);
+	const double deltamax = *std::min_element(_deltap.begin(), _deltap.end());
+	return (deltamax <= parent->_tol);
 }

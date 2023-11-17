@@ -57,8 +57,6 @@ public:
 protected:
 	int crs2iterate();
 
-	void rank();
-
 	bool stop();
 
 	bool inBounds(double *p);

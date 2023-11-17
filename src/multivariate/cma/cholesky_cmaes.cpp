@@ -30,9 +30,10 @@
 #include <cmath>
 #include <numeric>
 
-#include "cholesky_cmaes.h"
-
+#include "../../blas.h"
 #include "../../random.hpp"
+
+#include "cholesky_cmaes.h"
 
 using Random = effolkronium::random_static;
 
@@ -147,8 +148,7 @@ bool CholeskyCmaes::converged() {
 	double mean = 0.;
 	double m2 = 0.;
 	for (const auto &pt : _arx) {
-		const double x = std::sqrt(
-				std::inner_product(pt.begin(), pt.end(), pt.begin(), 0.));
+		const double x = dnrm2(_n, &pt[0]);
 		count++;
 		const double delta = x - mean;
 		mean += delta / count;

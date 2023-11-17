@@ -86,7 +86,7 @@ void BaseCmaes::init(const multivariate_problem &f, const double *guess) {
 	_ybw = std::vector<double>(4, 0.);
 	_fitness.clear();
 	for (int i = 0; i < _lambda; i++) {
-		const auto &index = cmaes_index { 0, 0. };
+		const cmaes_index index { 0, 0. };
 		_fitness.push_back(std::move(index));
 	}
 
@@ -100,10 +100,9 @@ void BaseCmaes::init(const multivariate_problem &f, const double *guess) {
 	dscalm(_mu, 1. / sum, &_weights[0], 1);
 
 	// initialize variance-effectiveness of sum w_i x_i
-	const double lenw = std::sqrt(
-			std::inner_product(_weights.begin(), _weights.end(),
-					_weights.begin(), 0.));
-	_mueff = 1. / (lenw * lenw);
+	const double lenw = std::inner_product(_weights.begin(), _weights.end(),
+			_weights.begin(), 0.);
+	_mueff = 1. / lenw;
 
 	// initialize strategy parameter settings
 	_chi = std::sqrt(_n) * (1. - 1. / (4. * _n) + 1. / (21. * _n * _n));
@@ -173,8 +172,7 @@ multivariate_solution BaseCmaes::optimize(const multivariate_problem &f,
 void BaseCmaes::updateSigma() {
 
 	// basic sigma update
-	const double pslen = std::sqrt(
-			std::inner_product(_ps.begin(), _ps.end(), _ps.begin(), 0.));
+	const double pslen = dnrm2(_n, &_ps[0]);
 	_sigma *= std::exp(std::min(1., (_cs / _damps) * (pslen / _chi - 1.)));
 
 	// Adjust step size in case of equal function values (flat fitness)

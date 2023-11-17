@@ -101,7 +101,7 @@ struct HS_PAR: PAR {
 
 struct PSFHS_PAR: PAR {
 	PSFHS_PAR(double parinit = 0.5, double parmin = 0.01, double parmax = 0.99,
-			int warm = 10, bool local = false) {
+			int warm = 5, bool local = true) {
 		_parinit = parinit;
 		_parmin = parmin;
 		_parmax = parmax;

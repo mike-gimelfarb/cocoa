@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <iostream>
 
+#include "../../blas.h"
 #include "../../random.hpp"
 
 #include "slpso.h"
@@ -163,9 +164,7 @@ multivariate_solution SLPSOSearch::optimize(const multivariate_problem &f,
 		double mean = 0.;
 		double m2 = 0.;
 		for (const auto &k : _swarm) {
-			const double x = std::sqrt(
-					std::inner_product(k._x.begin(), k._x.end(), k._x.begin(),
-							0.));
+			const double x = dnrm2(_n, &k._x[0]);
 			count++;
 			const double delta = x - mean;
 			mean += delta / count;

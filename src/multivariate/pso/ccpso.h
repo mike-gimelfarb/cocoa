@@ -73,19 +73,19 @@ public:
 			const double *guess);
 
 private:
+	double evaluate(int i, double *z);
+
 	void randomizeComponents();
 
 	void updateSwarm();
 
 	void updatePosition();
 
-	double evaluate(int i, double *z);
+	void localSearch();
 
 	double sampleCauchy();
 
 	int sampleSubsetIndex();
-
-	void localSearch();
 };
 
 #endif /* MULTIVARIATE_PSO_CCPSO_H_ */

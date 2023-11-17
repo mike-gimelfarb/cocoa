@@ -190,6 +190,12 @@ multivariate_solution ACD::optimize(const multivariate_problem &f,
 	return {_xbest, _fev, conv};
 }
 
+/* =============================================================
+ *
+ * 				CONVERGENCE TEST SUBROUTINES
+ *
+ * =============================================================
+ */
 bool ACD::converged() {
 
 	// convergence in history of f values
@@ -216,6 +222,12 @@ bool ACD::converged() {
 	return false;
 }
 
+/* =============================================================
+ *
+ * 				ADAPTIVE ENCODING SUBROUTINES
+ *
+ * =============================================================
+ */
 void ACD::updateAE() {
 
 	// first iteration

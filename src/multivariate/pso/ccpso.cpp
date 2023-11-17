@@ -141,8 +141,7 @@ multivariate_solution CCPSOSearch::optimize(const multivariate_problem &f,
 		double mean = 0.;
 		double m2 = 0.;
 		for (const auto &pt : _X) {
-			const double x = std::sqrt(
-					std::inner_product(pt.begin(), pt.end(), pt.begin(), 0.));
+			const double x = dnrm2(_n, &pt[0]);
 			count++;
 			const double delta = x - mean;
 			mean += delta / count;
@@ -159,6 +158,32 @@ multivariate_solution CCPSOSearch::optimize(const multivariate_problem &f,
 	return {_yhat, _fev, converged};
 }
 
+double CCPSOSearch::evaluate(int j, double *z) {
+
+	// change the context yhat component j by z
+	int k = 0;
+	for (const int d : _k[j]) {
+		_temp[d] = _yhat[d];
+		_yhat[d] = z[k];
+		k++;
+	}
+
+	// evaluate function at b
+	const double fit = _f._f(&_yhat[0]);
+	_fev++;
+
+	// restore the context vector
+	for (const int d : _k[j]) {
+		_yhat[d] = _temp[d];
+	}
+	return fit;
+}
+/* =============================================================
+ *
+ * 				PARTICLE EVOLUTION SUBROUTINES
+ *
+ * =============================================================
+ */
 void CCPSOSearch::randomizeComponents() {
 
 	// sample an s at random, the number of components per swarm
@@ -400,27 +425,12 @@ void CCPSOSearch::localSearch() {
 	}
 }
 
-double CCPSOSearch::evaluate(int j, double *z) {
-
-	// change the context yhat component j by z
-	int k = 0;
-	for (const int d : _k[j]) {
-		_temp[d] = _yhat[d];
-		_yhat[d] = z[k];
-		k++;
-	}
-
-	// evaluate function at b
-	const double fit = _f._f(&_yhat[0]);
-	_fev++;
-
-	// restore the context vector
-	for (const int d : _k[j]) {
-		_yhat[d] = _temp[d];
-	}
-	return fit;
-}
-
+/* =============================================================
+ *
+ * 					SAMPLING SUBROUTINES
+ *
+ * =============================================================
+ */
 double CCPSOSearch::sampleCauchy() {
 	return std::tan(M_PI * (Random::get(0., 1.) - 0.5));
 }

@@ -290,6 +290,12 @@ multivariate_solution MayflySearch::optimize(const multivariate_problem &f,
 	return {_best, _fev, false};
 }
 
+/* =============================================================
+ *
+ * 				FIREFLY MOVEMENT SUBROUTINES
+ *
+ * =============================================================
+ */
 void MayflySearch::updateMaleVelocity(mayfly &fly) {
 
 	// compute r_p and r_g
@@ -356,6 +362,12 @@ void MayflySearch::updatePosition(mayfly &fly) {
 	_fev++;
 }
 
+/* =============================================================
+ *
+ * 				OFFSPRING GENERATION SUBROUTINES
+ *
+ * =============================================================
+ */
 void MayflySearch::crossover(mayfly &par1, mayfly &par2, mayfly &off1,
 		mayfly &off2) {
 

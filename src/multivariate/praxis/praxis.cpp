@@ -154,9 +154,7 @@ int Praxis::praxis(int n, double *x, const multivariate &f) {
 						r = Random::get(0., 1.);
 						s = (0.1 * ldt + t2 * std::pow(10., kt)) * (r - 0.5);
 						z[j] = s;
-						for (i = 0; i < n; i++) {
-							x[i] += s * v[i + j * n];
-						}
+						daxpym(n, s, v, j * n + 1, x, 1);
 					}
 					fx = f(x);
 					nf++;
@@ -212,7 +210,7 @@ int Praxis::praxis(int n, double *x, const multivariate &f) {
 				x[i] = y[i];
 				y[i] = temp - y[i];
 			}
-			lds = std::sqrt(std::inner_product(y, y + n, y, 0.));
+			lds = dnrm2(n, y);
 
 			//  Discard direction V(*,kl).
 			if (small < lds) {
@@ -221,9 +219,7 @@ int Praxis::praxis(int n, double *x, const multivariate &f) {
 					d[j] = d[j - 1];
 				}
 				d[k - 1] = 0.;
-				for (i = 1; i <= n; i++) {
-					v[i - 1 + (k - 1) * n] = y[i - 1] / lds;
-				}
+				dscal1(n, 1. / lds, y, 1, v, (k - 1) * n + 1);
 
 				//  Minimize along the new "conjugate" direction V(*,k), which is
 				//  the normalized vector:  (new x) - (old x).
@@ -238,13 +234,13 @@ int Praxis::praxis(int n, double *x, const multivariate &f) {
 				if (lds <= 0.) {
 					lds = -lds;
 					for (i = 0; i < n; i++) {
-						v[i + (k - 1) * n] *= (-1.);
+						v[i + (k - 1) * n] = -v[i + (k - 1) * n];
 					}
 				}
 			}
 			ldt = ldfac * ldt;
 			ldt = std::max(ldt, lds);
-			t2 = std::sqrt(std::inner_product(x, x + n, x, 0.));
+			t2 = dnrm2(n, x);
 			t2 = m2 * t2 + t;
 
 			//  See whether the length of the step taken since starting the
@@ -273,9 +269,7 @@ int Praxis::praxis(int n, double *x, const multivariate &f) {
 		}
 		dn = *std::max_element(d, d + n);
 		for (j = 0; j < n; j++) {
-			for (i = 0; i < n; i++) {
-				v[i + j * n] *= (d[j] / dn);
-			}
+			dscalm(n, d[j] / dn, v, j * n + 1);
 		}
 
 		//  Scale the axes to try to reduce the condition number.
@@ -314,12 +308,9 @@ int Praxis::praxis(int n, double *x, const multivariate &f) {
 				}
 			}
 			for (j = 0; j < n; j++) {
-				s = std::inner_product(&v[j * n], &v[j * n] + n, &v[j * n], 0.);
-				s = std::sqrt(s);
+				s = dnrm2(n, &v[j * n]);
 				d[j] *= s;
-				for (i = 0; i < n; i++) {
-					v[i + j * n] /= s;
-				}
+				dscalm(n, 1. / s, v, j * n + 1);
 			}
 		}
 		for (i = 0; i < n; i++) {
@@ -362,9 +353,7 @@ double Praxis::flin(int n, int jsearch, double l, const multivariate &f,
 	if (0 <= jsearch) {
 
 		// The search is linear.
-		for (int i = 0; i < n; i++) {
-			t[i] = x[i] + l * v[i + jsearch * n];
-		}
+		daxpy1(n, l, v, jsearch * n + 1, x, 1, t, 1);
 	} else {
 
 		// The search is along a parabolic space curve.
@@ -622,7 +611,7 @@ void Praxis::minny(int n, int jsearch, int nits, double &d2, double &x1,
 		double h, double *v, double *q0, double *q1, int &nl, int &nf,
 		double dmin, double ldt, double &fx, double &qa, double &qb, double &qc,
 		double &qd0, double &qd1) {
-	int dz, i, k, ok;
+	int dz, k, ok;
 	double d1, f0, f2, fm, m2, m4, machep, s, sf1, small, sx1, t2, temp, x2, xm;
 
 	machep = std::numeric_limits<double>::epsilon();
@@ -638,7 +627,7 @@ void Praxis::minny(int n, int jsearch, int nits, double &d2, double &x1,
 	dz = (d2 < machep);
 
 	//  Find the step size.
-	s = std::sqrt(std::inner_product(x, x + n, x, 0.));
+	s = dnrm2(n, x);
 	if (dz) {
 		temp = dmin;
 	} else {
@@ -752,9 +741,7 @@ void Praxis::minny(int n, int jsearch, int nits, double &d2, double &x1,
 
 	//  Update X for linear search.
 	if (0 <= jsearch) {
-		for (i = 0; i < n; i++) {
-			x[i] += x1 * v[i + jsearch * n];
-		}
+		daxpym(n, x1, v, jsearch * n + 1, x, 1);
 	}
 }
 
@@ -809,7 +796,6 @@ void Praxis::quad(int n, const multivariate &f, double *x, double t, double h,
 void Praxis::tr_mat(int n, double *a) {
 	int i, j;
 	double t;
-
 	for (j = 0; j < n; j++) {
 		for (i = 0; i < j; i++) {
 			t = a[i + j * n];

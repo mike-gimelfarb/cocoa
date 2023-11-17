@@ -49,7 +49,7 @@ void dxpym(int n, double *dx, int idx, double *dy, int idy) {
 	}
 }
 
-void daxpym(int n, double da, double *dx, int idx, double *dy, int idy) {
+void daxpym(int n, double da, const double *dx, int idx, double *dy, int idy) {
 	if (n <= 0 || da == 0.) {
 		return;
 	}
@@ -151,7 +151,7 @@ void dscal1(int n, double da, double *dx, int idx, double *dy, int idy) {
 	}
 }
 
-double dnrm2(int n, double *x) {
+double dnrm2(const int n, const double *x) {
 	double absxi;
 	int i, ix;
 	double norm, scale, ssq;

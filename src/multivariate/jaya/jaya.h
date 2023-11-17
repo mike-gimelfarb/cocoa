@@ -57,7 +57,7 @@ public:
 protected:
 	bool _adapt_k;
 	int _n, _fev, _k, _np, _npmin, _mfev, _k0, _nks, _kcheb;
-	double _pbest, _best,_fgbest, _sigmau, _scale, _beta, _temper, _stol,
+	double _pbest, _best, _fgbest, _sigmau, _scale, _beta, _temper, _stol,
 			_xchaos;
 	jaya_mutation_method _mutation;
 	multivariate_problem _f;
@@ -69,8 +69,9 @@ public:
 	std::normal_distribution<> _Z { 0., 1. };
 
 	JayaSearch(int mfev, double tol, int np, int npmin, bool adapt = true,
-			int k0 = 2, jaya_mutation_method mutation = logistic,
-			double scale = 0.01, double beta = 1.5, int kcheb=2, double temper = 10.);
+			int k0 = 2, jaya_mutation_method mutation = logistic, double scale =
+					0.01, double beta = 1.5, int kcheb = 2,
+			double temper = 10.);
 
 	void init(const multivariate_problem &f, const double *guess);
 

@@ -123,6 +123,7 @@ void HarmonySearch::iterate() {
 	// get the best element
 	_best = &*std::min_element(_hm.begin(), _hm.end(),
 			harmony::compare_fitness);
+
 	_it++;
 }
 
