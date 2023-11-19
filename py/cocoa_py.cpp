@@ -10,12 +10,12 @@ namespace py = pybind11;
 
 void build_univariate(py::module_&);
 void build_multivariate(py::module_&);
-void build_constrained(py::module_&);
-void build_structured_constrained(py::module_&);
+// void build_constrained(py::module_&);
+// void build_structured_constrained(py::module_&);
 
 PYBIND11_MODULE(cocoaopt, m) {
 	build_univariate(m);
 	build_multivariate(m);
-	build_constrained(m);
-	build_structured_constrained(m);
+//	build_constrained(m);
+//	build_structured_constrained(m);
 }
