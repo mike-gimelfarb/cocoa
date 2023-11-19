@@ -76,6 +76,14 @@ struct multivariate_problem {
 			_f(f), _n(n), _lower(lower), _upper(upper), _hasc(false), _c( { }), _neq(
 					0), _nineq(0), _hasbbc(true), _bbc(bbc) {
 	}
+
+	multivariate_problem(const multivariate f, const int n, double *lower,
+			double *upper, const constraints c, const int neq, const int nineq,
+			const blackbox_constraints bbc) :
+			_f(f), _n(n), _lower(lower), _upper(upper), _hasc(true), _c(c), _neq(
+					neq), _nineq(nineq), _hasbbc(true), _bbc(bbc) {
+	}
+
 };
 
 struct multivariate_solution {
