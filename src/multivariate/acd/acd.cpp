@@ -33,6 +33,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <numeric>
 
 #include "../../blas.h"
 #include "../../math_utils.h"
