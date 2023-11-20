@@ -84,7 +84,7 @@ void build_univariate(py::module_ &m) {
 	// build the base class for univariate optimizer
 	py::class_<UnivariateOptimizer<double>> solver(m, "UnivariateSearch");
 	solver.def("optimize", &UnivariateOptimizer<double>::optimize,
-			"f"_a, "guess"_a, "lower"_a, "upper"_b);
+			"f"_a, "guess"_a, "lower"_a, "upper"_a);
 
 	// register all methods
 	build_bb(m);
