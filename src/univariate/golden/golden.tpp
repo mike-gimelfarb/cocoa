@@ -33,42 +33,41 @@ template<typename T> solution<T> GoldenSectionSearch<T>::optimize(
 		const univariate<T> &f, T guess, T a, T b) {
 
 	// initialization
-	const T gold = (sqrt(T(5.)) + 1.) / 2.;
-	T a1 = a;
-	T b1 = b;
-	T c = b1 - (b1 - a1) / gold;
-	T d = a1 + (b1 - a1) / gold;
-	int fev = 0;
+	const T tau = (sqrt(T(5.)) - 1.) / 2.;
+	T x1 = a + (1. - tau) * (b - a);
+	T x2 = a + tau * (b - a);
+	T f1 = f(x1);
+	T f2 = f(x2);
+	int fev = 2;
 	bool converged = false;
 
 	while (fev < _mfev) {
 
-		// bisect
-		const T mid = (c + d) / 2.;
-
 		// check convergence
+		const T mid = (a + b) / 2.;
 		const T tol = T(_rtol) * fabs(mid) + T(_atol);
-		if (fabs(c - d) <= tol) {
+		if (fabs(b - a) <= tol) {
 			converged = true;
 			break;
 		}
 
-		// evaluate at new points
-		const T fc = f(c);
-		const T fd = f(d);
-		fev += 2;
-
-		// update interval
-		if (fc < fd) {
-			b1 = d;
+		// locate the minimum
+		if (f1 > f2){
+			a = x1;
+			x1 = x2;
+			f1 = f2;
+			x2 = a + tau * (b - a);
+			f2 = f(x2);
 		} else {
-			a1 = c;
+			b = x2;
+			x2 = x1;
+			f2 = f1;
+			x1 = a + (1. - tau) * (b - a);
+			f1 = f(x1);
 		}
-		const T del = (b1 - a1) / gold;
-		c = b1 - del;
-		d = a1 + del;
+		fev += 1;
 	}
 
-	const T min_x = (c + d) / 2.;
+	const T min_x = (a + b) / 2.;
 	return {min_x, fev, converged};
 }
