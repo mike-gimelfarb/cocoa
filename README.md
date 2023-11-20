@@ -9,7 +9,7 @@ COCOA is a suite of algorithms in c++ for the optimization of continuous black-b
 # Installation
 
 To use this library in a Python project, you will need:
-* Microsoft Visual Studio Build Tools (msvc)
+* A C++ compiler (e.g., MS Build Tools)
 * git
 * pybind11
 
