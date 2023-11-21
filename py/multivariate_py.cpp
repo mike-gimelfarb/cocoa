@@ -6,9 +6,7 @@
 
 #include "../src/multivariate/multivariate.h"
 #include "../src/multivariate/acd/acd.h"
-#include "../src/multivariate/algencan/algencan.h"
 #include "../src/multivariate/amalgam/amalgam.h"
-#include "../src/multivariate/amp/ampttm.h"
 #include "../src/multivariate/basin/basinhopping.h"
 #include "../src/multivariate/cma/base_cmaes.h"
 #include "../src/multivariate/cma/cmaes.h"
@@ -166,7 +164,7 @@ void build_sansde(py::module_ &m) {
 void build_directl(py::module_ &m) {
 	py::class_<Directl, MultivariateOptimizer> solver(m, "DIRECT");
 	solver.def(py::init<int, double, double, double, int>(), "mfev"_a,
-			"volper"_a, "sigmaper"_a, "eps"_a = -1., "method"_a = 0);
+			"volper"_a, "sigmaper"_a, "eps"_a = 0., "method"_a = 0);
 }
 
 void build_harmony(py::module_ &m) {
@@ -408,9 +406,7 @@ void build_multivariate(py::module_ &m) {
 
 	// put algorithm-specific bindings here
 	build_acd(m);
-	build_algencan(m);
 	build_amalgam(m);
-	build_amp(m);
 	build_basin_hopping(m);
 	build_base_cmaes(m);
 	build_cmaes(m);
