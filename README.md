@@ -1,11 +1,12 @@
 # cocoa
-COllection of Continuous Optimization Algorithms
 
-COCOA is a suite of algorithms written in C++ for the optimization of continuous 
-black-box functions (mostly without using derivative information). Main advantages:
+COCOA (COllection of Continuous Optimization Algorithms) is a large suite of efficient algorithms written in C++ for the optimization of continuous 
+black-box functions (mostly without using derivative information). 
+
+Main advantages:
 - provides a single unified interface for all algorithms
 - provides a variety of classical algorithms with state-of-the-art improvements 
-(e.g. automatic parameter adaptation)
+(e.g. automatic parameter adaptation) 
 - convenient wrappers for Python with a user-friendly API
 
 # Installation
