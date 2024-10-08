@@ -44,14 +44,14 @@ void build_acd(py::module_ &m) {
 			"ftol"_a, "xtol"_a, "ksucc"_a = 2., "kunsucc"_a = 0.5);
 }
 
-void build_algencan(py::module_ &m) {
-	py::class_<Algencan, MultivariateOptimizer> solver(m, "ALGENCAN");
-	solver.def(
-			py::init<MultivariateOptimizer*, int, double, bool, double, double,
-					double, double>(), "local"_a, "mit"_a, "tol"_a, "print"_a =
-					false, "tau"_a = 0.5, "gamma"_a = 10., "lambda0"_a = 0.,
-			"mu0"_a = 0.);
-}
+//void build_algencan(py::module_ &m) {
+//	py::class_<Algencan, MultivariateOptimizer> solver(m, "ALGENCAN");
+//	solver.def(
+//			py::init<MultivariateOptimizer*, int, double, bool, double, double,
+//					double, double>(), "local"_a, "mit"_a, "tol"_a, "print"_a =
+//					false, "tau"_a = 0.5, "gamma"_a = 10., "lambda0"_a = 0.,
+//			"mu0"_a = 0.);
+//}
 
 void build_amalgam(py::module_ &m) {
 	py::class_<Amalgam, MultivariateOptimizer> solver(m, "AMALGAM");
@@ -60,22 +60,22 @@ void build_amalgam(py::module_ &m) {
 					true, "print"_a = true);
 }
 
-void build_amp(py::module_ &m) {
-	py::class_<AMPTTM, MultivariateOptimizer> solver(m, "AMP");
-
-	py::enum_<AMPTTM::tabu_removal_strategy> tabu_removal(solver,
-			"AMP_TabuRemoveStrategy");
-	tabu_removal.value("oldest", AMPTTM::tabu_removal_strategy::oldest);
-	tabu_removal.value("farthest", AMPTTM::tabu_removal_strategy::farthest);
-	tabu_removal.export_values();
-
-	solver.def(
-			py::init<MultivariateOptimizer*, int, bool, double, double, int,
-					int, unsigned int, AMPTTM::tabu_removal_strategy>(),
-			"local"_a, "mfev"_a, "print"_a = false, "eps1"_a = 0.02, "eps2"_a =
-					0.1, "totaliter"_a = 9999, "maxiter"_a = 5, "tabutenure"_a =
-					5, "remove"_a = AMPTTM::tabu_removal_strategy::farthest);
-}
+//void build_amp(py::module_ &m) {
+//	py::class_<AMPTTM, MultivariateOptimizer> solver(m, "AMP");
+//
+//	py::enum_<AMPTTM::tabu_removal_strategy> tabu_removal(solver,
+//			"AMP_TabuRemoveStrategy");
+//	tabu_removal.value("oldest", AMPTTM::tabu_removal_strategy::oldest);
+//	tabu_removal.value("farthest", AMPTTM::tabu_removal_strategy::farthest);
+//	tabu_removal.export_values();
+//
+//	solver.def(
+//			py::init<MultivariateOptimizer*, int, bool, double, double, int,
+//					int, unsigned int, AMPTTM::tabu_removal_strategy>(),
+//			"local"_a, "mfev"_a, "print"_a = false, "eps1"_a = 0.02, "eps2"_a =
+//					0.1, "totaliter"_a = 9999, "maxiter"_a = 5, "tabutenure"_a =
+//					5, "remove"_a = AMPTTM::tabu_removal_strategy::farthest);
+//}
 
 void build_basin_hopping(py::module_ &m) {
 	py::class_<StepsizeStrategy> step(m, "BasinHopping_StepStrategy");
