@@ -22,6 +22,53 @@ Then install directly from source:
 pip install git+https://github.com/mike-gimelfarb/cocoa
 ```
 
+# Algorithms Supported
+
+The following algorithms are currently fully supported with Python wrappers:
+
+* Univariate:
+    * [Branch and Bound](https://eudml.org/doc/287965)
+    * Brent Methods:
+        * [Local Brent](https://books.google.ca/books/about/Algorithms_for_Minimization_Without_Deri.html?id=AITCAgAAQBAJ&redir_esc=y)
+        * [Global Brent](https://books.google.ca/books/about/Algorithms_for_Minimization_Without_Deri.html?id=AITCAgAAQBAJ&redir_esc=y)
+    * [Calvin Method](https://dl.acm.org/doi/abs/10.5555/2699214.2699215)
+    * [Davies-Swann-Campey Method](https://link.springer.com/book/10.1007/978-1-0716-0843-2)
+    * [Fibonacci Algorithm](https://en.wikipedia.org/wiki/Fibonacci_search_technique)
+    * [Golden Section Search](https://en.wikipedia.org/wiki/Golden-section_search)
+    * [Piyavskii Method](https://epubs.siam.org/doi/10.1137/110859129)
+* Multivariate:
+    * Unconstrained:
+        * [Adaptive Coordinate Descent (ACD)](https://link.springer.com/chapter/10.1007/978-3-540-87700-4_21)
+        * [AMaLGaM](https://dl.acm.org/doi/10.1145/1570256.1570313)
+        * [Basin Hopping](https://pubs.acs.org/doi/10.1021/jp970984n)
+        * CMA-ES Variants:
+            * [Vanilla CMA-ES](https://ieeexplore.ieee.org/document/6790628/)
+            * [Active CMA-ES](https://ieeexplore.ieee.org/document/1688662)
+            * [Cholesky CMA-ES](https://papers.nips.cc/paper_files/paper/2016/file/289dff07669d7a23de0ef88d2f7129e7-Paper.pdf)
+            * [Limited Memory CMA-ES](https://dl.acm.org/doi/10.1145/2576768.2598294)
+            * [Separable CMA-ES](https://link.springer.com/chapter/10.1007/978-3-540-87700-4_30)
+            * [IPOP CMA-ES](https://ieeexplore.ieee.org/document/1554902)
+            * [BIPOP CMA-ES](https://link.springer.com/chapter/10.1007/978-3-642-32937-1_30)
+        * Self-Adaptive Differential Evolution:
+            * [JADE](https://ieeexplore.ieee.org/document/4424751)
+            * [SANSDE](https://ieeexplore.ieee.org/document/4630935/)
+        * [Self-Adaptive Harmony Search](https://www.sciencedirect.com/science/article/abs/pii/S0957417409007891)
+        * [Hessian Evolutionary Strategy (HEES)](https://link.springer.com/chapter/10.1007/978-3-030-58112-1_41)
+        * [Self-Adaptive JAYA](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8640077)
+        * [Mayfly Search](https://www.sciencedirect.com/science/article/abs/pii/S036083522030293X)
+        * [Pikaia](https://www.hao.ucar.edu/modeling/pikaia/pikaia.php)
+        * [BOBYQA](https://www.damtp.cam.ac.uk/user/na/NA_papers/NA2009_06.pdf)
+        * [NEWUOA](https://link.springer.com/chapter/10.1007/0-387-30065-1_16)
+        * [PRAXIS](https://link.springer.com/article/10.3758/BF03203605)
+        * Particle Swarm Optimization:
+            * [Adaptive PSO](https://ieeexplore.ieee.org/document/4812104)
+            * [Competitive PSO](https://link.springer.com/chapter/10.1007/978-981-13-0761-4_9)
+            * [Cooperative Co-Evolving PSO](https://ieeexplore.ieee.org/document/5910380)
+            * Differential Search
+            * [Self-Learning PSO](https://ieeexplore.ieee.org/document/6069879)
+        * [Rosenbrock Method](https://academic.oup.com/comjnl/article/12/1/69/311651)
+        * [Adaptive Nelder-Mead](https://www.tandfonline.com/doi/full/10.1080/0305215X.2019.1688315)
+  
 # Usage
 Simple example to optimize the 10D Rosenbrock function.
 
