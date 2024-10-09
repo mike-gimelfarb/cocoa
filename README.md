@@ -70,12 +70,27 @@ The following algorithms are currently fully supported with Python wrappers:
         * [Adaptive Nelder-Mead](https://www.tandfonline.com/doi/full/10.1080/0305215X.2019.1688315)
   
 # Usage
-Simple example to optimize the 10D Rosenbrock function.
+
+Simple example to optimize a univariate function:
+
+```python
+import numpy as np
+from cocoaopt import Brent
+
+# function to optimize
+def fx(x):
+    return np.sin(x) + np.sin(10 * x / 3)
+
+alg = Brent(mfev=20000, atol=1e-6)
+sol = alg.optimize(fx, lower=2.7, upper=7.5, guess=np.random.uniform(2.7, 7.5))
+print(sol)
+```
+
+Simple example to optimize a multivariate function:
 
 ```python
 import numpy as np
 from cocoaopt import ActiveCMAES
-
 
 # function to optimize
 def fx(x):
@@ -84,13 +99,9 @@ def fx(x):
         total += 100 * (x2 - x1 ** 2) ** 2 + (1 - x1) ** 2
     return total
 
-
 n = 10  # dimension of problem
 alg = ActiveCMAES(mfev=10000, tol=1e-4, np=20)
-sol = alg.optimize(fx,
-                   lower=-10 * np.ones(n),
-                   upper=10 * np.ones(n),
-                   guess=np.random.uniform(low=-10., high=10., size=n))
+sol = alg.optimize(fx, lower=-10 * np.ones(n), upper=10 * np.ones(n), guess=np.random.uniform(-10, 10, size=n))
 print(sol)
 ```
 
