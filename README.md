@@ -86,6 +86,14 @@ sol = alg.optimize(fx, lower=2.7, upper=7.5, guess=np.random.uniform(2.7, 7.5))
 print(sol)
 ```
 
+This will print the following output:
+
+```
+x*: 5.1457349293974861
+calls to f: 10
+converged: 1
+```
+
 Simple example to optimize a multivariate function:
 
 ```python
