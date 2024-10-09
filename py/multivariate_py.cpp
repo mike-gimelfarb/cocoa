@@ -34,6 +34,7 @@
 #include "../src/multivariate/pso/slpso.h"
 #include "../src/multivariate/rosenbrock/rosenbrock.h"
 #include "../src/multivariate/simplex/nelder_mead.h"
+#include "../src/multivariate/crs/crs2.h"
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -360,6 +361,11 @@ void build_simplex(py::module_ &m) {
 			"checkev"_a = 10, "eps"_a = 1e-3);
 }
 
+void build_crs2(py::module_ &m) {
+	py::class_<Crs2Search, MultivariateOptimizer> solver(m, "CRS2");
+	solver.def(py::init<int, int, double>(), "mfev"_a, "np"_a, "tol"_a);
+}
+
 // wrap the function expressions
 typedef std::function<double(const py::array_t<double>&)> py_multivariate;
 
@@ -433,4 +439,5 @@ void build_multivariate(py::module_ &m) {
 	build_slpso(m);
 	build_rosenbrock(m);
 	build_simplex(m);
+	build_crs2(m);
 }

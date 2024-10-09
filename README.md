@@ -68,6 +68,7 @@ The following algorithms are currently fully supported with Python wrappers:
             * [Self-Learning PSO](https://ieeexplore.ieee.org/document/6069879)
         * [Rosenbrock Method](https://academic.oup.com/comjnl/article/12/1/69/311651)
         * [Adaptive Nelder-Mead](https://www.tandfonline.com/doi/full/10.1080/0305215X.2019.1688315)
+        * [Controlled Random Search (CRS)](https://link.springer.com/article/10.1007/s10957-006-9101-0)
   
 # Usage
 
