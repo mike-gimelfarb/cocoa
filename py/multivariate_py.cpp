@@ -19,7 +19,7 @@
 #include "../src/multivariate/de/jade.h"
 #include "../src/multivariate/de/sansde.h"
 #include "../src/multivariate/direct/directl.h"
-#include "../src/multivariate/harmony/harmony.h"
+#include "../src/multivariate/harmony/nshs.h"
 #include "../src/multivariate/hees/hees.h"
 #include "../src/multivariate/jaya/jaya.h"
 #include "../src/multivariate/mayfly/mayfly.h"
@@ -168,49 +168,9 @@ void build_directl(py::module_ &m) {
 			"volper"_a, "sigmaper"_a, "eps"_a = 0., "method"_a = 0);
 }
 
-void build_harmony(py::module_ &m) {
-
-	// harmony memory
-	py::class_ < HMCR > (m, "Harmony_Memory");
-	py::class_<HS_HMCR, HMCR>(m, "Harmony_Memory_Fix").def(py::init<double>(),
-			"hmcr"_a);
-
-	py::class_<PSFHS_HMCR, HMCR> psfhs_hmcr(m, "Harmony_Memory_Def");
-	psfhs_hmcr.def(py::init<double, double, double, int, bool>(), "hmcrinit"_a =
-			0.5, "hmcrmin"_a = 0.01, "hmcrmax"_a = 0.99, "warm"_a = 10,
-			"local"_a = false);
-
-	// pitch adjustment
-	py::class_ < PAR > (m, "Harmony_Adjust");
-	py::class_<HS_PAR, PAR>(m, "Harmony_Adjust_Fix").def(py::init<double>(),
-			"par"_a);
-
-	py::class_<PSFHS_PAR, PAR> psfhs_par(m, "Harmony_Adjust_Def");
-	psfhs_par.def(py::init<double, double, double, int, bool>(), "parinit"_a =
-			0.5, "parmin"_a = 0.01, "parmax"_a = 0.99, "warm"_a = 10,
-			"local"_a = false);
-
-	py::class_<IHS_PAR, PAR> ihs_par(m, "Harmony_Adjust_Imp");
-	ihs_par.def(py::init<double, double>(), "parmin"_a, "parmax"_a);
-
-	// pitch evolution
-	py::class_ < PAStrategy > (m, "Harmony_Evol");
-
-	py::class_<HS_PA, PAStrategy> hs_pa(m, "Harmony_Evol_Fix");
-	hs_pa.def(py::init<double>(), "bw"_a = 0.2);
-
-	py::class_<IHS_PA, PAStrategy> ihs_pa(m, "Harmony_Evol_Imp");
-	ihs_pa.def(py::init<double, double>(), "bwmin"_a = 0.01, "bwmax"_a = 0.99);
-
-	py::class_<SHS_PA, PAStrategy>(m, "Harmony_Evol_SA").def(py::init<>());
-	py::class_<DHS_PA, PAStrategy>(m, "Harmony_Evol_DE").def(py::init<double>(),
-			"cr"_a);
-
-	// harmony search class
-	py::class_<HarmonySearch, MultivariateOptimizer> solver(m, "Harmony");
-	solver.def(py::init<int, int, int, HMCR, PAR, PAStrategy>(), "mfev"_a,
-			"hms"_a, "hpi"_a = 5, "harmony"_a = PSFHS_HMCR(), "pitch"_a =
-					PSFHS_PAR(), "pstrat"_a = IHS_PA());
+void build_nshs(py::module_ &m) {
+	py::class_<NSHS, MultivariateOptimizer> solver(m, "NSHS");
+		solver.def(py::init<int, int, double>(), "mfev"_a, "hms"_a, "fstdmin"_a = 0.0001);
 }
 
 void build_hees(py::module_ &m) {
@@ -424,7 +384,7 @@ void build_multivariate(py::module_ &m) {
 	build_bipop_cmaes(m);
 	build_jade(m);
 	build_sansde(m);
-	build_harmony(m);
+	build_nshs(m);
 	build_hees(m);
 	build_jaya(m);
 	build_mayfly(m);

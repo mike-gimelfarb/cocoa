@@ -52,7 +52,7 @@ The following algorithms are currently fully supported with Python wrappers:
         * Self-Adaptive Differential Evolution:
             * [JADE](https://ieeexplore.ieee.org/document/4424751)
             * [SANSDE](https://ieeexplore.ieee.org/document/4630935/)
-        * [Self-Adaptive Harmony Search](https://www.sciencedirect.com/science/article/abs/pii/S0957417409007891)
+        * [Novel Self-Adaptive Harmony Search (NSHS)](https://onlinelibrary.wiley.com/doi/10.1155/2013/653749)
         * [Hessian Evolutionary Strategy (HEES)](https://link.springer.com/chapter/10.1007/978-3-030-58112-1_41)
         * [Self-Adaptive JAYA](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8640077)
         * [Mayfly Search](https://www.sciencedirect.com/science/article/abs/pii/S036083522030293X)
