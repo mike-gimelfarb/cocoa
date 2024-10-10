@@ -164,7 +164,6 @@ void CrsSearch::update() {
 bool CrsSearch::stop() {
 	double fl = _points[0]._f;
 	double fh = _points[_np - 1]._f;
-	std::cout << fl << std::endl;
 	return std::fabs(fl - fh) < _tol;
 }
 
