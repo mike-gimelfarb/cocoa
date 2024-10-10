@@ -33,17 +33,17 @@
 #include "../../blas.h"
 #include "../../random.hpp"
 
-#include "crs2.h"
+#include "crs.h"
 
 using Random = effolkronium::random_static;
 
-Crs2Search::Crs2Search(int mfev, int np, double tol) {
+CrsSearch::CrsSearch(int mfev, int np, double tol) {
 	_mfev = mfev;
 	_np = np;
 	_tol = tol;
 }
 
-void Crs2Search::init(const multivariate_problem &f, const double *guess) {
+void CrsSearch::init(const multivariate_problem &f, const double *guess) {
 
 	// define problem
 	if (f._hasc || f._hasbbc) {
@@ -54,13 +54,6 @@ void Crs2Search::init(const multivariate_problem &f, const double *guess) {
 	_n = f._n;
 	_lower = std::vector<double>(f._lower, f._lower + _n);
 	_upper = std::vector<double>(f._upper, f._upper + _n);
-
-	// define memory
-	_work = std::vector<double>(_n);
-	_indices = std::vector<int>(_np);
-	for (int i = 0; i < _np; i++) {
-		_indices[i] = i;
-	}
 
 	// define pool of points
 	_fev = 0;
@@ -75,14 +68,22 @@ void Crs2Search::init(const multivariate_problem &f, const double *guess) {
 		_points.push_back(std::move(pt));
 		_fev++;
 	}
+
+	// centroid
+	_centroid = std::vector<double>(_n);
+	_trial = std::vector<double>(_n);
+	_trial2 = std::vector<double>(_n);
+
+	// find the best and worst points
 	std::sort(_points.begin(), _points.end(), point::compare_fitness);
 }
 
-void Crs2Search::iterate() {
-	crs2iterate();
+void CrsSearch::iterate() {
+	trial();
+	update();
 }
 
-multivariate_solution Crs2Search::optimize(const multivariate_problem &f,
+multivariate_solution CrsSearch::optimize(const multivariate_problem &f,
 		const double *guess) {
 	init(f, guess);
 	bool converged = false;
@@ -102,82 +103,72 @@ multivariate_solution Crs2Search::optimize(const multivariate_problem &f,
  *
  * =============================================================
  */
-int Crs2Search::crs2iterate() {
 
-	// select point generation procedure
-	while (true) {
+void CrsSearch::trial(){
 
-		// compute the new trial point
-		Random::shuffle(_indices.begin() + 1, _indices.end());
-		for (int d = 0; d < _n; d++) {
-			_work[d] = _points[0]._x[d] / _n;
+	// choose n points randomly with replacement and compute centroid
+	std::fill(_centroid.begin(), _centroid.end(), 0.0);
+	for (int d = 0; d < _n; d++){
+		_centroid[d] += _points[0]._x[d] / _n;
+	}
+	for (int i = 1; i <= _n - 1; i++){
+		const int idx = Random::get(0, _np - 1);
+		for (int d = 0; d < _n; d++){
+			_centroid[d] += _points[idx]._x[d] / _n;
 		}
-		for (int i = 1; i < _n; i++) {
-			for (int d = 0; d < _n; d++) {
-				_work[d] += _points[_indices[i]]._x[d] / _n;
-			}
-		}
-		for (int d = 0; d < _n; d++) {
-			_work[d] = 2. * _work[d] - _points[_indices[_n]]._x[d];
-		}
+	}
 
-		// check if the trial point is within the bounds
-		bool bounded = inBounds(&_work[0]);
-		if (!bounded) {
-			continue;
-		}
+	// compute the trial point
+	const int idx = Random::get(0, _np - 1);
+	for (int d = 0; d < _n; d++){
+		_trial[d] = 2 * _centroid[d] - _points[idx]._x[d];
+	}
 
-		// replace worst member in S with x-tilde if better
-		double ftrial = _f._f(&_work[0]);
+	// accept or reject trial point
+	if (!inBounds(&_trial[0])){
+		trial();
+	}
+	_ftrial = _f._f(&_trial[0]);
+	_fev++;
+
+	// local mutation
+	if (_ftrial >= _points[_np - 1]._f){
+
+		// compute another trial point using the mutation operator
+		for (int d = 0; d < _n; d++){
+			const double w = Random::get(0.0, 1.0);
+			_trial2[d] = (1.0 + w) * _points[0]._x[d] - w * _trial[d];
+		}
+		_ftrial2 = _f._f(&_trial2[0]);
 		_fev++;
-		if (ftrial < _points[_np - 1]._f) {
-			return replace(_np - 1, &_work[0], ftrial);
+
+		// accept or reject new trial point
+		if (_ftrial2 >= _points[_np - 1]._f){
+			trial();
 		}
 
-		// try to mutate x-tilde through reflection
-		for (int d = 0; d < _n; d++) {
-			const double w = Random::get(0., 1.);
-			_work[d] = (1. + w) * _points[0]._x[d] - w * _work[d];
-		}
-
-		// replace worst member in S with y-tilde if better
-		ftrial = _f._f(&_work[0]);
-		_fev++;
-		if (ftrial < _points[_np - 1]._f) {
-			return replace(_np - 1, &_work[0], ftrial);
-		}
+		// point is accepted, this will become the replacement
+		_ftrial = _ftrial2;
+		std::copy(_trial2.begin(), _trial2.end(), _trial.begin());
 	}
 }
 
-int Crs2Search::replace(int iold, double *x, double fx) {
-	auto &old = _points[iold];
-	std::copy(x, x + _n, old._x.begin());
-	old._f = fx;
-	const int inew = std::lower_bound(_points.begin(), _points.end(), old,
-			point::compare_fitness) - _points.begin();
-	if (iold > inew) {
-		std::rotate(_points.rend() - iold - 1, _points.rend() - iold,
-				_points.rend() - inew);
-	} else {
-		std::rotate(_points.begin() + iold, _points.begin() + iold + 1,
-				_points.begin() + inew + 1);
-	}
-	return inew;
+void CrsSearch::update() {
+	_points[_np - 1]._f = _ftrial;
+	std::copy(_trial.begin(), _trial.end(), _points[_np - 1]._x.begin());
+
+	// find the best and worst points
+	std::sort(_points.begin(), _points.end(), point::compare_fitness);
 }
 
-/* =============================================================
- *
- * 			CONVERGENCE AND BOUNDS CHECKING SUBROUTINES
- *
- * =============================================================
- */
-bool Crs2Search::stop() {
+bool CrsSearch::stop() {
 	double fl = _points[0]._f;
 	double fh = _points[_np - 1]._f;
+	std::cout << fl << std::endl;
 	return std::fabs(fl - fh) < _tol;
 }
 
-bool Crs2Search::inBounds(double *p) {
+bool CrsSearch::inBounds(double *p) {
 	for (int d = 0; d < _n; d++) {
 		if (p[d] < _lower[d] || p[d] > _upper[d]) {
 			return false;

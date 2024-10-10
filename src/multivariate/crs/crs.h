@@ -27,25 +27,24 @@
  applications 130.2 (2006): 253-264.
  */
 
-#ifndef MULTIVARIATE_CRS_CRS2_H_
-#define MULTIVARIATE_CRS_CRS2_H_
+#ifndef MULTIVARIATE_CRS_CRS_H_
+#define MULTIVARIATE_CRS_CRS_H_
 
 #include <random>
 
 #include "../multivariate.h"
 
-class Crs2Search: public MultivariateOptimizer {
+class CrsSearch: public MultivariateOptimizer {
 
 protected:
 	int _n, _np, _fev, _mfev;
-	double _tol;
+	double _tol, _ftrial, _ftrial2;
 	multivariate_problem _f;
-	std::vector<int> _indices;
-	std::vector<double> _lower, _upper, _work;
+	std::vector<double> _lower, _upper, _centroid, _trial, _trial2;
 	std::vector<point> _points;
 
 public:
-	Crs2Search(int mfev, int np, double tol);
+	CrsSearch(int mfev, int np, double tol);
 
 	void init(const multivariate_problem &f, const double *guess);
 
@@ -55,13 +54,13 @@ public:
 			const double *guess);
 
 protected:
-	int crs2iterate();
+	void trial();
+
+	void update();
 
 	bool stop();
 
 	bool inBounds(double *p);
-
-	int replace(int iold, double *x, double fx);
 };
 
-#endif /* MULTIVARIATE_CRS_CRS2_H_ */
+#endif /* MULTIVARIATE_CRS_CRS_H_ */
