@@ -23,7 +23,6 @@
 #include "../src/multivariate/hees/hees.h"
 #include "../src/multivariate/jaya/jaya.h"
 #include "../src/multivariate/mayfly/mayfly.h"
-#include "../src/multivariate/pikaia/pikaia.h"
 #include "../src/multivariate/powell/bobyqa.h"
 #include "../src/multivariate/powell/newuoa.h"
 #include "../src/multivariate/praxis/praxis.h"
@@ -215,15 +214,6 @@ void build_mayfly(py::module_ &m) {
 					0.01, "pmutnp"_a = 0.05, "l"_a = 0.95, "pgb"_a = false);
 }
 
-void build_pikaia(py::module_ &m) {
-	py::class_<PikaiaSearch, MultivariateOptimizer> solver(m, "Pikaia");
-	solver.def(
-			py::init<int, int, int, double, int, double, double, double, double,
-					int, int>(), "np"_a, "ngen"_a, "nd"_a, "pcross"_a = 0.85,
-			"imut"_a = 2, "pmut"_a = 0.005, "pmutmn"_a = 0.0005, "pmutmx"_a =
-					0.25, "fdif"_a = 1., "irep"_a = 1, "ielite"_a = 0);
-}
-
 void build_bobyqa(py::module_ &m) {
 	py::class_<Bobyqa, MultivariateOptimizer> solver(m, "BOBYQA");
 	solver.def(py::init<int, int, double, double>(), "mfev"_a, "np"_a, "rho"_a,
@@ -388,7 +378,6 @@ void build_multivariate(py::module_ &m) {
 	build_hees(m);
 	build_jaya(m);
 	build_mayfly(m);
-	build_pikaia(m);
 	build_bobyqa(m);
 	build_newuoa(m);
 	build_praxis(m);

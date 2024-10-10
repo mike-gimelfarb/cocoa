@@ -56,7 +56,6 @@ The following algorithms are currently fully supported with Python wrappers:
         * [Hessian Evolutionary Strategy (HEES)](https://link.springer.com/chapter/10.1007/978-3-030-58112-1_41)
         * [Self-Adaptive JAYA](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8640077)
         * [Mayfly Search](https://www.sciencedirect.com/science/article/abs/pii/S036083522030293X)
-        * [Pikaia](https://www.hao.ucar.edu/modeling/pikaia/pikaia.php)
         * [BOBYQA](https://www.damtp.cam.ac.uk/user/na/NA_papers/NA2009_06.pdf)
         * [NEWUOA](https://link.springer.com/chapter/10.1007/0-387-30065-1_16)
         * [PRAXIS](https://link.springer.com/article/10.3758/BF03203605)
