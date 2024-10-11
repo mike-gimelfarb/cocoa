@@ -16,6 +16,7 @@
 #include "../src/multivariate/cma/sep_cmaes.h"
 #include "../src/multivariate/cma/ipop_cmaes.h"
 #include "../src/multivariate/cma/bipop_cmaes.h"
+#include "../src/multivariate/nes/xnes.h"
 #include "../src/multivariate/de/jade.h"
 #include "../src/multivariate/de/sansde.h"
 #include "../src/multivariate/direct/directl.h"
@@ -143,6 +144,12 @@ void build_bipop_cmaes(py::module_ &m) {
 			"base"_a, "mfev"_a, "print"_a = false, "sigma0"_a = 2.,
 			"maxlargeruns"_a = 9, "nbipop"_a = true, "ksigmadec"_a = 1.6,
 			"kbudget"_a = 2.);
+}
+
+void build_xnes(py::module_ &m) {
+	py::class_<xNES, MultivariateOptimizer> solver(m, "xNES");
+	solver.def(py::init<int, double, double, double>(),
+			"mfev"_a, "tol"_a, "a0"_a = 1.0, "etamu"_a = 1.0);
 }
 
 void build_jade(py::module_ &m) {
@@ -370,6 +377,7 @@ void build_multivariate(py::module_ &m) {
 	build_sep_cmaes(m);
 	build_ipop_cmaes(m);
 	build_bipop_cmaes(m);
+	build_xnes(m);
 	build_jade(m);
 	build_sansde(m);
 	build_nshs(m);
