@@ -41,7 +41,7 @@ The following algorithms are currently fully supported with Python wrappers:
         * [Adaptive Coordinate Descent (ACD)](https://link.springer.com/chapter/10.1007/978-3-540-87700-4_21)
         * [AMaLGaM](https://dl.acm.org/doi/10.1145/1570256.1570313)
         * [Basin Hopping](https://pubs.acs.org/doi/10.1021/jp970984n)
-        * CMA-ES Variants:
+        * Covariance Matrix Adaptation (CMA-ES):
             * [Vanilla CMA-ES](https://ieeexplore.ieee.org/document/6790628/)
             * [Active CMA-ES](https://ieeexplore.ieee.org/document/1688662)
             * [Cholesky CMA-ES](https://papers.nips.cc/paper_files/paper/2016/file/289dff07669d7a23de0ef88d2f7129e7-Paper.pdf)
@@ -49,6 +49,7 @@ The following algorithms are currently fully supported with Python wrappers:
             * [Separable CMA-ES](https://link.springer.com/chapter/10.1007/978-3-540-87700-4_30)
             * [IPOP CMA-ES](https://ieeexplore.ieee.org/document/1554902)
             * [BIPOP CMA-ES](https://link.springer.com/chapter/10.1007/978-3-642-32937-1_30)
+        * [Exponential Natural Evolution Strategy (xNES)](https://dl.acm.org/doi/10.1145/1830483.1830557)
         * Self-Adaptive Differential Evolution:
             * [JADE](https://ieeexplore.ieee.org/document/4424751)
             * [SANSDE](https://ieeexplore.ieee.org/document/4630935/)
@@ -57,7 +58,7 @@ The following algorithms are currently fully supported with Python wrappers:
         * [BOBYQA](https://www.damtp.cam.ac.uk/user/na/NA_papers/NA2009_06.pdf)
         * [NEWUOA](https://link.springer.com/chapter/10.1007/0-387-30065-1_16)
         * [PRAXIS](https://link.springer.com/article/10.3758/BF03203605)
-        * Particle Swarm Optimization:
+        * Particle Swarm Optimization (PSO):
             * [Adaptive PSO](https://ieeexplore.ieee.org/document/4812104)
             * [Competitive PSO](https://link.springer.com/chapter/10.1007/978-981-13-0761-4_9)
             * [Cooperative Co-Evolving PSO](https://ieeexplore.ieee.org/document/5910380)
