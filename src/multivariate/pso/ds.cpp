@@ -33,11 +33,14 @@
 
 using Random = effolkronium::random_static;
 
-DSSearch::DSSearch(int mfev, double tol, double stol, int np) {
+DSSearch::DSSearch(int mfev, double tol, double stol, int np, bool adapt,
+		int nbatch) {
 	_tol = tol;
 	_stol = stol;
 	_np = np;
 	_mfev = mfev;
+	_adapt = adapt;
+	_nbatch = nbatch;
 }
 
 void DSSearch::init(const multivariate_problem &f, const double *guess) {
@@ -56,10 +59,9 @@ void DSSearch::init(const multivariate_problem &f, const double *guess) {
 	_fev = 0;
 	_jind = std::vector<int>(_np);
 	_methods = std::vector<int>(4);
-	_methods[0] = 1;
-	_methods[1] = 2;
-	_methods[2] = 3;
-	_methods[3] = 4;
+	for (int i = 0; i < 4; i++){
+		_methods[i] = i + 1;
+	}
 
 	// generate initial individuals, clans and superorganism.
 	_swarm.clear();
@@ -67,10 +69,18 @@ void DSSearch::init(const multivariate_problem &f, const double *guess) {
 		std::vector<int> map(_n);
 		std::vector<double> x(_n);
 		std::vector<double> so(_n);
-		const ds_particle part { map, x, so, nullptr, 0., 0. };
+		std::vector<double> dir(_n);
+		const ds_particle part { map, x, so, dir, 0., 0. };
 		_swarm.push_back(std::move(part));
 	}
 	genPop();
+
+	// adaptation
+	_w = std::vector<double>(4, 1.0);
+	_p = std::vector<double>(4, 0.25);
+	_gamma = std::sqrt(4 * std::log(4) / ((std::exp(1) - 1) * _nbatch));
+	_gamma = std::min(1.0, _gamma);
+	_it = 0;
 }
 
 void DSSearch::iterate() {
@@ -78,11 +88,17 @@ void DSSearch::iterate() {
 	// SETTING OF ALGORITHMIC CONTROL PARAMETERS
 	// Trial-pattern generation strategy for morphogenesis;
 	// 'one-or-more morphogenesis'. (DEFAULT)
-	const double p1 = Random::get(0., 0.3);
-	const double p2 = Random::get(0., 0.3);
+	const double p1 = Random::get(0.0, 0.3);
+	const double p2 = Random::get(0.0, 0.3);
 
 	// sample a method
-	const int imethd = Random::get(0, 3);
+	int imethd;
+	if (_adapt) {
+		std::discrete_distribution<int> distribution(_p.begin(), _p.end());
+		imethd = distribution(_generator);
+	} else {
+		imethd = Random::get(0, 3);
+	}
 	const int methd = _methods[imethd];
 
 	// search direction
@@ -102,7 +118,7 @@ void DSSearch::iterate() {
 	// bio-interaction (morphogenesis)
 	for (auto &p : _swarm) {
 		for (int j = 0; j < _n; j++) {
-			p._so[j] = p._x[j] + R * p._map[j] * ((*(p._dir))[j] - p._x[j]);
+			p._so[j] = p._x[j] + R * p._map[j] * (p._dir[j] - p._x[j]);
 		}
 	}
 
@@ -110,14 +126,33 @@ void DSSearch::iterate() {
 	update();
 
 	// Selection-II
+	int nsucc = 0;
 	for (auto &p : _swarm) {
-		p._fso = _f._f(&(p._so)[0]);
+		p._fso = _f._f(&p._so[0]);
 		if (p._fso < p._f) {
 			p._f = p._fso;
 			std::copy(p._so.begin(), p._so.end(), p._x.begin());
+			nsucc++;
 		}
 	}
 	_fev += _np;
+
+	// update method probabilities using Rexp3
+	if (_adapt) {
+		if (_it % _nbatch == 0){
+			std::fill(_w.begin(), _w.end(), 1.0);
+		}
+		const double reward = (1. * nsucc) / _np;
+		_w[imethd] *= std::exp(_gamma * (reward / _p[imethd]) / 4);
+		double wsum = 0.0;
+		for (int i = 0; i < 4; i++) {
+			wsum += _w[i];
+		}
+		for (int i = 0; i < 4; i++) {
+			_p[i] = (1.0 - _gamma) * _w[i] / wsum + _gamma / 4;
+		}
+	}
+	_it++;
 }
 
 multivariate_solution DSSearch::optimize(const multivariate_problem &f,
@@ -183,7 +218,8 @@ void DSSearch::genDir(int method) {
 		Random::shuffle(_jind.begin(), _jind.end());
 		for (int i = 0; i < _np; ++i) {
 			const int j = _jind[i];
-			_swarm[i]._dir = &(_swarm[j]._x);
+			std::copy(_swarm[j]._x.begin(), _swarm[j]._x.end(),
+					_swarm[i]._dir.begin());
 		}
 		break;
 	}
@@ -199,10 +235,12 @@ void DSSearch::genDir(int method) {
 				[this](const int &a, const int &b) {
 					return _swarm[a]._f < _swarm[b]._f;
 				});
-		const int nums = static_cast<int>(std::ceil(Random::get(0., 1.) * _np));
 		for (int i = 0; i < _np; i++) {
-			const int j = Random::get(0, nums - 1);
-			_swarm[i]._dir = &(_swarm[j]._x);
+			const int ub =
+					static_cast<int>(std::ceil(Random::get(0., 1.) * _np));
+			const int j = _jind[Random::get(0, ub - 1)];
+			std::copy(_swarm[j]._x.begin(), _swarm[j]._x.end(),
+					_swarm[i]._dir.begin());
 		}
 		break;
 	}
@@ -218,12 +256,11 @@ void DSSearch::genDir(int method) {
 				[this](const int &a, const int &b) {
 					return _swarm[a]._f < _swarm[b]._f;
 				});
-		const int nums1 = std::min(
-				static_cast<int>(std::ceil(Random::get(0., 1.) * _np)),
-				_np - 1);
-		const int ibest = _jind[nums1];
+		const int ub = static_cast<int>(std::ceil(Random::get(0., 1.) * _np));
+		const int ibest = _jind[std::min(ub, _np - 1)];
 		for (int i = 0; i < _np; i++) {
-			_swarm[i]._dir = &(_swarm[ibest]._x);
+			std::copy(_swarm[ibest]._x.begin(), _swarm[ibest]._x.end(),
+					_swarm[i]._dir.begin());
 		}
 		break;
 	}
@@ -235,7 +272,8 @@ void DSSearch::genDir(int method) {
 		const int imin = std::min_element(_swarm.begin(), _swarm.end(),
 				ds_particle::compare_fitness) - _swarm.begin();
 		for (int i = 0; i < _np; i++) {
-			_swarm[i]._dir = &(_swarm[imin]._x);
+			std::copy(_swarm[imin]._x.begin(), _swarm[imin]._x.end(),
+					_swarm[i]._dir.begin());
 		}
 		break;
 	}
@@ -247,8 +285,9 @@ void DSSearch::genPop() {
 		for (int j = 0; j < _n; j++) {
 			pt._x[j] = Random::get(_lower[j], _upper[j]);
 		}
-		pt._f = _f._f(&(pt._x)[0]);
+		pt._f = _f._f(&pt._x[0]);
 	}
+	_fev += _np;
 }
 
 void DSSearch::genMap(double p1, double p2) {
@@ -259,8 +298,9 @@ void DSSearch::genMap(double p1, double p2) {
 
 			// Random-mutation #1 strategy
 			for (auto &p : _swarm) {
+				const double rand = Random::get(0.0, 1.0);
 				for (int j = 0; j < _n; j++) {
-					if (Random::get(0, 1) == 0) {
+					if (Random::get(0.0, 1.0) < rand) {
 						p._map[j] = 1;
 					} else {
 						p._map[j] = 0;
@@ -271,8 +311,8 @@ void DSSearch::genMap(double p1, double p2) {
 
 			// Differential-mutation strategy
 			for (auto &p : _swarm) {
+				std::fill(p._map.begin(), p._map.end(), 0);
 				const int j = Random::get(0, _n - 1);
-				std::fill((p._map).begin(), (p._map).end(), 0);
 				p._map[j] = 1;
 			}
 		}
