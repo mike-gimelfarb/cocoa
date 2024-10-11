@@ -258,8 +258,8 @@ void build_ccpso(py::module_ &m) {
 
 void build_ds(py::module_ &m) {
 	py::class_<DSSearch, MultivariateOptimizer> solver(m, "DPSO");
-	solver.def(py::init<int, double, double, int>(), "mfev"_a, "tol"_a,
-			"stol"_a, "np"_a);
+	solver.def(py::init<int, double, double, int, bool, int>(), "mfev"_a, "tol"_a,
+			"stol"_a, "np"_a, "adapt"_a = true, "nbatch"_a = 100);
 }
 
 void build_slpso(py::module_ &m) {
