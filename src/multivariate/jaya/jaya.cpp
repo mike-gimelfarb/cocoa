@@ -199,7 +199,7 @@ multivariate_solution JayaSearch::optimize(const multivariate_problem &f,
 		}
 
 		// test convergence in standard deviation
-		if (m2 <= (_np - 1) * _stol) {
+		if (m2 <= (_np - 1) * _stol * _stol) {
 			converged = true;
 			break;
 		}

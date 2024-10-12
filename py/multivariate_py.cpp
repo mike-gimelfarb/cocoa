@@ -19,6 +19,7 @@
 #include "../src/multivariate/nes/xnes.h"
 #include "../src/multivariate/de/jade.h"
 #include "../src/multivariate/de/sansde.h"
+#include "../src/multivariate/jaya/jaya.h"
 #include "../src/multivariate/direct/directl.h"
 #include "../src/multivariate/harmony/nshs.h"
 #include "../src/multivariate/hees/hees.h"
@@ -183,41 +184,41 @@ void build_hees(py::module_ &m) {
 			"tol"_a, "mres"_a = 1, "print"_a = false, "np"_a = 0, "sigma0"_a =
 					2.);
 }
-//
-//void build_jaya(py::module_ &m) {
-//	py::class_<JayaSearch, MultivariateOptimizer> solver(m, "JAYA");
-//
-//	py::enum_<JayaSearch::jaya_mutation_method> mutation_strategy(solver,
-//			"JAYA_Mutation");
-//	mutation_strategy.value("original",
-//			JayaSearch::jaya_mutation_method::original);
-//	mutation_strategy.value("levy", JayaSearch::jaya_mutation_method::levy);
-//	mutation_strategy.value("tent_map",
-//			JayaSearch::jaya_mutation_method::tent_map);
-//	mutation_strategy.value("logistic",
-//			JayaSearch::jaya_mutation_method::logistic);
-//	mutation_strategy.export_values();
-//
-//	solver.def(
-//			py::init<int, double, int, int, bool, int,
-//					JayaSearch::jaya_mutation_method, double, double, int,
-//					double>(), "mfev"_a, "tol"_a, "np"_a, "npmin"_a, "adapt"_a =
-//					true, "k0"_a = 2, "mutation"_a =
-//					JayaSearch::jaya_mutation_method::logistic, "scale"_a =
-//					0.01, "beta"_a = 1.5, "kcheb"_a = 2, "temper"_a = 10.);
-//}
-//
-//void build_mayfly(py::module_ &m) {
-//	py::class_<MayflySearch, MultivariateOptimizer> solver(m, "Mayfly");
-//	solver.def(
-//			py::init<int, int, double, double, double, double, double, double,
-//					double, double, double, double, double, double, double,
-//					double, double, bool>(), "np"_a, "mfev"_a, "a1"_a = 1.,
-//			"a2"_a = 1.5, "a3"_a = 1.5, "beta"_a = 2., "dance"_a = 5.,
-//			"ddamp"_a = 0.8, "fl"_a = 1., "fldamp"_a = 0.99, "gmin"_a = 0.8,
-//			"gmax"_a = 0.8, "vdamp"_a = 0.1, "sigma"_a = 0.1, "pmutdim"_a =
-//					0.01, "pmutnp"_a = 0.05, "l"_a = 0.95, "pgb"_a = false);
-//}
+
+void build_jaya(py::module_ &m) {
+	py::class_<JayaSearch, MultivariateOptimizer> solver(m, "JAYA");
+
+	py::enum_<JayaSearch::jaya_mutation_method> mutation_strategy(solver,
+			"JAYA_Mutation");
+	mutation_strategy.value("original",
+			JayaSearch::jaya_mutation_method::original);
+	mutation_strategy.value("levy", JayaSearch::jaya_mutation_method::levy);
+	mutation_strategy.value("tent_map",
+			JayaSearch::jaya_mutation_method::tent_map);
+	mutation_strategy.value("logistic",
+			JayaSearch::jaya_mutation_method::logistic);
+	mutation_strategy.export_values();
+
+	solver.def(
+			py::init<int, double, int, int, bool, int,
+					JayaSearch::jaya_mutation_method, double, double, int,
+					double>(), "mfev"_a, "tol"_a, "np"_a, "npmin"_a, "adapt"_a =
+					true, "k0"_a = 2, "mutation"_a =
+					JayaSearch::jaya_mutation_method::logistic, "scale"_a =
+					0.01, "beta"_a = 1.5, "kcheb"_a = 2, "temper"_a = 10.);
+}
+
+void build_mayfly(py::module_ &m) {
+	py::class_<MayflySearch, MultivariateOptimizer> solver(m, "Mayfly");
+	solver.def(
+			py::init<int, int, double, double, double, double, double, double,
+					double, double, double, double, double, double, double,
+					double, double, bool>(), "np"_a, "mfev"_a, "a1"_a = 1.,
+			"a2"_a = 1.5, "a3"_a = 1.5, "beta"_a = 2., "dance"_a = 5.,
+			"ddamp"_a = 0.8, "fl"_a = 1., "fldamp"_a = 0.99, "gmin"_a = 0.8,
+			"gmax"_a = 0.8, "vdamp"_a = 0.1, "sigma"_a = 0.1, "pmutdim"_a =
+					0.01, "pmutnp"_a = 0.05, "l"_a = 0.95, "pgb"_a = false);
+}
 
 void build_bobyqa(py::module_ &m) {
 	py::class_<Bobyqa, MultivariateOptimizer> solver(m, "BOBYQA");
@@ -380,6 +381,7 @@ void build_multivariate(py::module_ &m) {
 	build_xnes(m);
 	build_jade(m);
 	build_sansde(m);
+	build_jaya(m);
 	build_nshs(m);
 	build_hees(m);
 	build_bobyqa(m);
