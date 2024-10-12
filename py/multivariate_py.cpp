@@ -238,8 +238,8 @@ void build_praxis(py::module_ &m) {
 
 void build_apso(py::module_ &m) {
 	py::class_<APSOSearch, MultivariateOptimizer> solver(m, "APSO");
-	solver.def(py::init<int, double, double, int, bool>(), "mfev"_a, "tol"_a,
-			"stol"_a, "np"_a, "correct"_a = true);
+	solver.def(py::init<int, double, int, bool>(), "mfev"_a, "tol"_a,
+			"np"_a, "correct"_a = true);
 }
 
 void build_cso(py::module_ &m) {

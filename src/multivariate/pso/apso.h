@@ -63,12 +63,12 @@ protected:
 
 	bool _correct;
 	int _np, _mfev;
-	double _tol, _stol;
+	double _tol;
 
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	APSOSearch(int mfev, double tol, double stol, int np, bool correct = true);
+	APSOSearch(int mfev, double tol, int np, bool correct = true);
 
 	void init(const multivariate_problem &f, const double *guess);
 

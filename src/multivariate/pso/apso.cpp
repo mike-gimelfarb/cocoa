@@ -38,9 +38,8 @@
 
 using Random = effolkronium::random_static;
 
-APSOSearch::APSOSearch(int mfev, double tol, double stol, int np, bool correct) {
+APSOSearch::APSOSearch(int mfev, double tol, int np, bool correct) {
 	_tol = tol;
-	_stol = stol;
 	_np = np;
 	_mfev = mfev;
 	_correct = correct;
@@ -129,7 +128,7 @@ multivariate_solution APSOSearch::optimize(const multivariate_problem &f,
 			m2 += delta * delta2;
 		}
 
-		if (m2 <= (_np - 1) * _stol) {
+		if (m2 <= (_np - 1) * _tol * _tol) {
 			converged = true;
 			break;
 		}
