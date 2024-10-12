@@ -173,7 +173,7 @@ multivariate_solution SLPSOSearch::optimize(const multivariate_problem &f,
 		}
 
 		// test convergence in standard deviation
-		if (m2 <= (_np - 1) * _tol) {
+		if (m2 <= (_np - 1) * _tol * _tol) {
 			converged = true;
 			break;
 		}
