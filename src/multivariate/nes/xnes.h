@@ -75,8 +75,6 @@ private:
 	void tred2();
 
 	void tql2();
-
-	double normcdf(const double x);
 };
 
 #endif /* MULTIVARIATE_XNES_H_ */
