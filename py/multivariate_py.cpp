@@ -163,8 +163,9 @@ void build_jade(py::module_ &m) {
 
 void build_shade(py::module_ &m) {
 	py::class_<ShadeSearch, MultivariateOptimizer> solver(m, "SHADE");
-	solver.def(py::init<int, int, double, bool>(),
-			"mfev"_a, "np"_a, "tol"_a, "archive"_a = true);
+	solver.def(py::init<int, int, double, bool, int, int>(),
+			"mfev"_a, "npinit"_a, "tol"_a, "archive"_a = true, "h"_a = 100,
+			"npmin"_a = 4);
 }
 
 void build_sansde(py::module_ &m) {

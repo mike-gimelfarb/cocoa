@@ -25,6 +25,10 @@
  [1] Tanabe, Ryoji, and Alex Fukunaga. "Success-history based parameter
  adaptation for differential evolution." 2013 IEEE congress on evolutionary
  computation. IEEE, 2013.
+
+ [2] Tanabe, Ryoji, and Alex S. Fukunaga. "Improving the search performance of
+ SHADE using linear population size reduction." 2014 IEEE congress on
+ evolutionary computation (CEC). IEEE, 2014.
  */
 
 #define _USE_MATH_DEFINES
@@ -38,12 +42,14 @@
 
 using Random = effolkronium::random_static;
 
-ShadeSearch::ShadeSearch(int mfev, int np, double tol, bool archive, int h) {
+ShadeSearch::ShadeSearch(int mfev, int npinit, double tol, bool archive, int h,
+		int npmin) {
 	_mfev = mfev;
-	_np = np;
 	_tol = tol;
 	_archive = archive;
 	_h = h;
+	_npinit = npinit;
+	_npmin = npmin;
 }
 
 void ShadeSearch::init(const multivariate_problem &f, const double *guess) {
@@ -68,6 +74,7 @@ void ShadeSearch::init(const multivariate_problem &f, const double *guess) {
 	_SF.clear();
 	_w.clear();
 	_k = 1;
+	_np = _npinit;
 
 	// define swarm
 	_swarm.clear();
@@ -80,12 +87,12 @@ void ShadeSearch::init(const multivariate_problem &f, const double *guess) {
 		_swarm.push_back(std::move(part));
 		_fev++;
 	}
-}
-
-void ShadeSearch::iterate() {
 
 	// sort swarm by fitness
 	std::sort(_swarm.begin(), _swarm.end(), point::compare_fitness);
+}
+
+void ShadeSearch::iterate() {
 
 	// main generation loop
 	_SCR.clear();
@@ -184,7 +191,7 @@ void ShadeSearch::iterate() {
 		double meanCRden = 0.0;
 		double meanFnum = 0.0;
 		double meanFden = 0.0;
-		for (int i = 0; i < lenS; i++){
+		for (int i = 0; i < lenS; i++) {
 			meanCRnum += _w[i] * _SCR[i];
 			meanCRden += _w[i];
 			meanFnum += _w[i] * _SF[i] * _SF[i];
@@ -199,6 +206,29 @@ void ShadeSearch::iterate() {
 		_k++;
 		if (_k > _h) {
 			_k = 1;
+		}
+	}
+
+	// sort swarm by fitness
+	std::sort(_swarm.begin(), _swarm.end(), point::compare_fitness);
+
+	// population size adjustment
+	const int npnew = std::round(
+			(_npmin - _npinit) * ((1. * _fev) / _mfev) + _npinit);
+	if (npnew < _np) {
+		for (int i = 0; i < _np - npnew; i++) {
+			_swarm.pop_back();
+		}
+		_np = npnew;
+	}
+
+	// archive size adjustment
+	if (_archive){
+		int larch = static_cast<int>(_arch.size());
+		while (larch > npnew) {
+			const int irand = Random::get(0, larch - 1);
+			_arch.erase(_arch.begin() + irand);
+			--larch;
 		}
 	}
 }

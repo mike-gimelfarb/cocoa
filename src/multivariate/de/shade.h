@@ -25,6 +25,10 @@
  [1] Tanabe, Ryoji, and Alex Fukunaga. "Success-history based parameter
  adaptation for differential evolution." 2013 IEEE congress on evolutionary
  computation. IEEE, 2013.
+
+ [2] Tanabe, Ryoji, and Alex S. Fukunaga. "Improving the search performance of
+ SHADE using linear population size reduction." 2014 IEEE congress on
+ evolutionary computation (CEC). IEEE, 2014.
  */
 
 #ifndef MULTIVARIATE_DE_SHADE_H_
@@ -39,7 +43,7 @@ class ShadeSearch: public MultivariateOptimizer {
 
 protected:
 	bool _archive;
-	int _n, _np, _fev, _mfev, _h, _k;
+	int _n, _npinit, _npmin, _np, _fev, _mfev, _h, _k;
 	double _tol;
 	multivariate_problem _f;
 	std::vector<double> _lower, _upper, _MCR, _MF, _work, _SCR, _SF, _w;
@@ -49,7 +53,8 @@ protected:
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	ShadeSearch(int mfev, int np, double tol, bool archive = true, int h = 100);
+	ShadeSearch(int mfev, int npinit, double tol, bool archive = true, int h =
+			100, int npmin = 4);
 
 	void init(const multivariate_problem &f, const double *guess);
 
