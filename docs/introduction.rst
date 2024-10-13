@@ -24,11 +24,39 @@ Then install directly from source:
 
     pip install git+https://github.com/mike-gimelfarb/cocoa
 
-Basic Example
+Basic Univariate Example
+============
+
+The following example optimizes a univariate sinusoidal function using the Brent method
+
+.. code-block:: python
+
+	import numpy as np
+	from cocoaopt import Brent
+	
+	# function to optimize
+	def fx(x):
+	    return np.sin(x) + np.sin(10 * x / 3)
+	
+	alg = Brent(mfev=20000, atol=1e-6)
+	sol = alg.optimize(fx, lower=2.7, upper=7.5, guess=np.random.uniform(2.7, 7.5))
+	print(sol)
+
+This will print the following output:
+
+.. code-block:: shell
+
+	x*: 5.1457349293974861
+	calls to f: 10
+	converged: 1
+
+which indicates the algorithm has found a local minimum (in this case, also a global minimum).
+
+Basic Multivariate Example
 ============
 
 The following example optimizes the 10-dimensional <Rosenbrock function `https://en.wikipedia.org/wiki/Rosenbrock_function`>_
-using the active variant of the CMA-ES evolutionary strategy optimizer
+using the active variant of the CMA-ES evolutionary strategy optimizer:
 
 .. code-block:: python
 
@@ -56,3 +84,5 @@ This will print the following output:
     constraint calls: 0
     B/B constraint calls: 0
     converged: yes
+
+which indicates the algorithm has found a local minimum (in this case, also a global minimum).
