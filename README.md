@@ -39,9 +39,10 @@ The following algorithms are currently fully supported with Python wrappers:
 * Multivariate:
     * Unconstrained:
         * [Adaptive Coordinate Descent (ACD)](https://link.springer.com/chapter/10.1007/978-3-540-87700-4_21)
-        * [AMaLGaM](https://dl.acm.org/doi/10.1145/1570256.1570313)
+        * [AMaLGaM IDEA](https://dl.acm.org/doi/10.1145/1570256.1570313)
         * [Basin Hopping](https://pubs.acs.org/doi/10.1021/jp970984n)
-        * Covariance Matrix Adaptation (CMA-ES):
+        * [Controlled Random Search (CRS)](https://link.springer.com/article/10.1007/s10957-006-9101-0)
+        * Covariance Matrix Adaptation Evolutionary Strategy (CMA-ES):
             * [Vanilla CMA-ES](https://ieeexplore.ieee.org/document/6790628/)
             * [Active CMA-ES](https://ieeexplore.ieee.org/document/1688662)
             * [Cholesky CMA-ES](https://papers.nips.cc/paper_files/paper/2016/file/289dff07669d7a23de0ef88d2f7129e7-Paper.pdf)
@@ -49,27 +50,27 @@ The following algorithms are currently fully supported with Python wrappers:
             * [Separable CMA-ES](https://link.springer.com/chapter/10.1007/978-3-540-87700-4_30)
             * [IPOP CMA-ES](https://ieeexplore.ieee.org/document/1554902)
             * [BIPOP CMA-ES](https://link.springer.com/chapter/10.1007/978-3-642-32937-1_30)
-        * [Exponential Natural Evolution Strategy (xNES)](https://dl.acm.org/doi/10.1145/1830483.1830557)
-        * Self-Adaptive Differential Evolution:
+        * Differential Evolution (DE):
             * [JADE](https://ieeexplore.ieee.org/document/4424751)
             * [L-SHADE](https://ieeexplore.ieee.org/abstract/document/6900380)
             * [SANSDE](https://ieeexplore.ieee.org/document/4630935/)
-        * [Self-Adaptive Multi-Population JAYA](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8640077)
+        * [Differential Search (DSA)](https://www.sciencedirect.com/science/article/abs/pii/S0098300411004353)
+        * [Exponential Natural Evolution Strategy (xNES)](https://dl.acm.org/doi/10.1145/1830483.1830557)
         * [Novel Self-Adaptive Harmony Search (NSHS)](https://onlinelibrary.wiley.com/doi/10.1155/2013/653749)
-        * [Hessian Evolutionary Strategy (HEES)](https://link.springer.com/chapter/10.1007/978-3-030-58112-1_41)
-        * [BOBYQA](https://www.damtp.cam.ac.uk/user/na/NA_papers/NA2009_06.pdf)
-        * [NEWUOA](https://link.springer.com/chapter/10.1007/0-387-30065-1_16)
-        * [PRAXIS](https://link.springer.com/article/10.3758/BF03203605)
+        * [Hessian Evolutionary Strategy (HE-ES)](https://link.springer.com/chapter/10.1007/978-3-030-58112-1_41)
+        * [Self-Adaptive Multi-Population JAYA](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8640077)
+        * [Adaptive Nelder-Mead Method](https://www.tandfonline.com/doi/full/10.1080/0305215X.2019.1688315)
         * Particle Swarm Optimization (PSO):
-            * [Adaptive PSO](https://ieeexplore.ieee.org/document/4812104)
-            * [Competitive PSO](https://link.springer.com/chapter/10.1007/978-981-13-0761-4_9)
-            * [Cooperative Co-Evolving PSO](https://ieeexplore.ieee.org/document/5910380)
-            * Differential Search
-            * [Self-Learning PSO](https://ieeexplore.ieee.org/document/6069879)
+            * [Adaptive PSO (APSO)](https://ieeexplore.ieee.org/document/4812104)
+            * [Competitive PSO (CSO)](https://link.springer.com/chapter/10.1007/978-981-13-0761-4_9)
+            * [Cooperative Co-Evolving PSO (CCPSO)](https://ieeexplore.ieee.org/document/5910380)
+            * [Self-Learning PSO (SLPSO)](https://ieeexplore.ieee.org/document/6069879)
+        * Powell's Methods:
+            * [BOBYQA](https://www.damtp.cam.ac.uk/user/na/NA_papers/NA2009_06.pdf)
+            * [NEWUOA](https://link.springer.com/chapter/10.1007/0-387-30065-1_16)
+        * [PRAXIS](https://link.springer.com/article/10.3758/BF03203605)
         * [Rosenbrock Method](https://academic.oup.com/comjnl/article/12/1/69/311651)
-        * [Adaptive Nelder-Mead](https://www.tandfonline.com/doi/full/10.1080/0305215X.2019.1688315)
-        * [Controlled Random Search (CRS)](https://link.springer.com/article/10.1007/s10957-006-9101-0)
-  
+       
 # Usage
 
 Simple example to optimize a univariate function:
