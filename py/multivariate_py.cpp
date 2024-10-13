@@ -18,6 +18,7 @@
 #include "../src/multivariate/cma/bipop_cmaes.h"
 #include "../src/multivariate/nes/xnes.h"
 #include "../src/multivariate/de/jade.h"
+#include "../src/multivariate/de/shade.h"
 #include "../src/multivariate/de/sansde.h"
 #include "../src/multivariate/jaya/jaya.h"
 #include "../src/multivariate/direct/directl.h"
@@ -156,8 +157,14 @@ void build_xnes(py::module_ &m) {
 void build_jade(py::module_ &m) {
 	py::class_<JadeSearch, MultivariateOptimizer> solver(m, "JADE");
 	solver.def(py::init<int, int, double, bool, bool, double, double, double>(),
-			"mfev"_a, "np"_a, "tol"_a, "archive"_a, "repaircr"_a = true,
+			"mfev"_a, "np"_a, "tol"_a, "archive"_a = true, "repaircr"_a = true,
 			"pelite"_a = 0.05, "cdamp"_a = 0.1, "sigma"_a = 0.07);
+}
+
+void build_shade(py::module_ &m) {
+	py::class_<ShadeSearch, MultivariateOptimizer> solver(m, "SHADE");
+	solver.def(py::init<int, int, double, bool>(),
+			"mfev"_a, "np"_a, "tol"_a, "archive"_a = true);
 }
 
 void build_sansde(py::module_ &m) {
@@ -380,6 +387,7 @@ void build_multivariate(py::module_ &m) {
 	build_bipop_cmaes(m);
 	build_xnes(m);
 	build_jade(m);
+	build_shade(m);
 	build_sansde(m);
 	build_jaya(m);
 	build_nshs(m);

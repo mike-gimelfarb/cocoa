@@ -21,21 +21,6 @@
 
  ================================================================
  REFERENCES:
-
- [1] Zhang, Jingqiao, and Arthur C. Sanderson. "JADE: Self-adaptive differential
- evolution with fast and reliable convergence performance." 2007 IEEE congress
- on evolutionary computation. IEEE, 2007.
-
- [2] Zhang, Jingqiao, and Arthur C. Sanderson. "JADE: adaptive differential
- evolution with optional external archive." IEEE Transactions on evolutionary
- computation 13.5 (2009): 945-958.
-
- [3] Li, Jie, et al. "Power mean based crossover rate adaptive differential
- evolution." International Conference on Artificial Intelligence and Computational
- Intelligence. Springer, Berlin, Heidelberg, 2011.
-
- [4] Gong, Wenyin, Zhihua Cai, and Yang Wang. "Repairing the crossover rate
- in adaptive differential evolution." Applied Soft Computing 15 (2014): 149-168.
  */
 
 #define _USE_MATH_DEFINES
@@ -45,23 +30,19 @@
 #include "../../blas.h"
 #include "../../random.hpp"
 
-#include "jade.h"
+#include "shade.h"
 
 using Random = effolkronium::random_static;
 
-JadeSearch::JadeSearch(int mfev, int np, double tol, bool archive,
-		bool repaircr, double pelite, double cdamp, double sigma) {
+ShadeSearch::ShadeSearch(int mfev, int np, double tol, bool archive, int h) {
 	_mfev = mfev;
 	_np = np;
 	_tol = tol;
 	_archive = archive;
-	_repaircr = repaircr;
-	_pelite = pelite;
-	_c = cdamp;
-	_sigma = sigma;
+	_h = h;
 }
 
-void JadeSearch::init(const multivariate_problem &f, const double *guess) {
+void ShadeSearch::init(const multivariate_problem &f, const double *guess) {
 
 	// define problem
 	if (f._hasc || f._hasbbc) {
@@ -75,12 +56,14 @@ void JadeSearch::init(const multivariate_problem &f, const double *guess) {
 
 	// define parameters and memory
 	_fev = 0;
-	_mucr = 0.5;
-	_muf = 0.5;
+	_MCR = std::vector<double>(_h, 0.5);
+	_MF = std::vector<double>(_h, 0.5);
 	_work = std::vector<double>(_n);
-	_scr = std::vector<double>(_np);
-	_sf = std::vector<double>(_np);
 	_arch.clear();
+	_SCR.clear();
+	_SF.clear();
+	_w.clear();
+	_k = 1;
 
 	// define swarm
 	_swarm.clear();
@@ -95,28 +78,33 @@ void JadeSearch::init(const multivariate_problem &f, const double *guess) {
 	}
 }
 
-void JadeSearch::iterate() {
+void ShadeSearch::iterate() {
 
 	// sort swarm by fitness
 	std::sort(_swarm.begin(), _swarm.end(), point::compare_fitness);
 
 	// main generation loop
-	int nsucc = 0;
+	_SCR.clear();
+	_SF.clear();
+	_w.clear();
 	for (int i = 0; i < _np; i++) {
 
-		// generate crossover CR
-		double CR = Random::get(_Z) * 0.1 + _mucr;
-		CR = std::max(0., std::min(CR, 1.));
+		// sample a crossover parameter
+		const int ri = Random::get(0, _h - 1);
+		const double CRi = std::max(0.,
+				std::min(Random::get(_Z) * 0.1 + _MCR[ri], 1.));
 
-		// generate mutation F
-		double F = -1.;
-		while (F < 0.) {
-			F = sampleCauchy() * 0.1 + _muf;
-			F = std::min(F, 1.);
+		// sample a mutation parameter
+		double Fi = std::min(1., sampleCauchy() * 0.1 + _MF[ri]);
+		while (Fi <= 0) {
+			Fi = std::min(1., sampleCauchy() * 0.1 + _MF[ri]);
 		}
 
+		// sample a greediness parameter
+		const double pi = Random::get(std::min(2. / _n, 0.2), 0.2);
+
 		// choose randomly one of the best particles
-		const int nelite = std::max(1, static_cast<int>(_pelite * _np));
+		const int nelite = std::max(1, static_cast<int>(pi * _np));
 		const int ibest = Random::get(0, nelite - 1);
 
 		// choose another two random particles
@@ -131,19 +119,18 @@ void JadeSearch::iterate() {
 		}
 
 		// perform the mutation
-		double cr1;
 		if (irand2 >= _np) {
 
 			// x2 sampled from archive
-			cr1 = mutate(&_swarm[i]._x[0], &_swarm[ibest]._x[0],
+			mutate(&_swarm[i]._x[0], &_swarm[ibest]._x[0],
 					&_swarm[irand1]._x[0], &_arch[irand2 - _np][0], &_work[0],
-					_n, F, CR);
+					_n, Fi, CRi);
 		} else {
 
 			// x2 sampled from population
-			cr1 = mutate(&_swarm[i]._x[0], &_swarm[ibest]._x[0],
+			mutate(&_swarm[i]._x[0], &_swarm[ibest]._x[0],
 					&_swarm[irand1]._x[0], &_swarm[irand2]._x[0], &_work[0], _n,
-					F, CR);
+					Fi, CRi);
 		}
 
 		// bound control
@@ -161,7 +148,7 @@ void JadeSearch::iterate() {
 		if (fwork <= _swarm[i]._f) {
 
 			// archive management
-			if (_archive) {
+			if (_archive && fwork < _swarm[i]._f) {
 				if (larch >= _np) {
 					const int irand = Random::get(0, _np - 1);
 					std::copy(_swarm[i]._x.begin(), _swarm[i]._x.end(),
@@ -171,41 +158,48 @@ void JadeSearch::iterate() {
 				}
 			}
 
+			// memory management
+			if (fwork < _swarm[i]._f) {
+				_SCR.push_back(CRi);
+				_SF.push_back(Fi);
+				_w.push_back(_swarm[i]._f - fwork);
+			}
+
 			// replacement
 			_swarm[i]._f = fwork;
 			std::copy(_work.begin(), _work.end(), _swarm[i]._x.begin());
-
-			// memory for parameter adaptation
-			_scr[nsucc] = cr1;
-			_sf[nsucc] = F;
-			nsucc++;
 		}
 	}
 
-	// update mean CR
-	double meancr;
-	if (nsucc > 0) {
-		if (std(&_scr[0], nsucc) > _sigma) {
-			meancr = std::sqrt(meanPow(&_scr[0], nsucc, 2));
-		} else {
-			meancr = meanPow(&_scr[0], nsucc, 1);
-		}
-	} else {
-		meancr = 0.;
-	}
-	_mucr = (1. - _c) * _mucr + _c * meancr;
+	// memory update
+	const int lenS = static_cast<int>(_SCR.size());
+	if (lenS > 0) {
 
-	// update mean F
-	double meanf;
-	if (nsucc > 0) {
-		meanf = meanPow(&_sf[0], nsucc, 2) / meanPow(&_sf[0], nsucc, 1);
-	} else {
-		meanf = 0.;
+		// compute mean CR and mean F
+		double meanCRnum = 0.0;
+		double meanCRden = 0.0;
+		double meanFnum = 0.0;
+		double meanFden = 0.0;
+		for (int i = 0; i < lenS; i++){
+			meanCRnum += _w[i] * _SCR[i];
+			meanCRden += _w[i];
+			meanFnum += _w[i] * _SF[i] * _SF[i];
+			meanFden += _w[i] * _SF[i];
+		}
+		const double meanCR = meanCRnum / meanCRden;
+		const double meanF = meanFnum / meanFden;
+
+		// replace in memory
+		_MCR[_k - 1] = meanCR;
+		_MF[_k - 1] = meanF;
+		_k++;
+		if (_k > _h) {
+			_k = 1;
+		}
 	}
-	_muf = (1. - _c) * _muf + _c * meanf;
 }
 
-multivariate_solution JadeSearch::optimize(const multivariate_problem &f,
+multivariate_solution ShadeSearch::optimize(const multivariate_problem &f,
 		const double *guess) {
 	init(f, guess);
 	bool converged = false;
@@ -235,51 +229,18 @@ multivariate_solution JadeSearch::optimize(const multivariate_problem &f,
 	return {_swarm[0]._x, _fev, converged};
 }
 
-double JadeSearch::mutate(double *x, double *best, double *xr1, double *xr2,
+void ShadeSearch::mutate(double *x, double *best, double *xr1, double *xr2,
 		double *out, int n, double F, double CR) {
 	const int irand = Random::get(0, n - 1);
-	double cr1 = 0.;
 	for (int i = 0; i < n; i++) {
 		if (i == irand || Random::get(0., 1.) < CR) {
 			out[i] = x[i] + F * (best[i] - x[i]) + F * (xr1[i] - xr2[i]);
-			cr1 += 1.;
 		} else {
 			out[i] = x[i];
 		}
 	}
-	if (_repaircr) {
-		return cr1 / n;
-	} else {
-		return CR;
-	}
 }
 
-double JadeSearch::meanPow(double *values, int n, int p) {
-	double mean = 0.;
-	for (int i = 0; i < n; i++) {
-		const double v = values[i];
-		if (p == 1) {
-			mean += (v - mean) / (i + 1.);
-		} else {
-			mean += (v * v - mean) / (i + 1.);
-		}
-	}
-	return mean;
-}
-
-double JadeSearch::std(double *values, int n) {
-	double mean = 0.;
-	double m2 = 0.;
-	for (int i = 0; i < n; i++) {
-		const double v = values[i];
-		const double delta = v - mean;
-		mean += delta / (i + 1.);
-		const double delta2 = v - mean;
-		m2 += delta * delta2;
-	}
-	return std::sqrt(m2 / n);
-}
-
-double JadeSearch::sampleCauchy() {
+double ShadeSearch::sampleCauchy() {
 	return std::tan(M_PI * (Random::get(0., 1.) - 0.5));
 }

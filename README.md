@@ -52,6 +52,7 @@ The following algorithms are currently fully supported with Python wrappers:
         * [Exponential Natural Evolution Strategy (xNES)](https://dl.acm.org/doi/10.1145/1830483.1830557)
         * Self-Adaptive Differential Evolution:
             * [JADE](https://ieeexplore.ieee.org/document/4424751)
+            * [SHADE](https://ieeexplore.ieee.org/document/6557555)
             * [SANSDE](https://ieeexplore.ieee.org/document/4630935/)
         * [Self-Adaptive Multi-Population JAYA](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8640077)
         * [Novel Self-Adaptive Harmony Search (NSHS)](https://onlinelibrary.wiley.com/doi/10.1155/2013/653749)
