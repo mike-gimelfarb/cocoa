@@ -1,4 +1,4 @@
-Welcome to documentation for cocoa!
+Welcome to documentation for COCOA!
 ====================================
 
 .. toctree::
@@ -6,3 +6,5 @@ Welcome to documentation for cocoa!
     :caption: Contents:
 
     introduction
+    univariate
+    multivariate

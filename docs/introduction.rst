@@ -12,7 +12,7 @@ Main advantages:
 Installation
 ============
 
-To use this library in a Python project, you will need:
+To use COCOA in a Python project, you will need:
 
 - C++ compiler (e.g., MS Build Tools)
 - git
@@ -27,7 +27,7 @@ Then install directly from source:
 Basic Univariate Example
 ============
 
-The following example optimizes a univariate sinusoidal function using the Brent method
+The following example optimizes a univariate sinusoidal function using the Brent method:
 
 .. code-block:: python
 
@@ -56,7 +56,7 @@ Basic Multivariate Example
 ============
 
 The following example optimizes the 10-dimensional <Rosenbrock function `https://en.wikipedia.org/wiki/Rosenbrock_function`>_
-using the active variant of the CMA-ES evolutionary strategy optimizer:
+using the active variant of the CMA-ES optimizer:
 
 .. code-block:: python
 
