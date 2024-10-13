@@ -29,9 +29,11 @@ ext_modules = [
 setup(
     name="cocoaopt",
     version=__version__,
-    author="Mike Gimelfarb",
+    author="Michael Gimelfarb",
     description="Collection of Continuous Optimization Algorithms",
     long_description="",
+    license="LGPL-2.1 License",
+    url="https://github.com/mike-gimelfarb/cocoa",
     ext_modules=ext_modules,
     cmdclass={"build_ext": build_ext},
     zip_safe=False,
