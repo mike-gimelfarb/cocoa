@@ -3,7 +3,8 @@ Introduction
 
 COCOA is a suite of algorithms written in C++ for the optimization of continuous 
 black-box functions (mostly without using derivative information). 
-Main advantages:
+
+Its main advantages include:
 
 - a single unified interface for all algorithms
 - a variety of classical algorithms with state-of-the-art improvements (e.g. automatic parameter adaptation)
