@@ -10,7 +10,7 @@ Main advantages:
 - convenient wrappers for Python with a user-friendly API
 
 Installation
-============
+-------------------
 
 To use COCOA in a Python project, you will need:
 
@@ -25,7 +25,7 @@ Then install directly from source:
     pip install git+https://github.com/mike-gimelfarb/cocoa
 
 Basic Univariate Example
-============
+-------------------
 
 The following example optimizes a univariate sinusoidal function using the Brent method:
 
@@ -53,7 +53,7 @@ This will print the following output:
 which indicates the algorithm has found a local minimum (in this case, also a global minimum).
 
 Basic Multivariate Example
-============
+-------------------
 
 The following example optimizes the 10-dimensional <Rosenbrock function `https://en.wikipedia.org/wiki/Rosenbrock_function`>_
 using the active variant of the CMA-ES optimizer:
