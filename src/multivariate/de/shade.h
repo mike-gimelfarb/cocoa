@@ -21,6 +21,10 @@
 
  ================================================================
  REFERENCES:
+
+ [1] Tanabe, Ryoji, and Alex Fukunaga. "Success-history based parameter
+ adaptation for differential evolution." 2013 IEEE congress on evolutionary
+ computation. IEEE, 2013.
  */
 
 #ifndef MULTIVARIATE_DE_SHADE_H_
