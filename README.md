@@ -11,11 +11,8 @@ Main advantages:
 
 # Installation
 
-To use this library in a Python project, you will need:
-* C++ compiler (e.g., MS Build Tools)
-* git
- 
-Then install directly from source together with all the requirements:
+To use this library in a Python project, you will need a C++ compiler for Python and git (e.g. ``conda install git``). 
+Then install directly:
 
 ```
 pip install git+https://github.com/mike-gimelfarb/cocoa
