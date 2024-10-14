@@ -1,9 +1,8 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
 # Available at setup time due to pyproject.toml
 from pybind11.setup_helpers import Pybind11Extension, build_ext
-from pybind11 import get_cmake_dir
 
 import sys
 
@@ -30,11 +29,23 @@ setup(
     name="cocoaopt",
     version=__version__,
     author="Michael Gimelfarb",
-    description="Collection of Continuous Optimization Algorithms",
-    long_description="",
+    author_email="mgimelfarb@yahoo.ca",
+    description="COCOA: Collection of Continuous Optimization Algorithms",
     license="LGPL-2.1 License",
     url="https://github.com/mike-gimelfarb/cocoa",
+    packages=find_packages(),
     ext_modules=ext_modules,
+    install_requires=['pybind11>=2.11.1', 'numpy'],
+    python_requires=">=3.8",
     cmdclass={"build_ext": build_ext},
     zip_safe=False,
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    ]
 )
