@@ -541,3 +541,96 @@ strategy over time.
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
  
+
+Exponential Natural Evolution Strategy (xNES)
+-------------------
+
+This algorithm is described in the following paper:
+
+* Glasmachers, T., Schaul, T., Yi, S., Wierstra, D., & Schmidhuber, J. (2010, July). Exponential natural evolution strategies. In Proceedings of the 12th annual conference on Genetic and evolutionary computation (pp. 393-400).
+
+The Exponential Natural Evolution Strategy (xNES) is closely related to the CMA-ES
+algorithm, in which the population is modeled using a multivariate Gaussian distribution.
+The key idea of xNES is to adapt the Gaussian sampling distribution using the natural gradient.
+
+.. function:: xNES(mfev, tol, a0 = 1.0, etamu = 1.0)
+
+   Initializes a new xNES optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the range of objective values among the candidate solutions is less than this value.
+   :type tol: float
+   :param a0: Initial diagonal values of the covariance.
+   :type a0: float
+   :param etamu: The learning rate for the mean.
+   :type etamu: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+ 
+
+Hessian Estimation Evolutionary Strategy (HE-ES)
+-------------------
+
+This algorithm was introduced in the following paper:
+
+* Glasmachers, Tobias, and Oswin Krause. "The Hessian Estimation Evolution Strategy." International Conference on Parallel Problem Solving from Nature. Springer, Cham, 2020.
+
+Similar to CMA-ES and variants, the Hessian Estimation Evolution Strategy (HE-ES) maintains a Gaussian
+sampling distribution by updating its mean and covariance parameters. Crucially in HE-ES,
+the covariance matrix is updated using curvature information from the objective function's imputed Hessian.
+In practice, HE-ES often performs superior to CMA-ES in terms of robustness and 
+number of function evaluations, in many cases even when the objective function
+is not twice-differentiable.
+
+.. function:: HEES(mfev, tol, mres = 1, print = False, np = 0, sigma0 = 2.0)
+
+   Initializes a new NSHS optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the range of objective values among the candidate solutions is less than this value.
+   :type tol: float
+   :param mres: Number of runs with increasing population size as suggested in the paper.
+   :type mres: int
+   :param print: Whether to print progress on local searches to the console when using HE-ES with multiple restarts.
+   :type print: bool
+   :param np: Initial population size.
+   :type np: int
+   :param sigma0: Initial step size.
+   :type sigma0: float
+   :param fstdmin: Lower bound on standard deviation as described in the paper (where it is hard coded as 0.0001).
+   :type fstdmin: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+ 
+
+Novel Self-Adaptive Harmony Search (NSHS)
+-------------------
+
+This version of harmony search is described in the following paper:
+
+* Luo, Kaiping. "A Novel Self-Adaptive Harmony Search Algorithm." Journal of Applied Mathematics 2013.1 (2013): 653749.
+
+Harmony search is loosely inspired by the musical improvisation process of musicians, 
+and mimics the way musicians search for a perfect harmony by adjusting the pitch of their instruments.
+It is population-based, like some of the previously-described algorithms, where each candidate solution is adjusted
+based on a harmony memory. The Novel Self-Adaptive Harmony Search (NSHS) variant adapts the pitch and rate adjustment parameters
+automatically based on historical information and is much more efficient than standard harmony search and many
+of its variants.
+
+.. function:: NSHS(mfev, hms, fstdmin = 0.0001)
+
+   Initializes a new NSHS optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param hms: Harmony memory size.
+   :type hms: int
+   :param fstdmin: Lower bound on standard deviation as described in the paper (where it is hard coded as 0.0001).
+   :type fstdmin: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+ 
+
+ 
