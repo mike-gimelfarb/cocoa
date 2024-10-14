@@ -671,7 +671,7 @@ for global exploration of the search space.
    :type scale: float
    :param beta: Distributional parameter used when the mutation operator is ``levy``.
    :type beta: float
-   :param: kcheb: Currently unused.
+   :param kcheb: Currently unused.
    :type kcheb: int
    :param temper: Temperature parameter that controls parameter adaptation speed.
    :type temper: float
