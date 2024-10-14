@@ -882,3 +882,64 @@ improving the objective value. This variant tends to perform well across a broad
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
 
+
+Powell's Methods
+-------------------
+
+Several of M.J.D. Powell's optimization methods are implemented in COCOA. The references
+for this body of work can be found in:
+
+* Powell, Michael JD. "The BOBYQA algorithm for bound constrained optimization without derivatives." Cambridge NA Report NA2009/06, University of Cambridge, Cambridge 26 (2009): 26-46.
+* Powell, Michael JD. "The NEWUOA software for unconstrained optimization without derivatives." Large-scale nonlinear optimization (2006): 255-297.
+
+
+BOBYQA
+~~~~~~~~
+
+BOBYQA stands for Bound Optimization BY Quadratic Approximation. It maintains a
+quadratic model of the objective function, which is used to derive a trust region
+within which to perform optimization. The trust region radius and interpolation
+points are chosen adaptively to improve performance. This algorithm is incredibly
+robust across a variety of problems, particularly when derivative information
+is not available. It is most suitable for functions with at most a few hundred
+decision variables, and where bound constraints are provided on the search space.
+
+.. function:: BOBYQA(mfev, np, rho, tol)
+
+   Initializes a new BOBYQA optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param np: Number of interpolation points.
+   :type np: int
+   :param rho: Initial radius of the trust region.
+   :type rho: float
+   :param tol: Tolerance to determinate whether the algorithm should terminate.
+   :type tol: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+NEWUOA
+~~~~~~~~
+
+NEWUOA stands for New Unconstrained Optimization with Quadratic Approximation.
+Similar to BOBYQA it maintains a quadratic surrogate model of the objective function, 
+and an adaptive trust region is used to select points. Unlike BOBYQA, NEWUOA
+restricts the search to the bound constraints provided in the problem.
+
+.. function:: NEWUOA(mfev, np, rho, tol)
+
+   Initializes a new NEWUOA optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param np: Number of interpolation points.
+   :type np: int
+   :param rho: Initial radius of the trust region.
+   :type rho: float
+   :param tol: Tolerance to determinate whether the algorithm should terminate.
+   :type tol: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
