@@ -1,7 +1,15 @@
-@misc{gimelfarb2024cocoa,
-  author = {Gimelfarb, Michael},
-  title = {COCOA: COllection of Continuous Optimization Algorithms},
-  year = {2024},
-  publisher = {GitHub},
-  journal = {GitHub repository}
-}
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: 'COCOA: COllection of Continuous Optimization Algorithms'
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Michael
+    family-names: Gimelfarb
+repository-code: 'https://github.com/mike-gimelfarb/cocoa'
+license: LGPL-2.1+
+date-released: '2024-10-14'
