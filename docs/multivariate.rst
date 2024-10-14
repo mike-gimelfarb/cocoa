@@ -718,3 +718,167 @@ better simplex initialization, periodic restarts, and better termination criteri
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
 
+
+Particle Swarm Optimization (PSO)
+-------------------
+
+Particle swarm optimization is a broad family of global optimization algorithms
+that imitates the way groups of animals (e.g. birds, fish) behave. Similar to 
+differential evolution and similar metaheuristics, it maintains a population of
+candidate solutions (called particles). However, unlike DE, it updates these 
+particles using an estimate of the particles' velocity in addition to their 
+position in the search space. The position of each particle is updated based
+on the particle's personal best position, as well as the global best position
+of the entire population. 
+
+COCOA implements a number of different variants of PSO, typically with parameter
+adaptation and other tricks to make them converge more effectively in 
+complex, high-dimensional problems.
+
+
+Adaptive PSO (APSO)
+~~~~~~~~
+
+This version of PSO is described in the following paper:
+
+* Zhan, Zhi-Hui, Jun Zhang, Yun Li, and Henry Shu-Hung Chung. "Adaptive particle swarm optimization." IEEE Transactions on Systems, Man, and Cybernetics, Part B (Cybernetics) 39, no. 6 (2009): 1362-1381.
+
+The Adaptive PSO (APSO) algorithm estimates the key hyper-parameters used in the
+PSO update equation using a sophisticated approach that adapts its behavior
+depending on the phase of the optimization, termed exploration, exploitation, convergence
+and jumping out. This helps the algorithm maintain diversity of the population
+pool and to avoid local minima.
+
+.. function:: APSO(mfev, tol, np, correct = True)
+
+   Initializes a new APSO optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the standard deviation in population candidates is less than this value.
+   :type tol: float
+   :param np: Population size.
+   :type np: int
+   :param correct: Whether to correct particles that go out of the search bounds.
+   :type correct: bool
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+Competitive PSO (CSO)
+~~~~~~~~
+
+This variant was described in the following papers:
+
+* Cheng, Ran & Jin, Yaochu. (2014). A Competitive Swarm Optimizer for Large Scale Optimization. IEEE transactions on cybernetics. 45. 10.1109/TCYB.2014.2322602.
+* Mohapatra, Prabhujit, Kedar Nath Das, and Santanu Roy. "A modified competitive swarm optimizer for large scale optimization problems." Applied Soft Computing 59 (2017): 340-362.
+* Mohapatra, Prabhujit, Kedar Nath Das, and Santanu Roy. "Inherited competitive swarm optimizer for large-scale optimization problems." Harmony Search and Nature Inspired Optimization Algorithms. Springer, Singapore, 2019. 85-95.
+
+The Competitive PSO (CSO) variant was designed to mimic competition among individuals in a population.
+It modifies the PSO update where the winning particles update their position and velocity based on
+their objective values, while the losing particles adapt to improve by learning from the winning
+particles. This variant is better-suited for large-scale optimization problems than standard PSO, 
+by subdividing the population into subpopulations during optimization.
+
+.. function:: CSO(mfev, stol, np, pcompete = 3, ring = False, correct = True, vmax = 0.2)
+
+   Initializes a new CSO optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param stol: Terminate when the standard deviation in population candidates is less than this value.
+   :type stol: float
+   :param np: Total population size (will be increased if ``pcompete`` does not divide it).
+   :type np: int
+   :param pcompete: Number of competing subpopulations.
+   :type pcompete: int
+   :param ring: Whether each particle updates its parameters based on its neighbors (ring topology), or the entire population.
+   :type ring: bool
+   :param correct: Whether to correct particles that go out of the search bounds.
+   :type correct: bool
+   :param vmax: Maximum bound on each component of the velocity vector.
+   :type vmax: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+Cooperative Coevolutionary PSO (CCPSO)
+~~~~~~~~
+
+This algorithm was described in the following papers:
+
+* Van den Bergh, Frans, and Andries Petrus Engelbrecht. "A cooperative approach to particle swarm optimization." IEEE transactions on evolutionary computation 8.3 (2004): 225-239.
+* Li, Xiaodong, and Xin Yao. "Tackling high dimensional nonseparable optimization problems by cooperatively coevolving particle swarms." 2009 IEEE congress on evolutionary computation. IEEE, 2009.
+* Li, Xiaodong, and Xin Yao. "Cooperatively coevolving particle swarms for large scale optimization." IEEE Transactions on Evolutionary Computation 16.2 (2012): 210-224.
+
+The Cooperative Coevolutionary PSO (CCPSO) variant was designed to handle large-scale
+optimization problems with large numbers of decision variables. In order to achieve
+this, CCPSO first divides the population into subpopulations that co-evolve in parallel.
+The CCPSO algorithm also dynamically adjust the influence of each subpopulation based on its
+importance, and periodically regroups the population into subpopulations to avoid
+premature convergence.
+
+.. function:: CCPSO(mfev, sigmatol, np, pps, npps, correct = True, pcauchy = -1.0, local = None, localfreq = 10)
+
+   Initializes a new CCPSO optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param sigmatol: Terminate when the standard deviation in population candidates is less than this value.
+   :type sigmatol: float
+   :param np: Total population size.
+   :type np: int
+   :param pps: Collection of subpopulation sizes (each size must divide ``np``).
+   :type pps: List of int
+   :param npps: Number of elements in ``pps``.
+   :type npps: int
+   :param correct: Whether to correct particles that go out of the search bounds.
+   :type correct: bool
+   :param pcauchy: Probability of sampling candidate from a Cauchy distribution to encourage exploration (adapted if non-positive).
+   :type pcauchy: float
+   :param local: Local optimizer to perform optional local search after each iteration.
+   :type local: MultivariateSearch
+   :param localfreq: How often to perform a local search when ``local`` is specified.
+   :type localfreq: int
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+Self-Learning PSO (SLPSO)
+~~~~~~~~
+
+This variant of PSO was described in the following paper:
+
+* Li, Changhe, Shengxiang Yang, and Trung Thanh Nguyen. "A self-learning particle swarm optimizer for global optimization problems." IEEE Transactions on Systems, Man, and Cybernetics, Part B (Cybernetics) 42.3 (2011): 627-646.
+
+The key idea behind Self-Learning PSO (SLPSO) is to equip each particle with multiple learning strategies, 
+allowing it to adapt its behavior based on the specific situation it encounters in the search space.
+It maintains four key update strategies to achieve this: exploitation, jumping out, exploration and 
+convergence, and adapts the selection of these strategies over time based on their success in
+improving the objective value. This variant tends to perform well across a broad range of problems.
+
+.. function:: SLPSO(mfev, stol, np, omegamin = 0.4, omegamax = 0.9, eta = 1.496, gamma = 0.01, vmax = 0.2, Ufmax = 10.0)
+
+   Initializes a new SLPSO optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param stol: Terminate when the standard deviation in population candidates is less than this value.
+   :type stol: float
+   :param np: Population size.
+   :type np: int
+   :param omegamin: Lower bound on the inertia weight.
+   :type omegamin: float
+   :param omegamax: Upper bound on the inertia weight.
+   :type omegamax: float
+   :param eta: Learning rate for velocity update.
+   :type eta: float
+   :param gamma: Weight decay factor for strategy probability update.
+   :type gamma: float
+   :param vmax: Maximum bound on each component of the velocity vector.
+   :type vmax: float
+   :param Ufmax: Maximum bound on the U_f parameter in the paper.
+   :type Ufmax: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
