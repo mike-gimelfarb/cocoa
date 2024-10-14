@@ -259,7 +259,7 @@ This allows the algorithm to scale to problems with 1000s or even millions of de
    :type tol: float
    :param np: Population size.
    :type np: int
-   :param memory: Number of direction vectors in the covariance update.
+   :param memory: Number of direction vectors in the covariance update (determined automatically when non-positive).
    :type memory: int
    :param sigma0: Initial step size.
    :type sigma0: float
