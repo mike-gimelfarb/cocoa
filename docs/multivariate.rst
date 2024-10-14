@@ -678,3 +678,43 @@ for global exploration of the search space.
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
  
+ 
+Adaptive Nelder-Mead (Simplex) Algorithm
+-------------------
+
+The versions of Nelder-Mead implemented in COCOA are described in the following papers:
+
+* Gao, Fuchang & Han, Lixing. (2012). Implementing the Nelder-Mead simplex algorithm with adaptive parameters. Computational Optimization and Applications. 51. 259-277. 10.1007/s10589-010-9329-3.
+* Mehta, V. K. "Improved Nelder–Mead algorithm in high dimensions with adaptive parameters based on Chebyshev spacing points." Engineering Optimization 52.10 (2020): 1814-1828.
+
+The Nelder-Mead algorithm (or the downhill simplex algorithm) is suitable for 
+unconstrained optimization problems where the objective function may have noise or 
+discontinuities. It maintains a simplex of points that are updated through a series
+of transformations, namely: reflection, expansion, contraction, and shrink.
+
+The version of Nelder-Mead in COCOA is based loosely on the original FORTRAN implementations,
+but implements a variety of improvements to make the algorithm work better in high dimensions 
+and converge faster. These include adaptation of the transformation hyper-parameters,
+better simplex initialization, periodic restarts, and better termination criteria.
+
+.. function:: NelderMead(mfev, tol, rad0, minit = NelderMead_SimplexInit.spendley, pinit = NelderMead_ParamInit.mehta2019_refined, checkev = 10, eps = 1e-3)
+
+   Initializes a new adaptive Nelder-Mead optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the change in solution is less than this value.
+   :type tol: float
+   :param rad0: Initial scale of the simplex.
+   :type rad0: float
+   :param minit: Initialization method for the simplex.
+   :type minit: NelderMead_SimplexInit
+   :param pinit: Transformation hyper-parameter adaptation method.
+   :type pinit: NelderMead_ParamInit
+   :param checkev: How often to check termination condition.
+   :type checkev: int
+   :param eps: Small constant used in the factorial test to check termination.
+   :type eps: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
