@@ -376,3 +376,130 @@ size. It dynamically switches between the two regimes based on the progress of t
    :type kbudget: float
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
+
+
+Differential Evolution (DE)
+-------------------
+
+Differential evolution (DE) is a broad family of algorithms that is inspired by the replication
+and mutation of DNA sequences in nature. It maintains a population of candidate solutions that are combined through
+mutation and crossover operations to create new candidate solutions, which then replace the existing population through
+a process of selection (to mimic the process of survival-of-the-fittest in nature).
+
+COCOA implements many of the best-performing DE variants from the literature.
+
+JADE
+~~~~~~~~
+
+The JADE algorithm was developed in the following series of papers:
+
+* Zhang, Jingqiao, and Arthur C. Sanderson. "JADE: Self-adaptive differential evolution with fast and reliable convergence performance." 2007 IEEE congress on evolutionary computation. IEEE, 2007.
+* Zhang, Jingqiao, and Arthur C. Sanderson. "JADE: adaptive differential evolution with optional external archive." IEEE Transactions on evolutionary computation 13.5 (2009): 945-958.
+* Li, Jie, et al. "Power mean based crossover rate adaptive differential evolution." International Conference on Artificial Intelligence and Computational Intelligence. Springer, Berlin, Heidelberg, 2011.
+* Gong, Wenyin, Zhihua Cai, and Yang Wang. "Repairing the crossover rate in adaptive differential evolution." Applied Soft Computing 15 (2014): 149-168.
+ 
+JADE is an adaptive differential evolution that tunes the crossover and mutation 
+rates based on values that performed well in the past. These values are maintained 
+as long-run moving averages of the best-performing values from previous iterations.
+
+The COCOA version of JADE implements the optional external archive as described 
+in the second paper to improve the population diversity, uses a power mean adaptation for the 
+crossover rate as suggested in the third paper, and repairs the crossover
+rate as suggested in the fourth paper.
+
+.. function:: JADE(mfev, np, tol, archive = True, repaircr = True, pelite = 0.05, cdamp = 0.1, sigma = 0.07)
+
+   Initializes a new JADE optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param np: Population size.
+   :type np: int
+   :param tol: Terminate when the std of the candidate solutions is less than this value.
+   :type tol: float
+   :param archive: Whether to maintain an optional archive.
+   :type archive: bool
+   :param repaircr: Whether to repair the crossover rate.
+   :type repaircr: bool
+   :param pelite: Top fraction of candidates to sample from for mutation.
+   :type pelite: float
+   :param cdamp: Exponential moving average coefficient for updating parameters.
+   :type cdamp: float
+   :param sigma: Lower bound on std for the power-mean crossover adaptation.
+   :type sigma: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+L-SHADE
+~~~~~~~~
+
+The L-SHADE algorithm was described in the following paper:
+
+* Tanabe, Ryoji, and Alex S. Fukunaga. "Improving the search performance of SHADE using linear population size reduction." 2014 IEEE congress on evolutionary computation (CEC). IEEE, 2014.
+
+In summary, L-SHADE is very similar to JADE (and in fact builds upon it), but the method of
+updating the crossover and mutation rates is different. In L-SHADE, these parameters
+are adapted by maintaining a history of H previous parameter values that resulted 
+in candidates with good objective values. This history is updated periodically 
+and values are drawn from it before each mutation and crossover operation.
+
+The COCOA version implements the optional external archive as described for JADE,
+as well as the linear population size reduction described in the aforementioned 
+paper.
+
+.. function:: SHADE(mfev, npinit, tol, archive = True, h = 100, npmin = 4)
+
+   Initializes a new L-SHADE optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param npinit: Initial population size.
+   :type npinit: int
+   :param tol: Terminate when the std of the candidate solutions is less than this value.
+   :type tol: float
+   :param archive: Whether to maintain an optional archive.
+   :type archive: bool
+   :param h: Size of the history for updating crossover and mutation parameters.
+   :type h: int
+   :param npmin: When this value is strictly less than npinit, a linear population size reduction will be used.
+   :type npmin: int
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+   
+
+SANSDE
+~~~~~~~~
+
+The SANSDE algorithm was described in the following paper:
+
+* Yang, Zhenyu, Ke Tang, and Xin Yao. "Self-adaptive differential evolution with neighborhood search." 2008 IEEE congress on evolutionary computation (IEEE World Congress on Computational Intelligence). IEEE, 2008.
+
+Similar to JADE and L-SHADE, the SANSDE algorithm also implements its own variant
+of parameter adaptation for the crossover and mutation. However, it implements two
+different possible mutation strategies, and selects between them based on the strategy
+that performed well history in the previous iterations.
+
+The COCOA version of this algorithm also repairs the crossover rate as suggested for JADE. 
+
+.. function:: SANSDE(mfev, np, tol, repaircr = True, crref = 5, pupdate = 50, crupdate = 25)
+
+   Initializes a new SANSDE optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param np: Population size.
+   :type np: int
+   :param tol: Terminate when the std of the candidate solutions is less than this value.
+   :type tol: float
+   :param repaircr: Whether to repair the crossover rate.
+   :type repaircr: bool
+   :param crref: How often to generate a new crossover rate in iterations.
+   :type crref: int
+   :param pupdate: How often to update the mutation strategy selection parameter.
+   :type pupdate: int
+   :param crupdate: How often to update the crossover and mutation parameters.
+   :type crupdate: int
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
