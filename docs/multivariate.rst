@@ -943,3 +943,57 @@ restricts the search to the bound constraints provided in the problem.
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
 
+
+PRAXIS
+-------------------
+
+This algorithm is described in the following paper:
+
+* Gegenfurtner, Karl R. "PRAXIS: Brent’s algorithm for function minimization." Behavior Research Methods, Instruments, & Computers 24 (1992): 560-564.
+
+The PRAXIS algorithm was developed by Richard Brent and is a refinement of Powell's
+method of conjugate directions. In each iteration, it generates a set of conjugate
+directions along which to search for a minimum, and performs a line search along each
+direction. It updates the search directions iteratively until a minimum has been found.
+It is particularly useful when derivative information is not available, and for
+optimizing functions with at most a few hundred decision variables.
+
+.. function:: PRAXIS(tol, mstep)
+
+   Initializes a new NEWUOA optimizer with the specified parameters.
+
+   :param tol: Tolerance to determinate whether the algorithm should terminate.
+   :type tol: float
+   :param mstep: Maximum step size of line search.
+   :type mstep: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+Rosenbrock's Method
+-------------------
+
+This algorithm and its improvement was described in the following papers:
+
+* Palmer, J. R. "An improved procedure for orthogonalising the search vectors in Rosenbrock's and Swann's direct search optimisation methods." The Computer Journal 12.1 (1969): 69-71.
+
+The Rosenbrock's method uses orthogonal search directions to explore the search space.
+Like PRAXIS, it searches along the search directions for a minimum, but originally
+used a pattern search instead of a line search. The variant of COCOA implements
+this method but replaces the pattern search with a fast Lagrange quadratic interpolation line search
+procedure outlined in the paper above. It performs roughly on par with PRAXIS on many problems.
+
+.. function:: Rosenbrock(mfev, tol, step0, decf = 0.1)
+
+   Initializes a new Rosenbrock optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Tolerance to determinate whether the algorithm should terminate.
+   :type tol: float
+   :param step0: Initial step size of line search.
+   :type step0: float
+   :param decf: How fast to decay the step size in line search.
+   :type decf: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
