@@ -104,7 +104,7 @@ useful for optimizing rugged landscapes.
    :rtype: object of type MultivariateSearch
 
 
-Controlled Random Search (CRS)
+Controlled Random Search with Local Mutation (CRS)
 -------------------
 
 This algorithm (and its other variants) are described in this paper:
@@ -129,7 +129,8 @@ by applying a local mutation operator, termed CRS2 in the aforementioned paper.
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
 
-Covariance Matrix Adaptation (CMA-ES)
+
+Covariance Matrix Adaptation Evolutionary Strategies (CMA-ES)
 -------------------
  
 The covariance matrix adaptation evolution strategy (CMA-ES) is a broad family of algorithms
@@ -138,6 +139,7 @@ by maintaining a population of solution candidates from this distribution, whose
 recombined to create new candidate solutions.
  
 COCOA implements many of the best-performing CMA-ES variants.
+ 
  
 Basic CMA-ES
 ~~~~~~~~
@@ -569,6 +571,34 @@ The key idea of xNES is to adapt the Gaussian sampling distribution using the na
    :rtype: object of type MultivariateSearch
  
 
+Novel Self-Adaptive Harmony Search (NSHS)
+-------------------
+
+This version of harmony search is described in the following paper:
+
+* Luo, Kaiping. "A Novel Self-Adaptive Harmony Search Algorithm." Journal of Applied Mathematics 2013.1 (2013): 653749.
+
+Harmony search is loosely inspired by the musical improvisation process of musicians, 
+and mimics the way musicians search for a perfect harmony by adjusting the pitch of their instruments.
+It is population-based, like some of the previously-described algorithms, where each candidate solution is adjusted
+based on a harmony memory. The Novel Self-Adaptive Harmony Search (NSHS) variant adapts the pitch and rate adjustment parameters
+automatically based on historical information and is much more efficient than standard harmony search and many
+of its variants.
+
+.. function:: NSHS(mfev, hms, fstdmin = 0.0001)
+
+   Initializes a new NSHS optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param hms: Harmony memory size.
+   :type hms: int
+   :param fstdmin: Lower bound on standard deviation as described in the paper (where it is hard coded as 0.0001).
+   :type fstdmin: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+ 
+ 
 Hessian Estimation Evolutionary Strategy (HE-ES)
 -------------------
 
@@ -605,32 +635,46 @@ is not twice-differentiable.
    :rtype: object of type MultivariateSearch
  
 
-Novel Self-Adaptive Harmony Search (NSHS)
+Self-Adaptive Multi-Population JAYA
 -------------------
 
-This version of harmony search is described in the following paper:
+This version of the JAYA search algorithm is described in detail in the following paper:
 
-* Luo, Kaiping. "A Novel Self-Adaptive Harmony Search Algorithm." Journal of Applied Mathematics 2013.1 (2013): 653749.
+* Yu, Jiang-Tao, et al. "Jaya algorithm with self-adaptive multi-population and Lévy flights for solving economic load dispatch problems." IEEE Access 7 (2019): 21372-21384.
 
-Harmony search is loosely inspired by the musical improvisation process of musicians, 
-and mimics the way musicians search for a perfect harmony by adjusting the pitch of their instruments.
-It is population-based, like some of the previously-described algorithms, where each candidate solution is adjusted
-based on a harmony memory. The Novel Self-Adaptive Harmony Search (NSHS) variant adapts the pitch and rate adjustment parameters
-automatically based on historical information and is much more efficient than standard harmony search and many
-of its variants.
+The JAYA algorithm is a population-based metaheuristic search algorithm for finding
+the global minimum of a multivariate function. It is similar to differential evolution,
+but the procedure for generating new candidate solutions includes not only an attraction 
+term for moving towards the best candidate in the population, but also a repulsion
+term for moving away from the worst candidate. The version implemented in COCOA
+features a multi-population scheme for improving the search behavior of JAYA,
+automatic parameter adaptation, and Levy flights and other mutation operators 
+for global exploration of the search space.
 
-.. function:: NSHS(mfev, hms, fstdmin = 0.0001)
+.. function:: JAYA(mfev, tol, np, npmin, adapt = True, k0 = 2, mutation = JAYA_Mutation.logistic, scale = 0.01, beta = 1.5, kcheb = 2, temper = 10.0)
 
-   Initializes a new NSHS optimizer with the specified parameters.
+   Initializes a new adaptive JAYA optimizer with the specified parameters.
 
    :param mfev: Maximum number of function evaluations.
    :type mfev: int
-   :param hms: Harmony memory size.
-   :type hms: int
-   :param fstdmin: Lower bound on standard deviation as described in the paper (where it is hard coded as 0.0001).
-   :type fstdmin: float
+   :param np: Total population size.
+   :type np: int
+   :param npmin: Minimum subpopulation size.
+   :type npmin: int
+   :param adapt: Whether to adapt the number of subpopulations.
+   :type adapt: bool
+   :param k0: Initial number of subpopulations.
+   :type k0: int
+   :param mutation: The type of mutation operator to use.
+   :type mutation: JAYA_Mutation
+   :param scale: Step size parameter used when the mutation operator is ``levy``.
+   :type scale: float
+   :param beta: Distributional parameter used when the mutation operator is ``levy``.
+   :type beta: float
+   :param: kcheb: Currently unused.
+   :type kcheb: int
+   :param temper: Temperature parameter that controls parameter adaptation speed.
+   :type temper: float
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
- 
-
  
