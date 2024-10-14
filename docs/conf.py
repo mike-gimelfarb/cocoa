@@ -19,8 +19,8 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 project = 'cocoa'
-copyright = '2023, Mike Gimelfarb'
-author = 'Mike Gimelfarb'
+copyright = '2024, Michael Gimelfarb'
+author = 'Michael Gimelfarb'
 version = '0.1'
 release = '0.1'
 
