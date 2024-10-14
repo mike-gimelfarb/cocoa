@@ -125,3 +125,18 @@ B/B constraint calls: 0
 converged: yes
 ```
 
+# Citation
+
+To cite this repository, either use the link in the sidebar, or the following bibtext entry:
+
+```
+@software{gimelfarb2024cocoa,
+author = {Gimelfarb, Michael},
+license = {LGPL-2.1+},
+title = {{COCOA: COllection of Continuous Optimization Algorithms}},
+url = {https://github.com/mike-gimelfarb/cocoa},
+year = {2024}
+}
+```
+
+To cite the authors of the individual algorithms, please see the references in the comments heads of the respective C++ source files.
