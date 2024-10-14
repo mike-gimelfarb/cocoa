@@ -388,6 +388,7 @@ a process of selection (to mimic the process of survival-of-the-fittest in natur
 
 COCOA implements many of the best-performing DE variants from the literature.
 
+
 JADE
 ~~~~~~~~
 
@@ -466,7 +467,6 @@ paper.
    :type npmin: int
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
-
    
 
 SANSDE
@@ -479,7 +479,7 @@ The SANSDE algorithm was described in the following paper:
 Similar to JADE and L-SHADE, the SANSDE algorithm also implements its own variant
 of parameter adaptation for the crossover and mutation. However, it implements two
 different possible mutation strategies, and selects between them based on the strategy
-that performed well history in the previous iterations.
+that performed well in past iterations.
 
 The COCOA version of this algorithm also repairs the crossover rate as suggested for JADE. 
 
