@@ -14,9 +14,8 @@ Main advantages:
 To use this library in a Python project, you will need:
 * C++ compiler (e.g., MS Build Tools)
 * git
-* pybind11
-
-Then install directly from source:
+ 
+Then install directly from source together with all the requirements:
 
 ```
 pip install git+https://github.com/mike-gimelfarb/cocoa
