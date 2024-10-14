@@ -13,13 +13,8 @@ Its main advantages include:
 Installation
 -------------------
 
-To use COCOA in a Python project, you will need:
-
-- C++ compiler (e.g., MS Build Tools)
-- git
-- pybind11
-
-Then install directly from source:
+To use COCOA in a Python project, you will need a C++ compiler for Python and git (e.g., ``conda install git``).
+Then install directly:
 
 .. code-block:: shell
 
