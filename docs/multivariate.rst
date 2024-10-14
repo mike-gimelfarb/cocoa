@@ -503,3 +503,41 @@ The COCOA version of this algorithm also repairs the crossover rate as suggested
    :type crupdate: int
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
+
+   
+Differential Search (DSA)
+-------------------
+
+This algorithm is introduced in the following paper:
+
+* P. Civicioglu, "Transforming Geocentric Cartesian Coordinates to Geodetic Coordinates by Using Differential Search Algorithm", Computers and Geosciences, 46, 229-247, 2012.
+
+Similar to differential evolution, differential search (DSA) maintains a population of
+candidate solutions that are combined to create new solutions using four different strategies. 
+These strategies are inspired by the concept of stable motion and migration of 
+superorganisms and are somewhat similar to mutation in DE. 
+
+The current implementation is based on the original Matlab code. However, rather than
+selecting among the different strategies randomly at uniform, the COCOA implementation
+uses the non-stationary multi-armed bandit algorithm Rexp3 to favor the best-performing
+strategy over time.
+ 
+.. function:: DSA(mfev, tol, stol, np, adapt = True, nbatch = 100)
+
+   Initializes a new DSA optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the range of objective values among the candidate solutions is less than this value.
+   :type tol: float
+   :param stol: Terminate when the std of the candidate solutions is less than this value.
+   :type stol: float
+   :param np: Population size.
+   :type np: int
+   :param adapt: Whether to adapt the strategy selection using Rexp3, or use random uniform sampling.
+   :type adapt: bool
+   :param nbatch: The batch size for the strategy selection algorithm.
+   :type nbatch: int
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+ 

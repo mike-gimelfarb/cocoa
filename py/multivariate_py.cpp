@@ -175,6 +175,12 @@ void build_sansde(py::module_ &m) {
 					50, "crupdate"_a = 25);
 }
 
+void build_ds(py::module_ &m) {
+	py::class_<DSSearch, MultivariateOptimizer> solver(m, "DSA");
+	solver.def(py::init<int, double, double, int, bool, int>(), "mfev"_a, "tol"_a,
+			"stol"_a, "np"_a, "adapt"_a = true, "nbatch"_a = 100);
+}
+
 void build_directl(py::module_ &m) {
 	py::class_<Directl, MultivariateOptimizer> solver(m, "DIRECT");
 	solver.def(py::init<int, double, double, double, int>(), "mfev"_a,
@@ -270,12 +276,6 @@ void build_ccpso(py::module_ &m) {
 	solver.def(py::init(&init_ccpso), "mfev"_a, "sigmatol"_a, "np"_a, "pps"_a,
 			"npps"_a, "correct"_a = true, "pcauchy"_a = -1., "local"_a =
 					nullptr, "localfreq"_a = 10);
-}
-
-void build_ds(py::module_ &m) {
-	py::class_<DSSearch, MultivariateOptimizer> solver(m, "DPSO");
-	solver.def(py::init<int, double, double, int, bool, int>(), "mfev"_a, "tol"_a,
-			"stol"_a, "np"_a, "adapt"_a = true, "nbatch"_a = 100);
 }
 
 void build_slpso(py::module_ &m) {
@@ -390,6 +390,7 @@ void build_multivariate(py::module_ &m) {
 	build_jade(m);
 	build_shade(m);
 	build_sansde(m);
+	build_ds(m);
 	build_jaya(m);
 	build_nshs(m);
 	build_hees(m);
@@ -399,7 +400,6 @@ void build_multivariate(py::module_ &m) {
 	build_apso(m);
 	build_cso(m);
 	build_ccpso(m);
-	build_ds(m);
 	build_slpso(m);
 	build_rosenbrock(m);
 	build_simplex(m);
