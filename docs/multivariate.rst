@@ -43,10 +43,7 @@ AMaLGaM IDEA
 
 This algorithm is described in the following paper:
 
-* Bosman, Peter AN, Jï¿½rn Grahl, and Dirk Thierens. "AMaLGaM IDEAs in
-noiseless black-box optimization benchmarking." Proceedings of the 11th
-Annual Conference Companion on Genetic and Evolutionary Computation
-Conference: Late Breaking Papers. ACM, 2009.
+* Bosman, Peter AN, Jï¿½rn Grahl, and Dirk Thierens. "AMaLGaM IDEAs in noiseless black-box optimization benchmarking." Proceedings of the 11th Annual Conference Companion on Genetic and Evolutionary Computation Conference: Late Breaking Papers. ACM, 2009.
 
 AMaLGaM (Adapted Maximum-Likelihood Gaussian Model Iterated Density-Estimation Evolutionary Algorithm) 
 is an estimation-of-distribution (EDA) algorithm that maintains a Gaussian
@@ -61,7 +58,7 @@ It's particularly noted for being parameter-free, meaning it doesn't require man
    :type mfev: int
    :param tol: Terminate when the change in objective is less than this value.
    :type tol: float
-   :param stol: Terminate when the change in solution is less than this value.
+   :param stol: Terminate when the standard deviation of population objective values is less than this value.
    :type stol: float
    :param np: Population size (selected automatically when non-positive).
    :type np: int
@@ -80,9 +77,7 @@ Basin Hopping
 
 The basin hopping procedure was first outlined in the following paper:
 
-* Wales, David J.; Doye, Jonathan P. K. (1997-07-10). "Global Optimization by Basin-Hopping
-and the Lowest Energy Structures of Lennard-Jones Clusters Containing up to 110 Atoms".
-The Journal of Physical Chemistry A. 101 (28): 5111–5116.
+* Wales, David J.; Doye, Jonathan P. K. (1997-07-10). "Global Optimization by Basin-Hopping and the Lowest Energy Structures of Lennard-Jones Clusters Containing up to 110 Atoms". The Journal of Physical Chemistry A. 101 (28): 5111–5116.
  
 In summary, basin hopping combines two steps in alternation until it achieves a desired global minimum.
 First, the algorithm randomly changes the coordinates of the current solution (perturbation).
@@ -114,9 +109,7 @@ Controlled Random Search (CRS)
 
 This algorithm (and its other variants) are described in this paper:
 
-* Kaelo, P., and M. M. Ali. "Some variants of the controlled random search
- algorithm for global optimization." Journal of optimization theory and
- applications 130.2 (2006): 253-264.
+* Kaelo, P., and M. M. Ali. "Some variants of the controlled random search algorithm for global optimization." Journal of optimization theory and applications 130.2 (2006): 253-264.
 
 Controlled random search (CRS) works by maintaining a population of solution candidates, where
 the worst solutions are replaced with new randomly-generated points. This variant
@@ -136,4 +129,250 @@ by applying a local mutation operator, termed CRS2 in the aforementioned paper.
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
 
+Covariance Matrix Adaptation (CMA-ES)
+-------------------
  
+The covariance matrix adaptation evolution strategy (CMA-ES) is a broad family of algorithms
+that adapt a mean and covariance matrix to the shape of the search space. It works
+by maintaining a population of solution candidates from this distribution, whose best individuals are 
+recombined to create new candidate solutions.
+ 
+COCOA implements many of the best-performing CMA-ES variants.
+ 
+Basic CMA-ES
+~~~~~~~~
+ 
+The basic CMA-ES was introduced in this paper:
+ 
+* Hansen, Nikolaus, and Andreas Ostermeier. "Completely derandomized self-adaptation in evolution strategies." Evolutionary computation 9.2 (2001): 159-195.
+ 
+The covariance update has ``O(n^3)`` time complexity when updated naively, 
+making it scale poorly to higher dimensions. The COCOA implementation applies a 
+simple trick of updating the covariance matrix once every ``O(n)`` iterations,
+reducing the amortized time complexity to ``O(n^2)``. This allows the algorithm to 
+perform well on the order of 100 decision variables.
+ 
+.. function:: CMAES(mfev, tol, np, sigma0 = 2.0, bound = False, eigenrate = 0.25)
+
+   Initializes a new CMA-ES optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the change in objective is less than this value.
+   :type tol: float
+   :param np: Population size.
+   :type np: int
+   :param sigma0: Initial step size.
+   :type sigma0: float
+   :param bound: Whether to clip sampled candidate solutions to the search space.
+   :type bound: bool
+   :param eigenrate: Rate at which the covariance matrix is updated.
+   :type eigenrate: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+Active CMA-ES
+~~~~~~~~
+ 
+The active CMA-ES algorithm was introduced in this paper:
+ 
+* Jastrebski, Grahame A., and Dirk V. Arnold. "Improving evolution strategies through active covariance matrix adaptation." Evolutionary Computation, 2006. CEC 2006. IEEE Congress on. IEEE, 2006.
+ 
+In Active CMA-ES, not only is the variance increased in directions 
+that have proven successful (as in standard CMA-ES), but also the variance is 
+decreased in directions that have been particularly unsuccessful. This greatly
+improves the search efficiency.
+
+.. function:: ActiveCMAES(mfev, tol, np, sigma0 = 2.0, bound = False, alphacov = 2.0, eigenrate = 0.25)
+
+   Initializes a new active CMA-ES optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the change in objective is less than this value.
+   :type tol: float
+   :param np: Population size.
+   :type np: int
+   :param sigma0: Initial step size.
+   :type sigma0: float
+   :param bound: Whether to clip sampled candidate solutions to the search space.
+   :type bound: bool
+   :param alphacov: the alpha parameter as described in the paper
+   :type alphacov: float
+   :param eigenrate: Rate at which the covariance matrix is updated.
+   :type eigenrate: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+Cholesky CMA-ES
+~~~~~~~~
+
+The Cholesky variant of CMA-ES was described in this paper:
+
+* Krause, Oswin, Dídac Rodríguez Arbonès, and Christian Igel. "CMA-ES with optimal covariance update and storage complexity." Advances in Neural Information Processing Systems. 2016.
+
+The naive covariance update takes ``O(n^3)`` time. The Cholesky CMA-ES variant
+reduces this complexity to ``O(n^2)`` by using the Cholesky decomposition instead
+of the eigenvalue decomposition, which often results in a better quality update
+than the periodic update of the basic CMA-ES.
+
+.. function:: CholeskyCMAES(mfev, tol, stol, np, sigma0 = 2.0, bound = False)
+
+   Initializes a new Cholesky CMA-ES optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the change in objective is less than this value.
+   :type tol: float
+   :param stol: Terminate when the standard deviation of the population is less than this value.
+   :type stol: float
+   :param np: Population size.
+   :type np: int
+   :param sigma0: Initial step size.
+   :type sigma0: float
+   :param bound: Whether to clip sampled candidate solutions to the search space.
+   :type bound: bool
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+ 
+Limited-Memory CMA-ES
+~~~~~~~~
+
+The limited memory variant of CMA-ES was described in this paper:
+
+* Loshchilov, Ilya. "A computationally efficient limited memory CMA-ES for large scale optimization." Proceedings of the 2014 Annual Conference on Genetic and Evolutionary Computation. ACM, 2014. 
+
+The limited-memory CMA-ES variant reduces the complexity of the update
+by using a limited number of direction vectors to approximate the covariance matrix.
+This allows the algorithm to scale to problems with 1000s or even millions of decision variables.
+
+.. function:: LmCMAES(mfev, tol, np, memory = 0, sigma0 = 2.0, bound = False, rademacher = True, usenew = True)
+
+   Initializes a new limited-memory CMA-ES optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the change in objective is less than this value.
+   :type tol: float
+   :param np: Population size.
+   :type np: int
+   :param memory: Number of direction vectors in the covariance update.
+   :type memory: int
+   :param sigma0: Initial step size.
+   :type sigma0: float
+   :param bound: Whether to clip sampled candidate solutions to the search space.
+   :type bound: bool
+   :param rademacher: Whether to sample candidates from Rademacher instead of Gaussian.
+   :type rademacher: bool
+   :param usenew: Whether to use the new variant of the algorithm from the paper.
+   :type usenew: bool
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+ 
+Separable CMA-ES
+~~~~~~~~
+
+This variant of the CMA-ES was introduced in this paper:
+
+* Ros, Raymond, and Nikolaus Hansen. "A simple modification in CMA-ES achieving linear time and space complexity." International Conference on Parallel Problem Solving from Nature. Springer, Berlin, Heidelberg, 2008.
+
+The separable CMA-ES variant reduces the complexity of the covariance update by
+maintaining only a diagonal representation of the covariance matrix. This reduces the cost of the
+covariance update to ``O(n)``, making it well-suited for optimizing problems with 1000s or millions
+of decision variables. However, this simplification comes at the cost of being able to capture 
+complex dependencies between decision variables, making it most suitable for separable objective functions.
+
+.. function:: SepCMAES(mfev, tol, np, sigma0 = 2.0, bound = False, adjustlr = True)
+
+   Initializes a new separable CMA-ES optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param tol: Terminate when the change in objective is less than this value.
+   :type tol: float
+   :param np: Population size.
+   :type np: int
+   :param sigma0: Initial step size.
+   :type sigma0: float
+   :param bound: Whether to clip sampled candidate solutions to the search space.
+   :type bound: bool
+   :param adjustlr: Whether to apply the empirical learning rate adjustment in the paper.
+   :type adjustlr: bool
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+IPOP-CMA-ES and NIPOP-CMA-ES
+~~~~~~~~
+
+The IPOP-CMA-ES and NIPOP-CMA-ES variants of the CMA-ES algorithm were described in these papers:
+
+* Auger, Anne, and Nikolaus Hansen. "A restart CMA evolution strategy with increasing population size." Evolutionary Computation, 2005. The 2005 IEEE Congress on. Vol. 2. IEEE, 2005.
+* Ilya Loshchilov, Marc Schoenauer, and Michèle Sebag. "Black-box Optimization Benchmarking of NIPOP-aCMA-ES and NBIPOP-aCMA-ES on the BBOB-2012 Noiseless Testbed." Genetic and Evolutionary Computation Conference (GECCO-2012), ACM Press : 269-276. July 2012.
+
+The Increasing Population CMA-ES (IPOP-CMA-ES) implements a multi-restart strategy
+for CMA-ES, where the population is increased in each restart. The use of larger population
+size makes the search more global, which helps to avoid local minima and to explore the
+search space more thoroughly.
+
+.. function:: IPopCMAES(base, mfev, print = false, sigma0 = 2.0, nipop = True, ksigmadec = 1.6, boundlambda = True)
+
+   Initializes a new IPOP-CMA-ES optimizer with the specified parameters.
+
+   :param base: CMA-ES variant to use to optimize in each restart.
+   :type base: BaseCMAES
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param print: Whether to print progress on restarts to the console.
+   :type print: bool
+   :param sigma0: Initial step size.
+   :type sigma0: float
+   :param nipop: Whether to use the NIPOP-CMA-ES variant described in the second reference.
+   :type nipop: bool
+   :param ksigmadec: Factor to increase step size in each restart.
+   :type ksigmadec: float   
+   :param boundlambda: Whether to apply optimal lambda cycling as described in the paper.
+   :type boundlambda: bool
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
+
+BIPOP-CMA-ES and NBIPOP-CMA-ES
+~~~~~~~~
+
+The BIPOP-CMA-ES and NBIPOP-CMA-ES variants of the CMA-ES algorithm were described in these papers:
+
+* Hansen, Nikolaus. "Benchmarking a BI-population CMA-ES on the BBOB-2009 function testbed." Proceedings of the 11th Annual Conference Companion on Genetic and Evolutionary Computation Conference: Late Breaking Papers. ACM, 2009.
+* Ilya Loshchilov, Marc Schoenauer, and Michèle Sebag. "Black-box Optimization Benchmarking of NIPOP-aCMA-ES and NBIPOP-aCMA-ES on the BBOB-2012 Noiseless Testbed." Genetic and Evolutionary Computation Conference (GECCO-2012), ACM Press : 269-276. July 2012.
+
+The Bi-Population CMA-ES (BIPOP-CMA-ES) is a variant of the IPOP-CMA-ES that incorporates
+two different population sizes to improve the optimization. It uses two restart regimes,
+one with a small population size, and one with a larger increasing population
+size. It dynamically switches between the two regimes based on the progress of the optimization.
+
+.. function:: BiPopCMAES(base, mfev, print = false, sigma0 = 2.0, maxlargeruns = 9, nbipop = True, ksigmadec = 1.6, kbudget = 2.0)
+
+   Initializes a new BIPOP-CMA-ES optimizer with the specified parameters.
+
+   :param base: CMA-ES variant to use to optimize in each restart.
+   :type base: BaseCMAES
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param print: Whether to print progress on restarts to the console.
+   :type print: bool
+   :param sigma0: Initial step size.
+   :type sigma0: float
+   :param maxlargeruns: Maximum number of restarts with large population size.
+   :type maxlargeruns: int
+   :param nbipop: Whether to use the NBIPOP-CMA-ES variant described in the second reference.
+   :type nbipop: bool
+   :param ksigmadec: Factor to increase step size in each restart.
+   :type ksigmadec: float   
+   :param kbudget: How much budget in function evaluations to allocate to the large population size restarts.
+   :type kbudget: float
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
