@@ -615,7 +615,7 @@ is not twice-differentiable.
 
 .. function:: HEES(mfev, tol, mres = 1, print = False, np = 0, sigma0 = 2.0)
 
-   Initializes a new NSHS optimizer with the specified parameters.
+   Initializes a new HE-ES optimizer with the specified parameters.
 
    :param mfev: Maximum number of function evaluations.
    :type mfev: int
