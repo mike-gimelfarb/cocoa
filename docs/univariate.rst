@@ -29,10 +29,10 @@ underestimator of the objective is also fit to guide the division.
    :param mfev: Maximum number of function evaluations.
    :type mfev: int
    :param tol: Terminate when the estimated error of the solution is lower than this value.
-   :type mfev: float
+   :type tol: float
    :param K: Upper bound on the second derivative of the objective function.
-   :type mfev: float
+   :type K: float
    :param n: Number of quadratic functions to use for the underestimator.
-   :type mfev: int
+   :type n: int
    :returns: optimizer instance
    :rtype: object of type UnivariateSearch
