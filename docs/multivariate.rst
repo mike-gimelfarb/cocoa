@@ -448,10 +448,10 @@ in candidates with good objective values. This history is updated periodically
 and values are drawn from it before each mutation and crossover operation.
 
 The COCOA version implements the optional external archive as described for JADE,
-as well as the linear population size reduction described in the aforementioned 
-paper.
+the linear population size reduction described in the aforementioned 
+paper, and the crossover rate repair strategy.
 
-.. function:: SHADE(mfev, npinit, tol, archive = True, h = 100, npmin = 4)
+.. function:: SHADE(mfev, npinit, tol, archive = True, repaircr = True, h = 100, npmin = 4)
 
    Initializes a new L-SHADE optimizer with the specified parameters.
 
@@ -463,6 +463,8 @@ paper.
    :type tol: float
    :param archive: Whether to maintain an optional archive.
    :type archive: bool
+   :param repaircr: Whether to repair the crossover rate.
+   :type repaircr: bool
    :param h: Size of the history for updating crossover and mutation parameters.
    :type h: int
    :param npmin: When this value is strictly less than npinit, a linear population size reduction will be used.

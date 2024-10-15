@@ -42,7 +42,7 @@
 class ShadeSearch: public MultivariateOptimizer {
 
 protected:
-	bool _archive;
+	bool _archive, _repaircr;
 	int _n, _npinit, _npmin, _np, _fev, _mfev, _h, _k;
 	double _tol;
 	multivariate_problem _f;
@@ -53,8 +53,8 @@ protected:
 public:
 	std::normal_distribution<> _Z { 0., 1. };
 
-	ShadeSearch(int mfev, int npinit, double tol, bool archive = true, int h =
-			100, int npmin = 4);
+	ShadeSearch(int mfev, int npinit, double tol, bool archive = true,
+			bool repaircr = true, int h = 100, int npmin = 4);
 
 	void init(const multivariate_problem &f, const double *guess);
 
@@ -64,8 +64,8 @@ public:
 			const double *guess);
 
 private:
-	void mutate(double *x, double *best, double *xr1, double *xr2, double *out,
-			int n, double F, double CR);
+	double mutate(double *x, double *best, double *xr1, double *xr2,
+			double *out, int n, double F, double CR);
 
 	double sampleCauchy();
 };

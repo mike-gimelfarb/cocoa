@@ -42,11 +42,12 @@
 
 using Random = effolkronium::random_static;
 
-ShadeSearch::ShadeSearch(int mfev, int npinit, double tol, bool archive, int h,
-		int npmin) {
+ShadeSearch::ShadeSearch(int mfev, int npinit, double tol, bool archive,
+		bool repaircr, int h, int npmin) {
 	_mfev = mfev;
 	_tol = tol;
 	_archive = archive;
+	_repaircr = repaircr;
 	_h = h;
 	_npinit = npinit;
 	_npmin = npmin;
@@ -130,16 +131,17 @@ void ShadeSearch::iterate() {
 		}
 
 		// perform the mutation
+		double cr1;
 		if (irand2 >= _np) {
 
 			// x2 sampled from archive
-			mutate(&_swarm[i]._x[0], &_swarm[ibest]._x[0],
+			cr1 = mutate(&_swarm[i]._x[0], &_swarm[ibest]._x[0],
 					&_swarm[irand1]._x[0], &_arch[irand2 - _np][0], &_work[0],
 					_n, Fi, CRi);
 		} else {
 
 			// x2 sampled from population
-			mutate(&_swarm[i]._x[0], &_swarm[ibest]._x[0],
+			cr1 = mutate(&_swarm[i]._x[0], &_swarm[ibest]._x[0],
 					&_swarm[irand1]._x[0], &_swarm[irand2]._x[0], &_work[0], _n,
 					Fi, CRi);
 		}
@@ -171,7 +173,7 @@ void ShadeSearch::iterate() {
 
 			// memory management
 			if (fwork < _swarm[i]._f) {
-				_SCR.push_back(CRi);
+				_SCR.push_back(cr1);
 				_SF.push_back(Fi);
 				_w.push_back(_swarm[i]._f - fwork);
 			}
@@ -223,7 +225,7 @@ void ShadeSearch::iterate() {
 	}
 
 	// archive size adjustment
-	if (_archive){
+	if (_archive) {
 		int larch = static_cast<int>(_arch.size());
 		while (larch > npnew) {
 			const int irand = Random::get(0, larch - 1);
@@ -263,15 +265,22 @@ multivariate_solution ShadeSearch::optimize(const multivariate_problem &f,
 	return {_swarm[0]._x, _fev, converged};
 }
 
-void ShadeSearch::mutate(double *x, double *best, double *xr1, double *xr2,
+double ShadeSearch::mutate(double *x, double *best, double *xr1, double *xr2,
 		double *out, int n, double F, double CR) {
 	const int irand = Random::get(0, n - 1);
+	double cr1 = 0.;
 	for (int i = 0; i < n; i++) {
 		if (i == irand || Random::get(0., 1.) < CR) {
 			out[i] = x[i] + F * (best[i] - x[i]) + F * (xr1[i] - xr2[i]);
+			cr1 += 1.;
 		} else {
 			out[i] = x[i];
 		}
+	}
+	if (_repaircr) {
+		return cr1 / n;
+	} else {
+		return CR;
 	}
 }
 

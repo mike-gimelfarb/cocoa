@@ -150,8 +150,8 @@ void build_bipop_cmaes(py::module_ &m) {
 
 void build_xnes(py::module_ &m) {
 	py::class_<xNES, MultivariateOptimizer> solver(m, "xNES");
-	solver.def(py::init<int, double, double, double>(),
-			"mfev"_a, "tol"_a, "a0"_a = 1.0, "etamu"_a = 1.0);
+	solver.def(py::init<int, double, double, double>(), "mfev"_a, "tol"_a,
+			"a0"_a = 1.0, "etamu"_a = 1.0);
 }
 
 void build_jade(py::module_ &m) {
@@ -163,9 +163,9 @@ void build_jade(py::module_ &m) {
 
 void build_shade(py::module_ &m) {
 	py::class_<ShadeSearch, MultivariateOptimizer> solver(m, "SHADE");
-	solver.def(py::init<int, int, double, bool, int, int>(),
-			"mfev"_a, "npinit"_a, "tol"_a, "archive"_a = true, "h"_a = 100,
-			"npmin"_a = 4);
+	solver.def(py::init<int, int, double, bool, bool, int, int>(), "mfev"_a,
+			"npinit"_a, "tol"_a, "archive"_a = true, "repaircr"_a = true,
+			"h"_a = 100, "npmin"_a = 4);
 }
 
 void build_sansde(py::module_ &m) {
@@ -177,8 +177,8 @@ void build_sansde(py::module_ &m) {
 
 void build_ds(py::module_ &m) {
 	py::class_<DSSearch, MultivariateOptimizer> solver(m, "DSA");
-	solver.def(py::init<int, double, double, int, bool, int>(), "mfev"_a, "tol"_a,
-			"stol"_a, "np"_a, "adapt"_a = true, "nbatch"_a = 100);
+	solver.def(py::init<int, double, double, int, bool, int>(), "mfev"_a,
+			"tol"_a, "stol"_a, "np"_a, "adapt"_a = true, "nbatch"_a = 100);
 }
 
 void build_directl(py::module_ &m) {
@@ -189,7 +189,8 @@ void build_directl(py::module_ &m) {
 
 void build_nshs(py::module_ &m) {
 	py::class_<NSHS, MultivariateOptimizer> solver(m, "NSHS");
-		solver.def(py::init<int, int, double>(), "mfev"_a, "hms"_a, "fstdmin"_a = 0.0001);
+	solver.def(py::init<int, int, double>(), "mfev"_a, "hms"_a, "fstdmin"_a =
+			0.0001);
 }
 
 void build_hees(py::module_ &m) {
@@ -253,8 +254,8 @@ void build_praxis(py::module_ &m) {
 
 void build_apso(py::module_ &m) {
 	py::class_<APSOSearch, MultivariateOptimizer> solver(m, "APSO");
-	solver.def(py::init<int, double, int, bool>(), "mfev"_a, "tol"_a,
-			"np"_a, "correct"_a = true);
+	solver.def(py::init<int, double, int, bool>(), "mfev"_a, "tol"_a, "np"_a,
+			"correct"_a = true);
 }
 
 void build_cso(py::module_ &m) {
