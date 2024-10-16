@@ -8,7 +8,7 @@
 
 Main advantages:
 - single unified interface for Python with a user-friendly API
-- faithful reproductions of classical and modern baselines, with SOTA improvements that are scalable yet robust
+- faithful reproductions of classical and modern baselines (of which many are not publicly available elsewhere), with SOTA improvements
 - transparent implementation and reproducibility that makes it easy to build upon.
 
 Full documentation and list of supported algorithms and functions is found [here](https://bboptpy.readthedocs.io/en/latest/).
