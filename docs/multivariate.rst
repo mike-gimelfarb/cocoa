@@ -508,6 +508,54 @@ The COCOA version of this algorithm also repairs the crossover rate as suggested
    :returns: optimizer instance
    :rtype: object of type MultivariateSearch
 
+
+Self-Adapting Spherical Search with Differential Evolution (SSDE)
+~~~~~~~~
+
+This algorithm was described in the following papers:
+
+* Kumar, A., Misra, R. K., Singh, D., Mishra, S., & Das, S. (2019). The spherical search algorithm for bound-constrained global optimization problems. Applied Soft Computing, 85, 105734.
+* Zhao, J., Zhang, B., Guo, X., Qi, L., & Li, Z. (2022). Self-adapting spherical search algorithm with differential evolution for global optimization. Mathematics, 10(23), 4519.
+
+The spherical search algorithm works by generating trial solutions on the surface
+of a hyper-sphere. It is population-based, meaning there is a selection process
+by which points are randomly sampled and determine the angle of the trial point
+in the hyper-sphere. 
+
+The COCOA version implements the full parameter adaptation
+described in the first paper, which is identical to the process used in L-SHADE.
+The COCOA version also has a flag ``usede`` which hybridizes the sphere search
+with a differential-evolution update in case the trial point is not accepted into
+the population during sphere search. The extra parameters of this new update are
+also allowed to adapt using the L-SHADE methodology. This DE-update, 
+together with an opposition-based initialization scheme, has the effect
+of promoting global search.
+
+.. function:: SSDE(mfev, npinit, tol, patience = 1000, npmin = 4, ptop = 0.11, h = 100, usede = False, repaircr = True)
+
+   Initializes a new SSDE optimizer with the specified parameters.
+
+   :param mfev: Maximum number of function evaluations.
+   :type mfev: int
+   :param np: Initial population size.
+   :type np: int
+   :param tol: Terminate when the std of the candidate solutions is less than this value.
+   :type tol: float
+   :param patience: Number of iterations without improvement before termination.
+   :type patience: int
+   :param npmin: When this value is strictly less than npinit, a linear population size reduction will be used.
+   :type npmin: int
+   :param ptop: Fraction of best candidates to sample from during the sphere search update.
+   :type ptop: float
+   :param h: Size of the history for updating parameters.
+   :type h: int
+   :param usede: Whether to use the differential evolution hybrid or the original.
+   :type usede: bool
+   :param repaircr: Whether to repair the crossover rate.
+   :type repaircr: bool
+   :returns: optimizer instance
+   :rtype: object of type MultivariateSearch
+
    
 Differential Search (DSA)
 -------------------

@@ -57,7 +57,7 @@ void ShadeSearch::init(const multivariate_problem &f, const double *guess) {
 
 	// define problem
 	if (f._hasc || f._hasbbc) {
-		std::cerr << "Warning [JADE]: problem constraints will be ignored."
+		std::cerr << "Warning [SHADE]: problem constraints will be ignored."
 				<< std::endl;
 	}
 	_f = f;

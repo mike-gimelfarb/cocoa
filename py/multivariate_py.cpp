@@ -20,6 +20,7 @@
 #include "../src/multivariate/de/jade.h"
 #include "../src/multivariate/de/shade.h"
 #include "../src/multivariate/de/sansde.h"
+#include "../src/multivariate/de/ssde.h"
 #include "../src/multivariate/jaya/jaya.h"
 #include "../src/multivariate/direct/directl.h"
 #include "../src/multivariate/harmony/nshs.h"
@@ -173,6 +174,14 @@ void build_sansde(py::module_ &m) {
 	solver.def(py::init<int, int, double, bool, int, int, int>(), "mfev"_a,
 			"np"_a, "tol"_a, "repaircr"_a = true, "crref"_a = 5, "pupdate"_a =
 					50, "crupdate"_a = 25);
+}
+
+void build_ssde(py::module_ &m) {
+	py::class_<SSDESearch, MultivariateOptimizer> solver(m, "SSDE");
+	solver.def(py::init<int, int, double, int, int, double, int, bool, bool>(),
+			"mfev"_a, "npinit"_a, "tol"_a, "patience"_a = 1000, "npmin"_a = 4,
+			"ptop"_a = 0.11, "h"_a = 100, "usede"_a = false, "repaircr"_a =
+					true);
 }
 
 void build_ds(py::module_ &m) {
@@ -391,6 +400,7 @@ void build_multivariate(py::module_ &m) {
 	build_jade(m);
 	build_shade(m);
 	build_sansde(m);
+	build_ssde(m);
 	build_ds(m);
 	build_jaya(m);
 	build_nshs(m);
