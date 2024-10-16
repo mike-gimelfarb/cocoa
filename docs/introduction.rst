@@ -1,13 +1,12 @@
 Introduction
 ============
 
-bboptpy is a large suite of efficient algorithms written in C++ for the optimization of black-box functions.
+**bboptpy is a library of algorithms for the optimization of black-box functions.**
 
 Main advantages:
-
 - single unified interface for Python with a user-friendly API
-- variety of classical and modern algorithms with state-of-the-art improvements that are robust and very fast
-- transparent implementation that makes it easy to build upon.
+- faithful reproductions of classical and modern baselines (of which many are not publicly available elsewhere), with SOTA improvements
+- transparent implementation and reproducibility that makes it easy to build upon.
 
 Installation
 -------------------
