@@ -8,6 +8,9 @@ import sys
 
 __version__ = "0.1"
 
+from pathlib import Path
+long_description = (Path(__file__).parent / "README.md").read_text()
+
 def list_source_files(root_folder):
     cppfiles = []
     for root, dirs, files in os.walk(root_folder):
@@ -31,6 +34,8 @@ setup(
     author="Michael Gimelfarb",
     author_email="mgimelfarb@yahoo.ca",
     description="Powerful and scalable black-box optimization algorithms for Python and C++.",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     license="LGPL-2.1 License",
     url="https://github.com/mike-gimelfarb/bboptpy",
     packages=find_packages(),

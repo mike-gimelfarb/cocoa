@@ -7,6 +7,8 @@ Main advantages:
 - variety of classical and modern algorithms with state-of-the-art improvements that are robust and very fast
 - transparent implementation that makes it easy to build upon.
 
+Full documentation and list of supported algorithms and functions is found [here](https://bboptpy.readthedocs.io/en/latest/).
+
 # Installation
 
 To use this library in a Python project, you will need a C++ compiler for Python and git (e.g. ``conda install git``). 
