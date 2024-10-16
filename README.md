@@ -1,3 +1,7 @@
+<p align="center">
+<img src="images/banner.png" margin=0/>
+</p>
+
 # bboptpy
 
 bboptpy is a large suite of efficient algorithms written in C++ for the optimization of black-box functions.
