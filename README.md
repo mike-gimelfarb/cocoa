@@ -139,4 +139,6 @@ year = {2024}
 }
 ```
 
+Please also consider citing the original authors of the algorithms you use, whose papers are linked in the supported algorithms section above.
+
 To cite the authors of the individual algorithms, please see the references in the comments heads of the respective C++ source files.
