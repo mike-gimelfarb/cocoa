@@ -133,7 +133,7 @@ To cite this repository, either use the link in the sidebar, or the following bi
 @software{gimelfarb2024bboptpy,
 author = {Gimelfarb, Michael},
 license = {LGPL-2.1+},
-title = {{bboptpy: Powerful and scalable black-box optimization algorithms for Python and C++.}},
+title = {{bboptpy}},
 url = {https://github.com/mike-gimelfarb/bboptpy},
 year = {2024}
 }
