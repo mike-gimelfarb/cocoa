@@ -4,7 +4,7 @@
 
 # bboptpy
 
-bboptpy is a library of algorithms for the optimization of black-box functions.
+**bboptpy is a library of algorithms for the optimization of black-box functions.**
 
 Main advantages:
 - single unified interface for Python with a user-friendly API
