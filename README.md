@@ -11,11 +11,10 @@ Full documentation and list of supported algorithms and functions is found [here
 
 # Installation
 
-To use this library in a Python project, you will need a C++ compiler for Python and git (e.g. ``conda install git``). 
-Then install directly:
+This package can now be installed directly from pip!
 
 ```
-pip install git+https://github.com/mike-gimelfarb/bboptpy
+pip install bboptpy
 ```
 
 # Algorithms Supported
