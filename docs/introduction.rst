@@ -48,7 +48,7 @@ which indicates the algorithm has found a local minimum (in this case, also a gl
 Basic Multivariate Example
 -------------------
 
-The following example optimizes the 10-dimensional <Rosenbrock function `https://en.wikipedia.org/wiki/Rosenbrock_function`>_
+The following example optimizes the 10-dimensional `Rosenbrock function <https://en.wikipedia.org/wiki/Rosenbrock_function>`_
 using the active variant of the CMA-ES optimizer:
 
 .. code-block:: python
@@ -79,3 +79,20 @@ This will print the following output:
     converged: yes
 
 which indicates the algorithm has found a local minimum (in this case, also a global minimum).
+
+Citation
+-------------------
+
+To cite this repository, either use the link in the sidebar, or the following bibtext entry:
+
+.. code-block:: shell
+
+    @software{gimelfarb2024bboptpy,
+    author = {Gimelfarb, Michael},
+    license = {LGPL-2.1+},
+    title = {{bboptpy}},
+    url = {https://github.com/mike-gimelfarb/bboptpy},
+    year = {2024}
+    }
+
+Please also consider citing the original authors of the algorithms you use, whose papers are linked `here <https://github.com/mike-gimelfarb/bboptpy?tab=readme-ov-file#algorithms-supported>`_.
