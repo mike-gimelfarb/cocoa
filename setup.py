@@ -19,20 +19,20 @@ def list_source_files(root_folder):
 
 ext_modules = [
     Pybind11Extension(
-        "cocoaopt",
+        "bboptpy",
         list_source_files('py') + list_source_files('src') + list_source_files(''),
         define_macros=[('VERSION_INFO', __version__)],
     ),
 ]
 
 setup(
-    name="cocoaopt",
+    name="bboptpy",
     version=__version__,
     author="Michael Gimelfarb",
     author_email="mgimelfarb@yahoo.ca",
-    description="COCOA: Collection of Continuous Optimization Algorithms",
+    description="Powerful and scalable black-box optimization algorithms for Python and C++.",
     license="LGPL-2.1 License",
-    url="https://github.com/mike-gimelfarb/cocoa",
+    url="https://github.com/mike-gimelfarb/bboptpy",
     packages=find_packages(),
     ext_modules=ext_modules,
     install_requires=['pybind11>=2.11.1', 'numpy'],

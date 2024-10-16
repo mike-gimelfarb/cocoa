@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: 'COCOA: COllection of Continuous Optimization Algorithms'
+title: 'bboptpy: Powerful and scalable black-box optimization algorithms for Python and C++.'
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
@@ -10,6 +10,6 @@ type: software
 authors:
   - given-names: Michael
     family-names: Gimelfarb
-repository-code: 'https://github.com/mike-gimelfarb/cocoa'
+repository-code: 'https://github.com/mike-gimelfarb/bboptpy'
 license: LGPL-2.1+
 date-released: '2024-10-14'

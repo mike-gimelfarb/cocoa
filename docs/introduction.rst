@@ -1,24 +1,23 @@
 Introduction
 ============
 
-COCOA is a suite of algorithms written in C++ for the optimization of continuous 
-black-box functions (mostly without using derivative information). 
+bboptpy is a large suite of efficient algorithms written in C++ for the optimization of black-box functions.
 
-Its main advantages include:
+Main advantages:
 
-- a single unified interface for all algorithms
-- a variety of classical algorithms with state-of-the-art improvements (e.g. automatic parameter adaptation)
-- convenient wrappers for Python with a user-friendly API
+- single unified interface for Python with a user-friendly API
+- variety of classical and modern algorithms with state-of-the-art improvements that are robust and very fast
+- transparent implementation that makes it easy to build upon.
 
 Installation
 -------------------
 
-To use COCOA in a Python project, you will need a C++ compiler for Python and git (e.g., ``conda install git``).
+To use bboptpy in a Python project, you will need a C++ compiler for Python and git (e.g., ``conda install git``).
 Then install directly:
 
 .. code-block:: shell
 
-    pip install git+https://github.com/mike-gimelfarb/cocoa
+    pip install git+https://github.com/mike-gimelfarb/bboptpy
 
 Basic Univariate Example
 -------------------
@@ -28,7 +27,7 @@ The following example optimizes a univariate sinusoidal function using the Brent
 .. code-block:: python
 
 	import numpy as np
-	from cocoaopt import Brent
+	from bboptpy import Brent
 	
 	# function to optimize
 	def fx(x):
@@ -57,7 +56,7 @@ using the active variant of the CMA-ES optimizer:
 .. code-block:: python
 
     import numpy as np
-    from cocoaopt import ActiveCMAES
+    from bboptpy import ActiveCMAES
 
     # function to optimize
     def fx(x):

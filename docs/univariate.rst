@@ -1,4 +1,4 @@
-COCOA Univariate Optimizers
+Univariate Optimizers
 ====================================
 
 The optimization problem for a univariate function on a closed interval can be described as
@@ -7,7 +7,7 @@ The optimization problem for a univariate function on a closed interval can be d
 
 	\min_{x} f(x), \quad x \in [lb, ub]. 
 	
-COCOA provides a number of algorithms for optimizing univariate functions.
+bboptpy provides a number of algorithms for optimizing univariate functions.
 
 
 Branch and Bound

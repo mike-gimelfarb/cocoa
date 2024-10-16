@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath(".."))
 import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
-project = 'cocoa'
+project = 'bboptpy'
 copyright = '2024, Michael Gimelfarb'
 author = 'Michael Gimelfarb'
 version = '0.1'

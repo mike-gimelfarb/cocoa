@@ -1,5 +1,5 @@
 import numpy as np
-from cocoaopt import ActiveCMAES
+from bboptpy import ActiveCMAES
 
 
 # function to optimize

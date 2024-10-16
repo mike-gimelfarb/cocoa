@@ -1,5 +1,5 @@
 import numpy as np
-from cocoaopt import Brent
+from bboptpy import Brent
 
 
 # function to optimize

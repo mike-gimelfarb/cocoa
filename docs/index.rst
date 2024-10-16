@@ -1,4 +1,4 @@
-Welcome to documentation for COCOA!
+Welcome to documentation for bboptpy!
 ====================================
 
 .. toctree::

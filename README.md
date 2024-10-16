@@ -72,7 +72,7 @@ Simple example to optimize a univariate function:
 
 ```python
 import numpy as np
-from cocoaopt import Brent
+from bboptpy import Brent
 
 # function to optimize
 def fx(x):
@@ -95,7 +95,7 @@ Simple example to optimize a multivariate function:
 
 ```python
 import numpy as np
-from cocoaopt import ActiveCMAES
+from bboptpy import ActiveCMAES
 
 # function to optimize
 def fx(x):
@@ -125,11 +125,11 @@ converged: yes
 To cite this repository, either use the link in the sidebar, or the following bibtext entry:
 
 ```
-@software{gimelfarb2024cocoa,
+@software{gimelfarb2024bboptpy,
 author = {Gimelfarb, Michael},
 license = {LGPL-2.1+},
-title = {{COCOA: COllection of Continuous Optimization Algorithms}},
-url = {https://github.com/mike-gimelfarb/cocoa},
+title = {{bboptpy: Powerful and scalable black-box optimization algorithms for Python and C++.}},
+url = {https://github.com/mike-gimelfarb/bboptpy},
 year = {2024}
 }
 ```

@@ -1,4 +1,4 @@
-COCOA Multivariate Optimizers
+Multivariate Optimizers
 ====================================
 
 The optimization problem for a multivariate function on a box-bounded support can be written as:
@@ -7,7 +7,7 @@ The optimization problem for a multivariate function on a box-bounded support ca
 
 	\min_{x_1, \dots x_n} f(x_1, \dots x_n), \quad x_i \in [lb_i, ub_i], \, i = 1 \dots n. 
 	
-COCOA provides a number of algorithms for optimizing multivariate functions.
+bboptpy provides a number of algorithms for optimizing multivariate functions.
 
 
 Adaptive Coordinate Descent (ACD)
@@ -138,7 +138,7 @@ that adapt a mean and covariance matrix to the shape of the search space. It wor
 by maintaining a population of solution candidates from this distribution, whose best individuals are 
 recombined to create new candidate solutions.
  
-COCOA implements many of the best-performing CMA-ES variants.
+bboptpy implements many of the best-performing CMA-ES variants.
  
  
 Basic CMA-ES
@@ -149,7 +149,7 @@ The basic CMA-ES was introduced in this paper:
 * Hansen, Nikolaus, and Andreas Ostermeier. "Completely derandomized self-adaptation in evolution strategies." Evolutionary computation 9.2 (2001): 159-195.
  
 The covariance update has ``O(n^3)`` time complexity when updated naively, 
-making it scale poorly to higher dimensions. The COCOA implementation applies a 
+making it scale poorly to higher dimensions. The current implementation applies a 
 simple trick of updating the covariance matrix once every ``O(n)`` iterations,
 reducing the amortized time complexity to ``O(n^2)``. This allows the algorithm to 
 perform well on the order of 100 decision variables.
@@ -388,7 +388,7 @@ and mutation of DNA sequences in nature. It maintains a population of candidate 
 mutation and crossover operations to create new candidate solutions, which then replace the existing population through
 a process of selection (to mimic the process of survival-of-the-fittest in nature).
 
-COCOA implements many of the best-performing DE variants from the literature.
+bboptpy implements many of the best-performing DE variants from the literature.
 
 
 JADE
@@ -405,7 +405,7 @@ JADE is an adaptive differential evolution that tunes the crossover and mutation
 rates based on values that performed well in the past. These values are maintained 
 as long-run moving averages of the best-performing values from previous iterations.
 
-The COCOA version of JADE implements the optional external archive as described 
+The current version of JADE implements the optional external archive as described 
 in the second paper to improve the population diversity, uses a power mean adaptation for the 
 crossover rate as suggested in the third paper, and repairs the crossover
 rate as suggested in the fourth paper.
@@ -447,7 +447,7 @@ are adapted by maintaining a history of H previous parameter values that resulte
 in candidates with good objective values. This history is updated periodically 
 and values are drawn from it before each mutation and crossover operation.
 
-The COCOA version implements the optional external archive as described for JADE,
+The provided version implements the optional external archive as described for JADE,
 the linear population size reduction described in the aforementioned 
 paper, and the crossover rate repair strategy.
 
@@ -485,7 +485,7 @@ of parameter adaptation for the crossover and mutation. However, it implements t
 different possible mutation strategies, and selects between them based on the strategy
 that performed well in past iterations.
 
-The COCOA version of this algorithm also repairs the crossover rate as suggested for JADE. 
+The provided version of this algorithm also repairs the crossover rate as suggested for JADE. 
 
 .. function:: SANSDE(mfev, np, tol, repaircr = True, crref = 5, pupdate = 50, crupdate = 25)
 
@@ -522,9 +522,9 @@ of a hyper-sphere. The algorithm maintains a population of individuals with the
 best objective values, and uses these candidate solutions to generate the new
 trial solutions.
 
-The COCOA version implements the full parameter adaptation
+The current version implements the full parameter adaptation
 described in the first paper, and is identical to the process used in L-SHADE.
-The COCOA version also has a flag ``usede`` which hybridizes the sphere search
+This version also has a flag ``usede`` which hybridizes the sphere search
 with a differential-evolution update as described in the second paper. This allows
 the algorithm to escape local minima better than vanilla spherical search.
 
@@ -567,7 +567,7 @@ These strategies are inspired by the concept of stable motion and migration of
 superorganisms and are somewhat similar to mutation in DE. 
 
 The current implementation is based on the original Matlab code. However, rather than
-selecting among the different strategies randomly at uniform, the COCOA implementation
+selecting among the different strategies randomly at uniform, the current implementation
 uses the non-stationary multi-armed bandit algorithm Rexp3 to favor the best-performing
 strategy over time.
  
@@ -693,7 +693,7 @@ The JAYA algorithm is a population-based metaheuristic search algorithm for find
 the global minimum of a multivariate function. It is similar to differential evolution,
 but the procedure for generating new candidate solutions includes not only an attraction 
 term for moving towards the best candidate in the population, but also a repulsion
-term for moving away from the worst candidate. The version implemented in COCOA
+term for moving away from the worst candidate. The version implemented currently
 features a multi-population scheme for improving the search behavior of JAYA,
 automatic parameter adaptation, and Levy flights and other mutation operators 
 for global exploration of the search space.
@@ -729,7 +729,7 @@ for global exploration of the search space.
 Adaptive Nelder-Mead (Simplex) Algorithm
 -------------------
 
-The versions of Nelder-Mead implemented in COCOA are described in the following papers:
+The versions of Nelder-Mead implemented are described in the following papers:
 
 * Gao, Fuchang & Han, Lixing. (2012). Implementing the Nelder-Mead simplex algorithm with adaptive parameters. Computational Optimization and Applications. 51. 259-277. 10.1007/s10589-010-9329-3.
 * Mehta, V. K. "Improved Nelder–Mead algorithm in high dimensions with adaptive parameters based on Chebyshev spacing points." Engineering Optimization 52.10 (2020): 1814-1828.
@@ -739,7 +739,7 @@ unconstrained optimization problems where the objective function may have noise 
 discontinuities. It maintains a simplex of points that are updated through a series
 of transformations, namely: reflection, expansion, contraction, and shrink.
 
-The version of Nelder-Mead in COCOA is based loosely on the original FORTRAN implementations,
+The version of Nelder-Mead provided is based loosely on the original FORTRAN implementations,
 but implements a variety of improvements to make the algorithm work better in high dimensions 
 and converge faster. These include adaptation of the transformation hyper-parameters,
 better simplex initialization, periodic restarts, and better termination criteria.
@@ -778,7 +778,7 @@ position in the search space. The position of each particle is updated based
 on the particle's personal best position, as well as the global best position
 of the entire population. 
 
-COCOA implements a number of different variants of PSO, typically with parameter
+bboptpy implements a number of different variants of PSO, typically with parameter
 adaptation and other tricks to make them converge more effectively in 
 complex, high-dimensional problems.
 
@@ -933,7 +933,7 @@ improving the objective value. This variant tends to perform well across a broad
 Powell's Methods
 -------------------
 
-Several of M.J.D. Powell's optimization methods are implemented in COCOA. The references
+Several of M.J.D. Powell's optimization methods are implemented. The references
 for this body of work can be found in:
 
 * Powell, Michael JD. "The BOBYQA algorithm for bound constrained optimization without derivatives." Cambridge NA Report NA2009/06, University of Cambridge, Cambridge 26 (2009): 26-46.
@@ -1026,7 +1026,7 @@ This algorithm and its improvement was described in the following papers:
 
 The Rosenbrock's method uses orthogonal search directions to explore the search space.
 Like PRAXIS, it searches along the search directions for a minimum, but originally
-used a pattern search instead of a line search. The variant of COCOA implements
+used a pattern search instead of a line search. The provided variant implements
 this method but replaces the pattern search with a fast Lagrange quadratic interpolation line search
 procedure outlined in the paper above. It performs roughly on par with PRAXIS on many problems.
 
