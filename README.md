@@ -50,6 +50,7 @@ The following algorithms are currently fully supported with Python wrappers:
             * [JADE](https://ieeexplore.ieee.org/document/4424751)
             * [L-SHADE](https://ieeexplore.ieee.org/abstract/document/6900380)
             * [SANSDE](https://ieeexplore.ieee.org/document/4630935/)
+            * [SSDE](https://www.mdpi.com/2227-7390/10/23/4519#B47-mathematics-10-04519)
         * [Differential Search (DSA)](https://www.sciencedirect.com/science/article/abs/pii/S0098300411004353)
         * [Exponential Natural Evolution Strategy (xNES)](https://dl.acm.org/doi/10.1145/1830483.1830557)
         * [Novel Self-Adaptive Harmony Search (NSHS)](https://onlinelibrary.wiley.com/doi/10.1155/2013/653749)
