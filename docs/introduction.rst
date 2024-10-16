@@ -12,12 +12,11 @@ Main advantages:
 Installation
 -------------------
 
-To use bboptpy in a Python project, you will need a C++ compiler for Python and git (e.g., ``conda install git``).
-Then install directly:
+Install directly from pip:
 
 .. code-block:: shell
 
-    pip install git+https://github.com/mike-gimelfarb/bboptpy
+    pip install bboptpy
 
 Basic Univariate Example
 -------------------
