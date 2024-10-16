@@ -8,7 +8,7 @@ bboptpy is a library of algorithms for the optimization of black-box functions.
 
 Main advantages:
 - single unified interface for Python with a user-friendly API
-- variety of classical and modern algorithms faithfully reproduced, with state-of-the-art improvements that are scalable yet robust
+- faithful reproductions of classical and modern baselines, with SOTA improvements that are scalable yet robust
 - transparent implementation and reproducibility that makes it easy to build upon.
 
 Full documentation and list of supported algorithms and functions is found [here](https://bboptpy.readthedocs.io/en/latest/).
