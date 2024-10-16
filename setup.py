@@ -11,6 +11,7 @@ __version__ = "0.1"
 from pathlib import Path
 long_description = (Path(__file__).parent / "README.md").read_text()
 
+
 def list_source_files(root_folder):
     cppfiles = []
     for root, dirs, files in os.walk(root_folder):
