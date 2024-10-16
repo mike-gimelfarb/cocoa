@@ -1,13 +1,11 @@
-# cocoa
+# bboptpy
 
-COCOA (COllection of Continuous Optimization Algorithms) is a large suite of efficient algorithms written in C++ for the optimization of continuous 
-black-box functions (mostly without using derivative information). 
+bboptpy is a large suite of efficient algorithms written in C++ for the optimization of black-box functions.
 
 Main advantages:
-- provides a single unified interface for all algorithms
-- provides a variety of classical algorithms with state-of-the-art improvements 
-(e.g. automatic parameter adaptation) 
-- convenient wrappers for Python with a user-friendly API
+- single unified interface for Python with a user-friendly API
+- variety of classical and modern algorithms with state-of-the-art improvements that are robust and very fast
+- transparent implementation that makes it easy to build upon.
 
 # Installation
 
@@ -15,7 +13,7 @@ To use this library in a Python project, you will need a C++ compiler for Python
 Then install directly:
 
 ```
-pip install git+https://github.com/mike-gimelfarb/cocoa
+pip install git+https://github.com/mike-gimelfarb/bboptpy
 ```
 
 # Algorithms Supported
