@@ -509,7 +509,7 @@ The COCOA version of this algorithm also repairs the crossover rate as suggested
    :rtype: object of type MultivariateSearch
 
 
-Self-Adapting Spherical Search with Differential Evolution (SSDE)
+Self-Adapting Spherical Search (SSDE)
 ~~~~~~~~
 
 This algorithm was described in the following papers:
@@ -518,18 +518,15 @@ This algorithm was described in the following papers:
 * Zhao, J., Zhang, B., Guo, X., Qi, L., & Li, Z. (2022). Self-adapting spherical search algorithm with differential evolution for global optimization. Mathematics, 10(23), 4519.
 
 The spherical search algorithm works by generating trial solutions on the surface
-of a hyper-sphere. It is population-based, meaning there is a selection process
-by which points are randomly sampled and determine the angle of the trial point
-in the hyper-sphere. 
+of a hyper-sphere. The algorithm maintains a population of individuals with the 
+best objective values, and uses these candidate solutions to generate the new
+trial solutions.
 
 The COCOA version implements the full parameter adaptation
-described in the first paper, which is identical to the process used in L-SHADE.
+described in the first paper, and is identical to the process used in L-SHADE.
 The COCOA version also has a flag ``usede`` which hybridizes the sphere search
-with a differential-evolution update in case the trial point is not accepted into
-the population during sphere search. The extra parameters of this new update are
-also allowed to adapt using the L-SHADE methodology. This DE-update, 
-together with an opposition-based initialization scheme, has the effect
-of promoting global search.
+with a differential-evolution update as described in the second paper. This allows
+the algorithm to escape local minima better than vanilla spherical search.
 
 .. function:: SSDE(mfev, npinit, tol, patience = 1000, npmin = 4, ptop = 0.11, h = 100, usede = False, repaircr = True)
 
