@@ -1,12 +1,8 @@
 Welcome to documentation for bboptpy!
 ====================================
 
-```{image} banner.png
-:alt: banner
-:class: bg-primary
-:width: 100%
-:align: center
-```
+.. image:: banner.png
+    :width: 100%
 
 .. toctree::
     :maxdepth: 2
