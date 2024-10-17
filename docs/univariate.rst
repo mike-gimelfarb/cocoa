@@ -63,7 +63,7 @@ search with parabolic interpolation.
    :rtype: object of type UnivariateSearch
   
 The global variant finds a global minimum under the assumption that the second derivative of the objective is upper-bounded.
-This is the translation of the [``GLOMIN`` Fortran subroutine by John Burkardt](https://people.math.sc.edu/Burkardt/f77_src/brent/brent.html).
+This is the translation of the `Fortran subroutine by John Burkardt <https://people.math.sc.edu/Burkardt/f77_src/brent/brent.html>`_.
   
 .. function:: GlobalBrent(mfev, tol, bound_on_hessian)
 
@@ -84,7 +84,7 @@ Calvin's Method
 
 The Calvin's method for univariate functions is described in this paper:
 
-* Calvin, James M., Yvonne Chen, and Antanas Žilinskas. "An adaptive univariate global optimization algorithm and its convergence rate for twice continuously differentiable functions." Journal of Optimization Theory and Applications 155 (2012): 628-636.
+* Calvin, James M., Yvonne Chen, and Antanas Å½ilinskas. "An adaptive univariate global optimization algorithm and its convergence rate for twice continuously differentiable functions." Journal of Optimization Theory and Applications 155 (2012): 628-636.
 
 In summary, this is a global search method that uses an interval splitting technique to find the global minimum.
 It enjoys strong theoretical asymptotic convergence properties for continuous functions sampled randomly according to the Wiener measure.
@@ -133,7 +133,7 @@ Fibonacci Search
 
 The Fibonacci search is described in detail in this paper:
 
-* Kiefer, J. (1953), "Sequential minimax search for a maximum", Proceedings of the American Mathematical Society, 4 (3): 502–506
+* Kiefer, J. (1953), "Sequential minimax search for a maximum", Proceedings of the American Mathematical Society, 4 (3): 502â€“506
 
 The Fibonacci search is a simple algorithm for finding the local minimum of a 
 strictly unimodal, but not necessarily continuous, function.
@@ -161,7 +161,7 @@ Golden Section Search
 
 The golden section search is described in detail in this paper:
 
-* Kiefer, J. (1953), "Sequential minimax search for a maximum", Proceedings of the American Mathematical Society, 4 (3): 502–506
+* Kiefer, J. (1953), "Sequential minimax search for a maximum", Proceedings of the American Mathematical Society, 4 (3): 502â€“506
 
 This algorithm can be seen as a limit of the Fibonacci search, in the sense that the ratio 
 of two consecutive Fibonacci numbers approaches the golden ratio. Like the Fibonacci search,

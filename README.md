@@ -4,12 +4,12 @@
 
 # bboptpy
 
-bboptpy is a large suite of efficient algorithms written in C++ for the optimization of black-box functions.
+**bboptpy is a library of algorithms for the optimization of black-box functions.**
 
 Main advantages:
 - single unified interface for Python with a user-friendly API
-- variety of classical and modern algorithms with state-of-the-art improvements that are robust and very fast
-- transparent implementation that makes it easy to build upon.
+- faithful reproductions of classical and modern baselines (of which many are not publicly available elsewhere), with SOTA improvements
+- transparent implementation and reproducibility that makes it easy to build upon.
 
 Full documentation and list of supported algorithms and functions is found [here](https://bboptpy.readthedocs.io/en/latest/).
 
@@ -133,10 +133,12 @@ To cite this repository, either use the link in the sidebar, or the following bi
 @software{gimelfarb2024bboptpy,
 author = {Gimelfarb, Michael},
 license = {LGPL-2.1+},
-title = {{bboptpy: Powerful and scalable black-box optimization algorithms for Python and C++.}},
+title = {{bboptpy}},
 url = {https://github.com/mike-gimelfarb/bboptpy},
 year = {2024}
 }
 ```
+
+Please also consider citing the original authors of the algorithms you use, whose papers are linked in the supported algorithms section above.
 
 To cite the authors of the individual algorithms, please see the references in the comments heads of the respective C++ source files.

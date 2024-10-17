@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: 'bboptpy: Powerful and scalable black-box optimization algorithms for Python and C++.'
+title: 'bboptpy'
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
